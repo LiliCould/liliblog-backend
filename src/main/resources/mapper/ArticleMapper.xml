@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lilicould.blog.dao.ArticleMapper">
+
+    <insert id="insert">
+        INSERT INTO article(title, slug, summary, content, content_html, cover_image, status, author_id, category_id,publish_time)
+        VALUES (#{title}, #{slug}, #{summary}, #{content}, #{contentHtml}, #{coverImage}, #{status}, #{authorId}, #{categoryId}, #{publishTime})
+    </insert>
+
+    <select id="selectById" resultType="com.lilicould.blog.entity.Article">
+        SELECT * FROM article WHERE id = #{id} AND status = 'PUBLISHED'
+    </select>
+
+    <select id="selectByIdWithAllStatus" resultType="com.lilicould.blog.entity.Article">
+        SELECT * FROM article WHERE id = #{id} AND status != 'DELETED'
+    </select>
+
+    <select id="existsById" resultType="boolean">
+        SELECT EXISTS(SELECT 1 FROM article WHERE id = #{id})
+    </select>
+
+    <select id="selectBySlug" resultType="com.lilicould.blog.entity.Article">
+        SELECT * FROM article WHERE slug = #{slug} AND status = 'PUBLISHED'
+    </select>
+
+    <select id="selectBySlugWithAllStatus" resultType="com.lilicould.blog.entity.Article">
+        SELECT * FROM article WHERE slug = #{slug} AND status != 'DELETED'
+    </select>
+
+    <select id="existsBySlug" resultType="boolean">
+        SELECT EXISTS(SELECT 1 FROM article WHERE slug = #{slug})
+    </select>
+
+    <select id="selectAll" resultType="com.lilicould.blog.entity.Article">
+        SELECT * FROM article
+        WHERE status = 'PUBLISHED'
+        ORDER BY create_time DESC
+        LIMIT #{pageSize} OFFSET #{pageNum}
+    </select>
+
+    <select id="selectAllWithAllStatus" resultType="com.lilicould.blog.entity.Article">
+        SELECT * FROM article
+        WHERE status != 'DELETED'
+        ORDER BY create_time DESC
+        LIMIT #{pageSize} OFFSET #{pageNum}
+    </select>
+
+    <!-- 模糊搜索 -->
+    <select id="searchAll" resultType="com.lilicould.blog.entity.Article">
+        SELECT * FROM article
+        <where>
+            <if test="keyword != null">
+                title LIKE CONCAT('%', #{keyword}, '%')
+                OR summary LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+            AND status = 'PUBLISHED'
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="search" resultType="com.lilicould.blog.entity.Article">
+        SELECT * FROM article
+        <where>
+            <if test="keyword != null">
+                title LIKE CONCAT('%', #{keyword}, '%')
+                OR summary LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+            AND status = 'PUBLISHED'
+        </where>
+        ORDER BY create_time DESC
+        LIMIT #{pageNum},#{pageSize}
+    </select>
+
+
+    <update id="update">
+        UPDATE article
+        <set>
+            <if test="title != null">title = #{title},</if>
+            <if test="slug != null">slug = #{slug},</if>
+            <if test="summary != null">summary = #{summary},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="contentHtml != null">content_html = #{contentHtml},</if>
+            <if test="coverImage != null">cover_image = #{coverImage},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="viewCount != null">view_count = #{viewCount},</if>
+            <if test="likeCount != null">like_count = #{likeCount},</if>
+            <if test="commentCount != null">comment_count = #{commentCount},</if>
+            <if test="isTop != null">is_top = #{isTop},</if>
+            <if test="isRecommend != null">is_recommend = #{isRecommend},</if>
+            <if test="authorId != null">author_id = #{authorId},</if>
+            <if test="categoryId != null">category_id = #{categoryId},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="publishTime != null">publish_time = #{publishTime},</if>
+            update_time = NOW()
+            WHERE id = #{id}
+        </set>
+    </update>
+</mapper>

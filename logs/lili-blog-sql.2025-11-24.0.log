@@ -1,0 +1,12 @@
+2025-11-24 22:05:16.981 [http-nio-80-exec-8] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 开始执行 - 用户登录服务 (AuthServiceImpl类的login方法)
+2025-11-24 22:05:17.715 [http-nio-80-exec-8] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 执行完成 - 用户登录服务，耗时：734ms
+2025-11-24 22:05:17.894 [http-nio-80-exec-10] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 开始执行 - 用户登录服务 (AuthServiceImpl类的login方法)
+2025-11-24 22:05:17.956 [http-nio-80-exec-10] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 执行完成 - 用户登录服务，耗时：62ms
+2025-11-24 22:05:18.053 [http-nio-80-exec-1] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 开始执行 - 用户登录服务 (AuthServiceImpl类的login方法)
+2025-11-24 22:05:18.112 [http-nio-80-exec-1] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 执行完成 - 用户登录服务，耗时：59ms
+2025-11-24 22:05:18.192 [http-nio-80-exec-4] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 开始执行 - 用户登录服务 (AuthServiceImpl类的login方法)
+2025-11-24 22:05:18.255 [http-nio-80-exec-4] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 执行完成 - 用户登录服务，耗时：63ms
+2025-11-24 22:05:18.331 [http-nio-80-exec-3] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 开始执行 - 用户登录服务 (AuthServiceImpl类的login方法)
+2025-11-24 22:05:18.390 [http-nio-80-exec-3] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 执行完成 - 用户登录服务，耗时：59ms
+2025-11-24 22:05:18.472 [http-nio-80-exec-5] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 开始执行 - 用户登录服务 (AuthServiceImpl类的login方法)
+2025-11-24 22:05:18.534 [http-nio-80-exec-5] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 执行完成 - 用户登录服务，耗时：62ms

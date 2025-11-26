@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lilicould.blog.dao.UserMapper">
+
+    <!-- 映射关系，也可以不加，因为字段名匹配了 -->
+    <resultMap id="UserResultMap" type="com.lilicould.blog.entity.User">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="email" property="email"/>
+        <result column="password" property="password"/>
+        <result column="nickname" property="nickname"/>
+        <result column="avatar" property="avatar"/>
+        <result column="role" property="role"/>
+        <result column="status" property="status"/>
+        <result column="last_login_time" property="lastLoginTime"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <select id="selectByUsername" resultMap="UserResultMap">
+        SELECT * FROM user_tb WHERE username = #{username} AND status = 1
+    </select>
+
+    <select id="selectByEmail" resultMap="UserResultMap">
+        SELECT * FROM user_tb WHERE email = #{email} AND status = 1
+    </select>
+
+    <select id="selectById" resultMap="UserResultMap">
+        SELECT * FROM user_tb WHERE id = #{id} AND status = 1
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user_tb (username, email, password, nickname, avatar, role, status)
+        VALUES (#{username}, #{email}, #{password}, #{nickname}, #{avatar}, #{role}, #{status})
+    </insert>
+
+    <update id="updateLastLoginTime">
+        UPDATE user_tb SET last_login_time = #{loginTime} WHERE id = #{id}
+    </update>
+
+    <update id="update">
+        UPDATE user_tb
+        <set>
+            <if test="username != null">username = #{username},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="password != null">password = #{password},</if>
+            <if test="nickname != null">nickname = #{nickname},</if>
+            <if test="avatar != null">avatar = #{avatar},</if>
+            <if test="role != null">role = #{role},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="lastLoginTime != null">last_login_time = #{lastLoginTime},</if>
+            update_time = NOW()
+            WHERE id = #{id}
+        </set>
+    </update>
+
+    <update id="updatePassword">
+        UPDATE user_tb SET password = #{newPassword} WHERE id = #{id}
+    </update>
+
+</mapper>

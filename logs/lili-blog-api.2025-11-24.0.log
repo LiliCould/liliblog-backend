@@ -1,0 +1,30 @@
+2025-11-24 22:05:16.144 [http-nio-80-exec-8] DEBUG c.l.blog.interceptor.ControllerLogInterceptor - [Controller] 开始执行 - AuthController类的login方法
+2025-11-24 22:05:16.145 [http-nio-80-exec-8] INFO  c.l.blog.interceptor.ControllerLogInterceptor - [HTTP] 请求开始-请求方式:POST  请求URI:/liliblog_war_exploded/api/auth/login?id=12 - IP地址:0:0:0:0:0:0:0:1 - User-Agent: Other
+2025-11-24 22:05:16.147 [http-nio-80-exec-8] DEBUG c.l.blog.interceptor.ControllerLogInterceptor - [HTTP] 请求头 - user-agent: Apifox/1.0.0 (https://apifox.com); content-type: application/json; accept: */*; cache-control: no-cache; host: localhost; accept-encoding: gzip, deflate, br; connection: keep-alive; content-length: 57; 
+2025-11-24 22:05:16.148 [http-nio-80-exec-8] DEBUG c.l.blog.interceptor.ControllerLogInterceptor - [HTTP] 请求参数 - id=12; 
+2025-11-24 22:05:17.830 [http-nio-80-exec-8] WARN  c.l.blog.interceptor.ControllerLogInterceptor - [HTTP] 请求完成 - POST /liliblog_war_exploded/api/auth/login - 状态码: 200 - 耗时: 1686ms - 类型: application/json (慢请求)
+2025-11-24 22:05:17.892 [http-nio-80-exec-10] DEBUG c.l.blog.interceptor.ControllerLogInterceptor - [Controller] 开始执行 - AuthController类的login方法
+2025-11-24 22:05:17.892 [http-nio-80-exec-10] INFO  c.l.blog.interceptor.ControllerLogInterceptor - [HTTP] 请求开始-请求方式:POST  请求URI:/liliblog_war_exploded/api/auth/login?id=12 - IP地址:0:0:0:0:0:0:0:1 - User-Agent: Other
+2025-11-24 22:05:17.893 [http-nio-80-exec-10] DEBUG c.l.blog.interceptor.ControllerLogInterceptor - [HTTP] 请求头 - user-agent: Apifox/1.0.0 (https://apifox.com); content-type: application/json; accept: */*; cache-control: no-cache; host: localhost; accept-encoding: gzip, deflate, br; connection: keep-alive; content-length: 58; 
+2025-11-24 22:05:17.893 [http-nio-80-exec-10] DEBUG c.l.blog.interceptor.ControllerLogInterceptor - [HTTP] 请求参数 - id=12; 
+2025-11-24 22:05:17.964 [http-nio-80-exec-10] INFO  c.l.blog.interceptor.ControllerLogInterceptor - [HTTP] 请求完成 - POST /liliblog_war_exploded/api/auth/login - 状态码: 200 - 耗时: 72ms - 类型: application/json
+2025-11-24 22:05:18.050 [http-nio-80-exec-1] DEBUG c.l.blog.interceptor.ControllerLogInterceptor - [Controller] 开始执行 - AuthController类的login方法
+2025-11-24 22:05:18.050 [http-nio-80-exec-1] INFO  c.l.blog.interceptor.ControllerLogInterceptor - [HTTP] 请求开始-请求方式:POST  请求URI:/liliblog_war_exploded/api/auth/login?id=12 - IP地址:0:0:0:0:0:0:0:1 - User-Agent: Other
+2025-11-24 22:05:18.050 [http-nio-80-exec-1] DEBUG c.l.blog.interceptor.ControllerLogInterceptor - [HTTP] 请求头 - user-agent: Apifox/1.0.0 (https://apifox.com); content-type: application/json; accept: */*; cache-control: no-cache; host: localhost; accept-encoding: gzip, deflate, br; connection: keep-alive; content-length: 53; 
+2025-11-24 22:05:18.050 [http-nio-80-exec-1] DEBUG c.l.blog.interceptor.ControllerLogInterceptor - [HTTP] 请求参数 - id=12; 
+2025-11-24 22:05:18.120 [http-nio-80-exec-1] INFO  c.l.blog.interceptor.ControllerLogInterceptor - [HTTP] 请求完成 - POST /liliblog_war_exploded/api/auth/login - 状态码: 200 - 耗时: 70ms - 类型: application/json
+2025-11-24 22:05:18.189 [http-nio-80-exec-4] DEBUG c.l.blog.interceptor.ControllerLogInterceptor - [Controller] 开始执行 - AuthController类的login方法
+2025-11-24 22:05:18.189 [http-nio-80-exec-4] INFO  c.l.blog.interceptor.ControllerLogInterceptor - [HTTP] 请求开始-请求方式:POST  请求URI:/liliblog_war_exploded/api/auth/login?id=12 - IP地址:0:0:0:0:0:0:0:1 - User-Agent: Other
+2025-11-24 22:05:18.189 [http-nio-80-exec-4] DEBUG c.l.blog.interceptor.ControllerLogInterceptor - [HTTP] 请求头 - user-agent: Apifox/1.0.0 (https://apifox.com); content-type: application/json; accept: */*; cache-control: no-cache; host: localhost; accept-encoding: gzip, deflate, br; connection: keep-alive; content-length: 56; 
+2025-11-24 22:05:18.189 [http-nio-80-exec-4] DEBUG c.l.blog.interceptor.ControllerLogInterceptor - [HTTP] 请求参数 - id=12; 
+2025-11-24 22:05:18.262 [http-nio-80-exec-4] INFO  c.l.blog.interceptor.ControllerLogInterceptor - [HTTP] 请求完成 - POST /liliblog_war_exploded/api/auth/login - 状态码: 200 - 耗时: 73ms - 类型: application/json
+2025-11-24 22:05:18.329 [http-nio-80-exec-3] DEBUG c.l.blog.interceptor.ControllerLogInterceptor - [Controller] 开始执行 - AuthController类的login方法
+2025-11-24 22:05:18.329 [http-nio-80-exec-3] INFO  c.l.blog.interceptor.ControllerLogInterceptor - [HTTP] 请求开始-请求方式:POST  请求URI:/liliblog_war_exploded/api/auth/login?id=12 - IP地址:0:0:0:0:0:0:0:1 - User-Agent: Other
+2025-11-24 22:05:18.329 [http-nio-80-exec-3] DEBUG c.l.blog.interceptor.ControllerLogInterceptor - [HTTP] 请求头 - user-agent: Apifox/1.0.0 (https://apifox.com); content-type: application/json; accept: */*; cache-control: no-cache; host: localhost; accept-encoding: gzip, deflate, br; connection: keep-alive; content-length: 56; 
+2025-11-24 22:05:18.329 [http-nio-80-exec-3] DEBUG c.l.blog.interceptor.ControllerLogInterceptor - [HTTP] 请求参数 - id=12; 
+2025-11-24 22:05:18.403 [http-nio-80-exec-3] INFO  c.l.blog.interceptor.ControllerLogInterceptor - [HTTP] 请求完成 - POST /liliblog_war_exploded/api/auth/login - 状态码: 200 - 耗时: 74ms - 类型: application/json
+2025-11-24 22:05:18.470 [http-nio-80-exec-5] DEBUG c.l.blog.interceptor.ControllerLogInterceptor - [Controller] 开始执行 - AuthController类的login方法
+2025-11-24 22:05:18.470 [http-nio-80-exec-5] INFO  c.l.blog.interceptor.ControllerLogInterceptor - [HTTP] 请求开始-请求方式:POST  请求URI:/liliblog_war_exploded/api/auth/login?id=12 - IP地址:0:0:0:0:0:0:0:1 - User-Agent: Other
+2025-11-24 22:05:18.470 [http-nio-80-exec-5] DEBUG c.l.blog.interceptor.ControllerLogInterceptor - [HTTP] 请求头 - user-agent: Apifox/1.0.0 (https://apifox.com); content-type: application/json; accept: */*; cache-control: no-cache; host: localhost; accept-encoding: gzip, deflate, br; connection: keep-alive; content-length: 59; 
+2025-11-24 22:05:18.470 [http-nio-80-exec-5] DEBUG c.l.blog.interceptor.ControllerLogInterceptor - [HTTP] 请求参数 - id=12; 
+2025-11-24 22:05:18.541 [http-nio-80-exec-5] INFO  c.l.blog.interceptor.ControllerLogInterceptor - [HTTP] 请求完成 - POST /liliblog_war_exploded/api/auth/login - 状态码: 200 - 耗时: 71ms - 类型: application/json

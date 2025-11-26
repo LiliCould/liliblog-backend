@@ -1,0 +1,270 @@
+2025-11-25 09:12:30.483 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 09:12:36.762 [RMI TCP Connection(2)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 09:12:42.804 [RMI TCP Connection(2)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 09:12:45.614 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 15114 ms
+2025-11-25 09:12:45.682 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 09:12:45.823 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 141 ms
+2025-11-25 09:39:28.987 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 09:39:29.017 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 10:24:19.706 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 10:24:20.697 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 10:24:20.704 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 10:25:09.369 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 10:25:10.336 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 10:25:10.344 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 10:26:00.905 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 10:26:01.814 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 10:26:01.822 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 10:26:17.284 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 10:26:18.245 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 10:26:18.253 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 10:27:51.108 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 10:27:52.064 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 10:27:52.072 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 10:28:35.111 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 10:28:35.916 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 10:28:35.924 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 10:29:28.721 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 10:29:29.553 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 10:29:29.560 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 10:29:53.662 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 10:29:54.507 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 10:29:54.514 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 10:31:10.253 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 10:31:11.110 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 10:31:11.118 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 10:56:57.467 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 10:56:58.347 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 10:56:58.354 [SpringContextShutdownHook] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 10:57:24.134 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 10:57:28.767 [RMI TCP Connection(2)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 10:57:34.046 [RMI TCP Connection(2)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 10:57:36.194 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 12052 ms
+2025-11-25 10:57:36.201 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 10:57:36.318 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 117 ms
+2025-11-25 10:57:41.482 [http-nio-80-exec-6] WARN  o.s.security.crypto.bcrypt.BCryptPasswordEncoder - Encoded password does not look like BCrypt
+2025-11-25 10:57:43.715 [http-nio-80-exec-9] WARN  o.s.security.crypto.bcrypt.BCryptPasswordEncoder - Encoded password does not look like BCrypt
+2025-11-25 10:57:54.869 [http-nio-80-exec-10] WARN  o.s.security.crypto.bcrypt.BCryptPasswordEncoder - Encoded password does not look like BCrypt
+2025-11-25 11:01:45.655 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 11:01:45.670 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 11:02:01.347 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 11:02:04.424 [RMI TCP Connection(2)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 11:02:07.403 [RMI TCP Connection(2)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 11:02:08.782 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 7429 ms
+2025-11-25 11:02:08.787 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 11:02:08.860 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 73 ms
+2025-11-25 11:03:16.958 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 11:03:16.972 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 11:03:33.191 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 11:03:36.776 [RMI TCP Connection(2)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 11:03:40.379 [RMI TCP Connection(2)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 11:03:41.906 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 8709 ms
+2025-11-25 11:03:41.912 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 11:03:42.011 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 99 ms
+2025-11-25 11:07:47.914 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 11:07:47.930 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 11:08:02.197 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 11:08:05.438 [RMI TCP Connection(2)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 11:08:08.469 [RMI TCP Connection(2)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 11:08:09.967 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 7765 ms
+2025-11-25 11:08:09.972 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 11:08:10.071 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 98 ms
+2025-11-25 11:10:34.511 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 11:10:34.526 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 11:11:07.630 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 11:11:12.406 [RMI TCP Connection(2)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 11:11:17.022 [RMI TCP Connection(2)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 11:11:18.522 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 10886 ms
+2025-11-25 11:11:18.528 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 11:11:18.612 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 84 ms
+2025-11-25 11:19:59.387 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 11:19:59.403 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 11:20:14.917 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 11:20:18.062 [RMI TCP Connection(2)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 11:20:20.977 [RMI TCP Connection(2)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 11:20:22.400 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 7478 ms
+2025-11-25 11:20:22.406 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 11:20:22.484 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 78 ms
+2025-11-25 11:21:15.493 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 11:21:15.495 [main] WARN  o.s.beans.factory.support.DisposableBeanAdapter - Invocation of close method failed on bean with name 'dataSource': java.lang.IllegalStateException: java.nio.file.NoSuchFileException: C:\Users\Lili\Desktop\javaCodes\liliblog\target\liliblog\WEB-INF\lib\aspectjweaver-1.9.21.jar
+2025-11-25 11:21:15.495 [Druid-ConnectionPool-Create-1481931262] ERROR com.alibaba.druid.pool.DruidDataSource - create connection thread interrupted, url: jdbc:mysql://localhost:3306/liliblog?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+java.lang.InterruptedException: null
+	at java.base/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1727)
+	at com.alibaba.druid.pool.DruidDataSource$CreateConnectionThread.run(DruidDataSource.java:2943)
+2025-11-25 11:22:51.059 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 11:22:54.158 [RMI TCP Connection(2)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 11:22:57.182 [RMI TCP Connection(2)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 11:22:58.564 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 7501 ms
+2025-11-25 11:22:58.570 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 11:22:58.652 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 82 ms
+2025-11-25 11:25:17.571 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 11:25:17.586 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 11:25:34.412 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 11:25:37.541 [RMI TCP Connection(2)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 11:25:40.603 [RMI TCP Connection(2)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 11:25:42.010 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 7593 ms
+2025-11-25 11:25:42.015 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 11:25:42.090 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 75 ms
+2025-11-25 11:32:37.720 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 11:32:37.735 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 11:32:53.768 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 11:32:58.361 [RMI TCP Connection(2)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 11:33:03.323 [RMI TCP Connection(2)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 11:33:05.437 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 11662 ms
+2025-11-25 11:33:05.445 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 11:33:05.585 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 140 ms
+2025-11-25 11:37:45.218 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 11:37:45.232 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 11:38:23.253 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 11:38:27.876 [RMI TCP Connection(2)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 11:38:32.689 [RMI TCP Connection(2)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 11:38:34.768 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 11509 ms
+2025-11-25 11:38:34.776 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 11:38:34.914 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 138 ms
+2025-11-25 11:40:55.565 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 11:40:55.581 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 11:41:12.861 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 11:41:16.051 [RMI TCP Connection(2)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 11:41:19.163 [RMI TCP Connection(2)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 11:41:20.582 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 7716 ms
+2025-11-25 11:41:20.588 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 11:41:20.665 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 76 ms
+2025-11-25 11:42:58.374 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 11:42:58.397 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 11:44:31.065 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 11:44:34.280 [RMI TCP Connection(2)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 11:44:37.334 [RMI TCP Connection(2)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 11:44:38.861 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 7789 ms
+2025-11-25 11:44:38.866 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 11:44:38.948 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 82 ms
+2025-11-25 11:52:51.848 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 11:52:51.863 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 11:54:49.510 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 11:54:52.757 [RMI TCP Connection(2)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 11:54:55.865 [RMI TCP Connection(2)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 11:54:57.325 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 7810 ms
+2025-11-25 11:54:57.332 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 11:54:57.424 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 92 ms
+2025-11-25 11:58:41.795 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 11:58:41.811 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 11:58:57.007 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 11:59:00.453 [RMI TCP Connection(2)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 11:59:03.935 [RMI TCP Connection(2)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 11:59:05.976 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 8965 ms
+2025-11-25 11:59:05.985 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 11:59:06.126 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 141 ms
+2025-11-25 11:59:26.285 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 11:59:26.314 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 16:19:21.424 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 16:19:25.186 [RMI TCP Connection(2)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 16:19:30.463 [RMI TCP Connection(2)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 16:19:32.666 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 11233 ms
+2025-11-25 16:19:32.676 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 16:19:32.806 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 130 ms
+2025-11-25 16:21:33.159 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 16:21:33.177 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 16:21:49.383 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 16:21:52.517 [RMI TCP Connection(2)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 16:21:55.542 [RMI TCP Connection(2)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 16:21:56.940 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 7549 ms
+2025-11-25 16:21:56.947 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 16:21:57.027 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 80 ms
+2025-11-25 16:23:27.435 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 16:23:27.449 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 16:23:42.549 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 16:23:45.726 [RMI TCP Connection(2)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 16:23:49.118 [RMI TCP Connection(2)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 16:23:50.549 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 7994 ms
+2025-11-25 16:23:50.555 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 16:23:50.635 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 80 ms
+2025-11-25 16:27:24.526 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 16:27:24.541 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 16:27:42.546 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 16:27:45.945 [RMI TCP Connection(2)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 16:27:49.649 [RMI TCP Connection(2)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 16:27:51.208 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 8657 ms
+2025-11-25 16:27:51.216 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 16:27:51.322 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 106 ms
+2025-11-25 16:28:51.187 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 16:28:51.202 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 16:29:06.369 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 16:29:09.509 [RMI TCP Connection(2)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 16:29:12.576 [RMI TCP Connection(2)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 16:29:14.036 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 7662 ms
+2025-11-25 16:29:14.043 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 16:29:14.128 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 85 ms
+2025-11-25 16:35:26.106 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 16:35:26.122 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 16:40:06.513 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 16:40:10.215 [RMI TCP Connection(2)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 16:40:13.670 [RMI TCP Connection(2)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 16:40:15.176 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 8658 ms
+2025-11-25 16:40:15.182 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 16:40:15.285 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 103 ms
+2025-11-25 16:45:51.673 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 16:45:51.688 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 16:46:07.070 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 16:46:10.178 [RMI TCP Connection(2)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 16:46:13.153 [RMI TCP Connection(2)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 16:46:14.563 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 7487 ms
+2025-11-25 16:46:14.568 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 16:46:14.645 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 76 ms
+2025-11-25 16:46:48.457 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 16:46:48.474 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 16:50:57.861 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 16:51:01.143 [RMI TCP Connection(2)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 16:51:04.432 [RMI TCP Connection(2)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 16:51:05.970 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 8103 ms
+2025-11-25 16:51:05.976 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 16:51:06.076 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 100 ms
+2025-11-25 16:57:55.347 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 16:57:55.365 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 16:58:13.003 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 16:58:16.175 [RMI TCP Connection(2)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 16:58:19.247 [RMI TCP Connection(2)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 16:58:20.665 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 7656 ms
+2025-11-25 16:58:20.671 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 16:58:20.749 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 77 ms
+2025-11-25 17:04:07.838 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 17:04:07.856 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 17:04:23.878 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 17:04:27.205 [RMI TCP Connection(2)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 17:04:30.373 [RMI TCP Connection(2)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 17:04:31.787 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 7903 ms
+2025-11-25 17:04:31.792 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 17:04:31.872 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 80 ms
+2025-11-25 17:08:02.706 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 17:08:02.722 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 17:08:18.433 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 17:08:21.594 [RMI TCP Connection(2)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 17:08:24.615 [RMI TCP Connection(2)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 17:08:26.044 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 7606 ms
+2025-11-25 17:08:26.049 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 17:08:26.130 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 79 ms
+2025-11-25 17:10:32.715 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 17:10:32.730 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 17:10:48.326 [RMI TCP Connection(4)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 17:10:51.450 [RMI TCP Connection(4)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 17:10:54.462 [RMI TCP Connection(4)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 17:10:55.918 [RMI TCP Connection(4)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 7588 ms
+2025-11-25 17:10:55.923 [RMI TCP Connection(4)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 17:10:56.011 [RMI TCP Connection(4)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 86 ms
+2025-11-25 17:21:25.204 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 17:21:25.277 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 17:21:41.338 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 17:21:44.702 [RMI TCP Connection(2)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 17:21:48.033 [RMI TCP Connection(2)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 17:21:49.543 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 8201 ms
+2025-11-25 17:21:49.549 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 17:21:49.631 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 82 ms
+2025-11-25 17:25:34.479 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 17:25:34.544 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed
+2025-11-25 21:00:26.577 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2025-11-25 21:00:32.354 [RMI TCP Connection(2)-127.0.0.1] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} inited
+2025-11-25 21:00:37.457 [RMI TCP Connection(2)-127.0.0.1] INFO  org.hibernate.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-11-25 21:00:40.274 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.context.ContextLoader - Root WebApplicationContext initialized in 13686 ms
+2025-11-25 21:00:40.284 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2025-11-25 21:00:40.440 [RMI TCP Connection(2)-127.0.0.1] INFO  org.springframework.web.servlet.DispatcherServlet - Completed initialization in 156 ms
+2025-11-25 21:09:06.140 [http-nio-80-exec-4] WARN  o.s.security.crypto.bcrypt.BCryptPasswordEncoder - Encoded password does not look like BCrypt
+2025-11-25 21:33:19.883 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closing ...
+2025-11-25 21:33:19.954 [main] INFO  com.alibaba.druid.pool.DruidDataSource - {dataSource-1} closed

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan="true" scanPeriod="30 seconds" debug="false">
+
+    <!-- ========== 全局属性定义 ========== -->
+    <property name="LOG_HOME" value="C:/Users/Lili/Desktop/javaCodes/liliblog/logs" />
+    <property name="APP_NAME" value="lili-blog" />
+
+    <!-- 日志格式定义 -->
+    <property name="CONSOLE_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %logger{50} - %msg%n" />
+    <property name="FILE_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n" />
+
+    <!-- ========== 输出器定义 ========== -->
+
+    <!-- 1. 控制台输出器 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_PATTERN}</pattern>
+            <charset>GBK</charset>
+        </encoder>
+    </appender>
+
+    <!-- 2. 主日志文件输出器 -->
+    <appender name="FILE-ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/${APP_NAME}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/${APP_NAME}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 3. API访问日志输出器 -->
+    <appender name="FILE-API" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/${APP_NAME}-api.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/${APP_NAME}-api.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxHistory>15</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <totalSizeCap>500MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 4. SERVICE日志输出器 -->
+    <appender name="FILE-SERVICE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/${APP_NAME}-sql.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/${APP_NAME}-sql.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxHistory>15</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <totalSizeCap>500MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- ========== 具体类别的日志配置 ========== -->
+
+    <!-- Controller日志拦截器 -->
+    <logger name="com.lilicould.blog.interceptor.ControllerLogInterceptor" level="DEBUG" additivity="false">
+        <appender-ref ref="FILE-API" />
+        <appender-ref ref="CONSOLE" />
+    </logger>
+
+    <!-- Service层切面日志 -->
+    <logger name="com.lilicould.blog.aop.ServiceLogAspect" level="DEBUG" additivity="false">
+        <appender-ref ref="FILE-SERVICE" />
+        <appender-ref ref="CONSOLE" />
+    </logger>
+
+    <!-- ========== 包级别的日志配置 ========== -->
+
+    <!-- 拦截器包 -->
+    <logger name="com.lilicould.blog.interceptor" level="DEBUG" />
+
+    <!-- AOP包 -->
+    <logger name="com.lilicould.blog.aop" level="DEBUG" />
+
+    <!-- 业务包 -->
+    <logger name="com.lilicould.blog.controller" level="INFO" />
+    <logger name="com.lilicould.blog.service" level="INFO" />
+    <logger name="com.lilicould.blog.dao" level="INFO" />
+
+    <!-- ========== 框架日志配置 ========== -->
+    <logger name="org.springframework" level="INFO" />
+    <logger name="org.mybatis" level="INFO" />
+    <logger name="com.zaxxer.hikari" level="WARN" />
+
+    <!-- ========== 根日志配置 ========== -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE-ALL" />
+    </root>
+
+</configuration>
