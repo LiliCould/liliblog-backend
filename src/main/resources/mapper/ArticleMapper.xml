@@ -8,6 +8,7 @@
         VALUES (#{title}, #{slug}, #{summary}, #{content}, #{contentHtml}, #{coverImage}, #{status}, #{authorId}, #{categoryId}, #{publishTime})
     </insert>
 
+    <!-- MyBatisConfig 里面已经配置了别名，所以直接用Article也可以，但是MybatisX识别不到会给报红，虽然不影响，但是看着难受 -->
     <select id="selectById" resultType="com.lilicould.blog.entity.Article">
         SELECT * FROM article WHERE id = #{id} AND status = 'PUBLISHED'
     </select>

@@ -10,6 +10,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import javax.sql.DataSource;
+import java.util.Objects;
 
 /**
  * MyBatis配置类
@@ -37,11 +38,7 @@ public class MyBatisConfig {
         //配置MyBatis的XML文件目录
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         String mapperLocation = env.getProperty("mybatis.mapper-locations");
-        if (mapperLocation != null) {
-            sqlSessionFactory.setMapperLocations(resolver.getResources(mapperLocation));
-        }else {
-            sqlSessionFactory.setMapperLocations(resolver.getResources("classpath:mapper/*.xml"));
-        }
+        sqlSessionFactory.setMapperLocations(resolver.getResources(Objects.requireNonNullElse(mapperLocation, "classpath:mapper/*.xml")));
 
         // MyBatis配置
         org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
