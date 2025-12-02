@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -105,6 +106,33 @@ public class ArticleServiceImpl implements ArticleService {
         return articleMapper.selectAllWithAllStatus(pageSize,(pageNum-1)*pageSize);
     }
 
+    /**
+     * 获取所有公开文章
+     * @return 所有公开文章
+     */
+    @Override
+    @Log(value = "获取所有公开文章服务")
+    public List<Article> getAllPublicArticles(Integer pageSize, Integer pageNum) {
+        List<Article> articles = new ArrayList<>();
+        if (pageSize != null && pageNum != null) {
+            articles = articleMapper.selectAll(pageSize,(pageNum-1)*pageSize);
+        } else if (pageSize != null) {
+            // 如果只有pageSize，则默认pageNum为1
+            articles = articleMapper.selectAll(pageSize,0);
+        } else if (pageNum != null) {
+            // 如果只有pageNum，则默认pageSize为10
+            articles = articleMapper.selectAll(10,(pageNum-1)*10);
+        } else {
+            // 如果都为null，则直接传null，返回所有文章
+            articles = articleMapper.selectAll(null,null);
+        }
+
+        if (articles == null || articles.isEmpty()) {
+            throw new BusinessException("未查询到文章",500);
+        }
+
+        return articles;
+    }
     /**
      * 获取指定ID的文章
      * @param id 文章ID

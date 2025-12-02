@@ -37,7 +37,9 @@
         SELECT * FROM article
         WHERE status = 'PUBLISHED'
         ORDER BY create_time DESC
-        LIMIT #{pageSize} OFFSET #{pageNum}
+        <if test="pageNum != null and pageSize != null">
+            LIMIT #{pageSize} OFFSET #{pageNum}
+        </if>
     </select>
 
     <select id="selectAllWithAllStatus" resultType="com.lilicould.blog.entity.Article">

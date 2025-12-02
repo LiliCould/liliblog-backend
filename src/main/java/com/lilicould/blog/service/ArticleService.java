@@ -20,6 +20,8 @@ public interface ArticleService {
 
     List<Article> getAllArticles(Integer pageSize, Integer pageNum);
 
+    List<Article> getAllPublicArticles(Integer pageSize, Integer pageNum);
+
     Article getArticleById(Long id);
 
     void incrementViewCount(Long id);
