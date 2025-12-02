@@ -11,6 +11,7 @@ import com.lilicould.blog.entity.User;
 import com.lilicould.blog.exception.BusinessException;
 import com.lilicould.blog.service.ArticleService;
 import com.lilicould.blog.util.MarkdownUtil;
+import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -57,9 +58,12 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
         // 如果没有摘要，则从内容中截取100个字符
-        if (articleCreateDTO.getSummary() == null) {
+        if (articleCreateDTO.getSummary() == null || articleCreateDTO.getSummary().isEmpty()) {
             String content = articleCreateDTO.getContent();
-            article.setSummary(MarkdownUtil.markdownToPlainText(content).substring(0, 100));
+            // 去除markdown或HTML标签
+            content = MarkdownUtil.markdownToPlainText(content);
+            content = Jsoup.parse(content).text();
+            article.setSummary(content.substring(0,100));
         } else {
             article.setSummary(articleCreateDTO.getSummary());
         }
@@ -149,6 +153,21 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     /**
+     * 获取公开指定ID的文章
+     * @param id 文章ID
+     * @return 文章
+     */
+    @Override
+    @Log(value = "获取公开指定ID的文章服务")
+    public Article getPublicArticleById(Long id) {
+        Article article = articleMapper.selectById(id);
+        if (article == null) {
+            throw new BusinessException("文章不存在",500);
+        }
+        return article;
+    }
+
+    /**
      * 增加阅读量
      * @param id 文章ID
      */
@@ -175,6 +194,22 @@ public class ArticleServiceImpl implements ArticleService {
     @Log(value = "获取指定Slug的文章服务")
     public Article getArticleBySlug(String slug) {
         Article article = articleMapper.selectBySlugWithAllStatus(slug);
+        if (article == null) {
+            throw new BusinessException("文章不存在",500);
+        } else {
+            return article;
+        }
+    }
+
+    /**
+     * 获取公开指定Slug的文章
+     * @param slug 文章Slug
+     * @return 文章
+     */
+    @Override
+    @Log(value = "获取公开指定Slug的文章服务")
+    public Article getPublicArticleBySlug(String slug) {
+        Article article = articleMapper.selectBySlug(slug);
         if (article == null) {
             throw new BusinessException("文章不存在",500);
         } else {

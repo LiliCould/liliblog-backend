@@ -4,10 +4,7 @@ import com.lilicould.blog.entity.Article;
 import com.lilicould.blog.service.ArticleService;
 import com.lilicould.blog.vo.ResultVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -36,4 +33,29 @@ public class PublicController {
         List<Article> articles = articleService.getAllPublicArticles(pageSize, pageNum);
         return ResultVO.success("成功获取到"+articles.size()+"条文章", articles);
     }
+
+    /**
+     * 获取公开文章
+     * @param id 文章ID
+     * @return 公开文章
+     */
+    @GetMapping("/article/{id}")
+    public ResultVO<Article> getArticle(@PathVariable("id") Long id) {
+        Article article = articleService.getPublicArticleById(id);
+        articleService.incrementViewCount(id);
+        return ResultVO.success(article);
+    }
+
+    /**
+     * 获取公开文章
+     * @param slug 文章Slug
+     * @return 公开文章
+     */
+    @GetMapping("/article/slug/{slug}")
+    public ResultVO<Article> getArticleBySlug(@PathVariable("slug") String slug) {
+        Article article = articleService.getPublicArticleBySlug(slug);
+        articleService.incrementViewCount(article.getId());
+        return ResultVO.success(article);
+    }
+
 }

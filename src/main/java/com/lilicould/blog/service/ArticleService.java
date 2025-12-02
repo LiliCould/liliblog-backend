@@ -24,9 +24,13 @@ public interface ArticleService {
 
     Article getArticleById(Long id);
 
+    Article getPublicArticleById(Long id);
+
     void incrementViewCount(Long id);
 
     Article getArticleBySlug(String slug);
+
+    Article getPublicArticleBySlug(String slug);
 
     void updateArticle(ArticleUpdateDTO articleUpdateDTO, String username);
 
