@@ -38,6 +38,6 @@ build/
 .DS_Store
 
 ### logs ###
-/logs/
-./logs/
-./logs/*
+#/logs/
+#./logs/
+#./logs/*

@@ -1,0 +1,58 @@
+2025-11-28 13:21:21.180 [http-nio-80-exec-6] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 开始执行 - 用户登录服务 (AuthServiceImpl类的login方法)
+2025-11-28 13:21:22.415 [http-nio-80-exec-6] WARN  com.lilicould.blog.aop.ServiceLogAspect - [Service] 执行完成 - 用户登录服务，耗时：1235ms (性能警告)
+2025-11-28 13:21:23.951 [http-nio-80-exec-8] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 开始执行 - 分页获取所有文章服务 (ArticleServiceImpl类的getAllArticles方法)
+2025-11-28 13:21:23.951 [http-nio-80-exec-8] DEBUG com.lilicould.blog.aop.ServiceLogAspect - [Service] 方法参数 - 分页获取所有文章服务: [10, 1]
+2025-11-28 13:21:23.988 [http-nio-80-exec-8] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 执行完成 - 分页获取所有文章服务，耗时：37ms
+2025-11-28 13:21:27.673 [http-nio-80-exec-10] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 开始执行 - 获取用户信息服务 (AuthServiceImpl类的getProfile方法)
+2025-11-28 13:21:27.673 [http-nio-80-exec-10] DEBUG com.lilicould.blog.aop.ServiceLogAspect - [Service] 方法参数 - 获取用户信息服务: [LiliCould]
+2025-11-28 13:21:27.675 [http-nio-80-exec-10] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 执行完成 - 获取用户信息服务，耗时：2ms
+2025-11-28 13:21:30.562 [http-nio-80-exec-1] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 开始执行 - 分页获取所有文章服务 (ArticleServiceImpl类的getAllArticles方法)
+2025-11-28 13:21:30.562 [http-nio-80-exec-1] DEBUG com.lilicould.blog.aop.ServiceLogAspect - [Service] 方法参数 - 分页获取所有文章服务: [10, 1]
+2025-11-28 13:21:30.568 [http-nio-80-exec-1] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 执行完成 - 分页获取所有文章服务，耗时：6ms
+2025-11-28 13:21:35.539 [http-nio-80-exec-3] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 开始执行 - 获取指定ID的文章服务 (ArticleServiceImpl类的getArticleById方法)
+2025-11-28 13:21:35.539 [http-nio-80-exec-3] DEBUG com.lilicould.blog.aop.ServiceLogAspect - [Service] 方法参数 - 获取指定ID的文章服务: [2]
+2025-11-28 13:21:35.544 [http-nio-80-exec-3] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 执行完成 - 获取指定ID的文章服务，耗时：5ms
+2025-11-28 13:21:35.546 [http-nio-80-exec-3] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 开始执行 - 增加阅读量服务 (ArticleServiceImpl类的incrementViewCount方法)
+2025-11-28 13:21:35.547 [http-nio-80-exec-3] DEBUG com.lilicould.blog.aop.ServiceLogAspect - [Service] 方法参数 - 增加阅读量服务: [2]
+2025-11-28 13:21:35.726 [http-nio-80-exec-3] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 执行完成 - 增加阅读量服务，耗时：180ms
+2025-11-28 13:21:37.886 [http-nio-80-exec-4] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 开始执行 - 分页获取所有文章服务 (ArticleServiceImpl类的getAllArticles方法)
+2025-11-28 13:21:37.886 [http-nio-80-exec-4] DEBUG com.lilicould.blog.aop.ServiceLogAspect - [Service] 方法参数 - 分页获取所有文章服务: [10, 1]
+2025-11-28 13:21:37.890 [http-nio-80-exec-4] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 执行完成 - 分页获取所有文章服务，耗时：4ms
+2025-11-28 13:21:47.117 [http-nio-80-exec-6] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 开始执行 - 分页获取所有文章服务 (ArticleServiceImpl类的getAllArticles方法)
+2025-11-28 13:21:47.117 [http-nio-80-exec-6] DEBUG com.lilicould.blog.aop.ServiceLogAspect - [Service] 方法参数 - 分页获取所有文章服务: [10, 2]
+2025-11-28 13:21:47.121 [http-nio-80-exec-6] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 执行完成 - 分页获取所有文章服务，耗时：4ms
+2025-11-28 13:21:51.580 [http-nio-80-exec-8] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 开始执行 - 获取指定ID的文章服务 (ArticleServiceImpl类的getArticleById方法)
+2025-11-28 13:21:51.580 [http-nio-80-exec-8] DEBUG com.lilicould.blog.aop.ServiceLogAspect - [Service] 方法参数 - 获取指定ID的文章服务: [20]
+2025-11-28 13:21:51.583 [http-nio-80-exec-8] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 执行完成 - 获取指定ID的文章服务，耗时：3ms
+2025-11-28 13:21:51.584 [http-nio-80-exec-8] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 开始执行 - 增加阅读量服务 (ArticleServiceImpl类的incrementViewCount方法)
+2025-11-28 13:21:51.584 [http-nio-80-exec-8] DEBUG com.lilicould.blog.aop.ServiceLogAspect - [Service] 方法参数 - 增加阅读量服务: [20]
+2025-11-28 13:21:51.593 [http-nio-80-exec-8] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 执行完成 - 增加阅读量服务，耗时：9ms
+2025-11-28 13:21:53.562 [http-nio-80-exec-7] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 开始执行 - 分页获取所有文章服务 (ArticleServiceImpl类的getAllArticles方法)
+2025-11-28 13:21:53.562 [http-nio-80-exec-7] DEBUG com.lilicould.blog.aop.ServiceLogAspect - [Service] 方法参数 - 分页获取所有文章服务: [10, 1]
+2025-11-28 13:21:53.565 [http-nio-80-exec-7] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 执行完成 - 分页获取所有文章服务，耗时：3ms
+2025-11-28 13:22:01.063 [http-nio-80-exec-10] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 开始执行 - 分页获取所有文章服务 (ArticleServiceImpl类的getAllArticles方法)
+2025-11-28 13:22:01.063 [http-nio-80-exec-10] DEBUG com.lilicould.blog.aop.ServiceLogAspect - [Service] 方法参数 - 分页获取所有文章服务: [10, 2]
+2025-11-28 13:22:01.068 [http-nio-80-exec-10] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 执行完成 - 分页获取所有文章服务，耗时：5ms
+2025-11-28 13:23:16.151 [http-nio-80-exec-2] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 开始执行 - 分页获取所有文章服务 (ArticleServiceImpl类的getAllArticles方法)
+2025-11-28 13:23:16.151 [http-nio-80-exec-2] DEBUG com.lilicould.blog.aop.ServiceLogAspect - [Service] 方法参数 - 分页获取所有文章服务: [10, 1]
+2025-11-28 13:23:16.155 [http-nio-80-exec-2] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 执行完成 - 分页获取所有文章服务，耗时：4ms
+2025-11-28 13:24:43.880 [http-nio-80-exec-5] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 开始执行 - 创建文章服务 (ArticleServiceImpl类的createArticle方法)
+2025-11-28 13:24:43.884 [http-nio-80-exec-5] DEBUG com.lilicould.blog.aop.ServiceLogAspect - [Service] 方法参数 - 创建文章服务: [ArticleCreateDTO(title=测试, slug=test-111, summary=测试文章, content=这是第一段
+这是第二段
+这是第三段
+这是第四段
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+挨晒, contentHtml=, coverImage=, status=PUBLISHED, categoryId=1, tagIds=[1, 2, 3]), LiliCould]
+2025-11-28 13:24:43.988 [http-nio-80-exec-5] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 执行完成 - 创建文章服务，耗时：108ms
+2025-11-28 13:24:56.704 [http-nio-80-exec-9] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 开始执行 - 分页获取所有文章服务 (ArticleServiceImpl类的getAllArticles方法)
+2025-11-28 13:24:56.704 [http-nio-80-exec-9] DEBUG com.lilicould.blog.aop.ServiceLogAspect - [Service] 方法参数 - 分页获取所有文章服务: [10, 1]
+2025-11-28 13:24:56.708 [http-nio-80-exec-9] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 执行完成 - 分页获取所有文章服务，耗时：4ms
+2025-11-28 13:25:03.446 [http-nio-80-exec-7] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 开始执行 - 获取指定ID的文章服务 (ArticleServiceImpl类的getArticleById方法)
+2025-11-28 13:25:03.446 [http-nio-80-exec-7] DEBUG com.lilicould.blog.aop.ServiceLogAspect - [Service] 方法参数 - 获取指定ID的文章服务: [21]
+2025-11-28 13:25:03.449 [http-nio-80-exec-7] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 执行完成 - 获取指定ID的文章服务，耗时：3ms
+2025-11-28 13:25:03.450 [http-nio-80-exec-7] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 开始执行 - 增加阅读量服务 (ArticleServiceImpl类的incrementViewCount方法)
+2025-11-28 13:25:03.451 [http-nio-80-exec-7] DEBUG com.lilicould.blog.aop.ServiceLogAspect - [Service] 方法参数 - 增加阅读量服务: [21]
+2025-11-28 13:25:03.456 [http-nio-80-exec-7] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 执行完成 - 增加阅读量服务，耗时：6ms
+2025-11-28 13:26:07.473 [http-nio-80-exec-1] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 开始执行 - 分页获取所有文章服务 (ArticleServiceImpl类的getAllArticles方法)
+2025-11-28 13:26:07.474 [http-nio-80-exec-1] DEBUG com.lilicould.blog.aop.ServiceLogAspect - [Service] 方法参数 - 分页获取所有文章服务: [10, 1]
+2025-11-28 13:26:07.479 [http-nio-80-exec-1] INFO  com.lilicould.blog.aop.ServiceLogAspect - [Service] 执行完成 - 分页获取所有文章服务，耗时：6ms
