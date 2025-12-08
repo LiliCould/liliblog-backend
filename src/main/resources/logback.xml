@@ -22,7 +22,7 @@
 
     <!-- 2. 主日志文件输出器 -->
     <appender name="FILE-ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_HOME}/${APP_NAME}.log</file>
+        <file>${LOG_HOME}/all/${APP_NAME}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${LOG_HOME}/${APP_NAME}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxHistory>30</maxHistory>
@@ -39,7 +39,7 @@
 
     <!-- 3. API访问日志输出器 -->
     <appender name="FILE-API" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_HOME}/${APP_NAME}-api.log</file>
+        <file>${LOG_HOME}/api/${APP_NAME}-api.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${LOG_HOME}/${APP_NAME}-api.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxHistory>15</maxHistory>
@@ -56,7 +56,7 @@
 
     <!-- 4. SERVICE日志输出器 -->
     <appender name="FILE-SERVICE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_HOME}/${APP_NAME}-sql.log</file>
+        <file>${LOG_HOME}/service/${APP_NAME}-sql.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${LOG_HOME}/${APP_NAME}-sql.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxHistory>15</maxHistory>
