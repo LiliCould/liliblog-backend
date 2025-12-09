@@ -36,4 +36,6 @@ public interface ArticleService {
 
     void deleteArticle(Long id, String username);
 
+    List<Article> searchAll(String keyword);
+
 }

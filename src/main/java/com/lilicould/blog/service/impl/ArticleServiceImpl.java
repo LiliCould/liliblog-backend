@@ -289,4 +289,14 @@ public class ArticleServiceImpl implements ArticleService {
         article.setStatus("DELETED");
         articleMapper.update(article);
     }
+
+    @Override
+    @Log(value = "搜索服务，不分页")
+    public List<Article> searchAll(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty() || keyword.isEmpty() || keyword.length() > 50) {
+            throw new BusinessException("搜索词不能为空或大于50",400);
+        }
+
+        return articleMapper.searchAll(keyword);
+    }
 }

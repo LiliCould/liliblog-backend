@@ -56,6 +56,7 @@
             <if test="keyword != null">
                 title LIKE CONCAT('%', #{keyword}, '%')
                 OR summary LIKE CONCAT('%', #{keyword}, '%')
+                OR author_id IN (SELECT id FROM user_tb WHERE username LIKE CONCAT('%', #{keyword}, '%'))
             </if>
             AND status = 'PUBLISHED'
         </where>
@@ -68,6 +69,7 @@
             <if test="keyword != null">
                 title LIKE CONCAT('%', #{keyword}, '%')
                 OR summary LIKE CONCAT('%', #{keyword}, '%')
+                OR author_id IN (SELECT id FROM user_tb WHERE username LIKE CONCAT('%', #{keyword}, '%'))
             </if>
             AND status = 'PUBLISHED'
         </where>

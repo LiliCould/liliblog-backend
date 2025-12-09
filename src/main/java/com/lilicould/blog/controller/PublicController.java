@@ -58,4 +58,22 @@ public class PublicController {
         return ResultVO.success(article);
     }
 
+    /**
+     * 模糊搜索文章
+     * @param keyword 关键词
+     * @return 搜索结果,不分页
+     */
+    @GetMapping("/search")
+    public ResultVO<List<Article>> search(
+            @RequestParam("keyword") String keyword
+    ) {
+        List<Article> articles = articleService.searchAll(keyword);
+        if (articles.isEmpty()) {
+            return ResultVO.error("未找到任何文章");
+        }
+
+        return ResultVO.success("成功搜索到"+articles.size()+"篇文章",articles);
+    }
+
+
 }
