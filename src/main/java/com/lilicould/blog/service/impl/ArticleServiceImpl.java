@@ -135,6 +135,10 @@ public class ArticleServiceImpl implements ArticleService {
             throw new BusinessException("未查询到文章",500);
         }
 
+        for (Article article : articles) {
+            article.setAuthorName(userMapper.selectById(article.getAuthorId()).getUsername());
+        }
+
         return articles;
     }
     /**
