@@ -1,6 +1,5 @@
 package com.lilicould.blog.entity;
 
-import com.alibaba.druid.support.http.util.IPAddress;
 
 import java.util.Date;
 
@@ -12,7 +11,7 @@ public class Comment {
     private Integer parentId;
     private String status;
     private Integer likeCount;
-    private IPAddress ipAddress;
+    private String ipAddress;
     private String userAgent;
     private Date createTime;
     private Date updateTime;
