@@ -5,7 +5,10 @@ spring:
     url: jdbc:mysql://localhost:3306/liliblog?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
     username: root
     password: 123456
-  
+  sql:
+    init:
+      data-locations: classpath:BlogInit.sql
+
 # MyBatis配置
 mybatis:
   configuration:
@@ -14,8 +17,9 @@ mybatis:
   
 # JWT配置
 jwt:
-  secret: jwt.secret=mynameisliliandiamabackenddeveloper
-  expire: 86400000
+  secret: mynameisliliandiamabackenddeveloper
+  # 过期时间七天
+  expire: 604800000
 
 upload:
   temp:

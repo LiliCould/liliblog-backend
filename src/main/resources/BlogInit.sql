@@ -26,12 +26,9 @@ CREATE TABLE `category` (
     `name` VARCHAR(50) NOT NULL COMMENT '分类名称',
     `slug` VARCHAR(50) UNIQUE NOT NULL COMMENT '分类别名',
     `description` VARCHAR(200) COMMENT '分类描述',
-    `parent_id` BIGINT DEFAULT 0 COMMENT '父级分类ID',
-    `sort_order` INT DEFAULT 0 COMMENT '排序',
     `status` TINYINT DEFAULT 1 COMMENT '状态：0-禁用，1-启用',
     `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    INDEX `idx_parent` (`parent_id`),
     INDEX `idx_status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='分类表';
 
@@ -131,12 +128,12 @@ VALUES
 ('PengZiying', '12233344455@qq.com', '$2a$10$lSWPDDR1nX.Isnyh95B67uF/zvp08JzwD04LQJpjAlSq58XaO1qkq', '彭紫莹', NULL, 'VISITOR', 1, '2025-11-23 13:58:00'),
 ('XuYanting', '2222334455@qq.com', '$2a$10$lSWPDDR1nX.Isnyh95B67uF/zvp08JzwD04LQJpjAlSq58XaO1qkq', '徐艳婷', NULL, 'VISITOR', 0, '2025-11-23 13:58:37');
 
-INSERT INTO category (name, slug, description, parent_id, sort_order, status, create_time)
+INSERT INTO category (name, slug, description,status, create_time)
 VALUES
-('技术博客', 'tech-blog', '技术类文章', 0, 1, 1, '2025-11-24 00:00:00'),
-('编程语言', 'programming-languages', '各种编程语言介绍', 0, 2, 1, '2025-11-24 00:00:00'),
-('开发工具', 'development-tools', '开发工具和框架', 0, 3, 1, '2025-11-24 00:00:00'),
-('云计算', 'cloud-computing', '云计算相关技术', 0, 4, 1, '2025-11-24 00:00:00');
+('技术博客', 'tech-blog', '技术类文章', 1, '2025-11-24 00:00:00'),
+('编程语言', 'programming-languages', '各种编程语言介绍', 1, '2025-11-24 00:00:00'),
+('开发工具', 'development-tools', '开发工具和框架', 1, '2025-11-24 00:00:00'),
+('云计算', 'cloud-computing', '云计算相关技术', 1, '2025-11-24 00:00:00');
 
 
 INSERT INTO article
