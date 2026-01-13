@@ -1,6 +1,8 @@
 package com.lilicould.blog.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,10 +22,6 @@ public class CategoryUpdateDTO {
     private String slug;
 
     private String description;
-
-    private Long parentId;
-
-    private Integer sortOrder;
 
     private Integer status;
 }

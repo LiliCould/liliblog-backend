@@ -17,8 +17,6 @@ public class Category {
     private String name;
     private String slug;
     private String description;
-    private Long parentId;
-    private Integer sortOrder;
     private Integer status;
     private Date createTime;
     private Date updateTime;

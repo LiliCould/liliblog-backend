@@ -18,9 +18,9 @@ public class CategoryCreateDTO {
     @NotBlank(message = "分类别名不能为空")
     private String slug;
 
+    @NotBlank(message = "分类描述不能为空")
     private String description;
 
-    private Long parentId = 0L;
-
-    private Integer sortOrder = 0;
+    @NotBlank(message = "分类状态不能为空")
+    private Integer status;
 }

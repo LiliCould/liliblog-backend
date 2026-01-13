@@ -23,7 +23,7 @@ CREATE TABLE `user_tb` (
 
 CREATE TABLE `category` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '分类ID',
-    `name` VARCHAR(50) NOT NULL COMMENT '分类名称',
+    `name` VARCHAR(50) NOT NULL UNIQUE COMMENT '分类名称',
     `slug` VARCHAR(50) UNIQUE NOT NULL COMMENT '分类别名',
     `description` VARCHAR(200) COMMENT '分类描述',
     `status` TINYINT DEFAULT 1 COMMENT '状态：0-禁用，1-启用',
@@ -64,7 +64,7 @@ CREATE TABLE `article` (
 
 CREATE TABLE `tag` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '标签ID',
-    `name` VARCHAR(30) NOT NULL COMMENT '标签名称',
+    `name` VARCHAR(30) NOT NULL UNIQUE COMMENT '标签名称',
     `slug` VARCHAR(30) UNIQUE NOT NULL COMMENT '标签别名',
     `color` VARCHAR(7) DEFAULT '#666666' COMMENT '标签颜色',
     `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

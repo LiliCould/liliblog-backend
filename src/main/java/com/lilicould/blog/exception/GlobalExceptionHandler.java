@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.validation.FieldError;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 
 import java.sql.SQLException;
@@ -116,6 +117,16 @@ public class GlobalExceptionHandler {
         return ResultVO.error(500, message);
     }
 
+
+    /**
+     * 处理资源未找到异常
+     * @param e 资源未找到异常
+     * @return 错误结果，例如{"code": 404, "message": "资源未找到"}
+     */
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResultVO<Void> handleNoResourceFoundException(NoResourceFoundException e) {
+        return ResultVO.error(404, "资源未找到");
+    }
 
     /**
      * 处理其他异常
