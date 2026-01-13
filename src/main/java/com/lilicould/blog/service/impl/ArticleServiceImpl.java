@@ -3,6 +3,7 @@ package com.lilicould.blog.service.impl;
 import com.lilicould.blog.annotation.Log;
 import com.lilicould.blog.dao.ArticleMapper;
 import com.lilicould.blog.dao.ArticleTagMapper;
+import com.lilicould.blog.dao.CategoryMapper;
 import com.lilicould.blog.dao.UserMapper;
 import com.lilicould.blog.dto.ArticleCreateDTO;
 import com.lilicould.blog.dto.ArticleUpdateDTO;
@@ -31,6 +32,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     private ArticleTagMapper articleTagMapper;
+
+    @Autowired
+    private CategoryMapper categoryMapper;
 
 
     /**
@@ -107,7 +111,13 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Log(value = "分页获取所有文章服务")
     public List<Article> getAllArticles(Integer pageSize, Integer pageNum) {
-        return articleMapper.selectAllWithAllStatus(pageSize,(pageNum-1)*pageSize);
+        List<Article> articles = articleMapper.selectAllWithAllStatus(pageSize,(pageNum-1)*pageSize);
+
+        // 填充文章信息
+        for (Article article : articles) {
+            fillArticle(article);
+        }
+        return articles;
     }
 
     /**
@@ -135,8 +145,9 @@ public class ArticleServiceImpl implements ArticleService {
             throw new BusinessException("未查询到文章",500);
         }
 
+        // 填充文章信息
         for (Article article : articles) {
-            article.setAuthorName(userMapper.selectById(article.getAuthorId()).getUsername());
+            fillArticle(article);
         }
 
         return articles;
@@ -153,6 +164,10 @@ public class ArticleServiceImpl implements ArticleService {
         if (article == null) {
             throw new BusinessException("文章不存在",500);
         }
+
+        // 填充文章信息
+        fillArticle(article);
+
         return article;
     }
 
@@ -168,6 +183,7 @@ public class ArticleServiceImpl implements ArticleService {
         if (article == null) {
             throw new BusinessException("文章不存在",500);
         }
+        fillArticle(article);
         return article;
     }
 
@@ -201,6 +217,7 @@ public class ArticleServiceImpl implements ArticleService {
         if (article == null) {
             throw new BusinessException("文章不存在",500);
         } else {
+            fillArticle(article);
             return article;
         }
     }
@@ -217,6 +234,7 @@ public class ArticleServiceImpl implements ArticleService {
         if (article == null) {
             throw new BusinessException("文章不存在",500);
         } else {
+            fillArticle(article);
             return article;
         }
     }
@@ -300,7 +318,23 @@ public class ArticleServiceImpl implements ArticleService {
         if (keyword == null || keyword.trim().isEmpty() || keyword.isEmpty() || keyword.length() > 50) {
             throw new BusinessException("搜索词不能为空或大于50",400);
         }
+        List<Article> articles = articleMapper.searchAll(keyword);
+        // 填充作者姓名，分类和标签等文章信息
+        if (articles != null && !articles.isEmpty()) {
+            for (Article article : articles) {
+                fillArticle(article);
+            }
+        }
+        return articles;
+    }
 
-        return articleMapper.searchAll(keyword);
+    @Log(value = "填充作者姓名，分类和标签等文章信息")
+    private void fillArticle(Article article) {
+        // 获取作者名称
+        article.setAuthorName(userMapper.selectById(article.getAuthorId()).getUsername());
+        // 获取分类名称
+        article.setCategoryName(categoryMapper.selectById(article.getCategoryId()).getName());
+        // 获取标签列表
+        article.setTags(articleTagMapper.getTagsByArticleId(article.getId()));
     }
 }
