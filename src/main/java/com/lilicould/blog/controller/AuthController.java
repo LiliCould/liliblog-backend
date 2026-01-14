@@ -59,7 +59,6 @@ public class AuthController {
 
     /**
      * 获取用户个人信息
-     * @Param username 用户名
      */
     @GetMapping("/profile")
     public ResultVO<UserVO> getProfile(@RequestAttribute("username") String username) {

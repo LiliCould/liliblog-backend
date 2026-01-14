@@ -66,7 +66,7 @@ CREATE TABLE `tag` (
     `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '标签ID',
     `name` VARCHAR(30) NOT NULL UNIQUE COMMENT '标签名称',
     `slug` VARCHAR(30) UNIQUE NOT NULL COMMENT '标签别名',
-    `color` VARCHAR(7) DEFAULT '#666666' COMMENT '标签颜色',
+    `color` VARCHAR(7) DEFAULT '#ff9900' COMMENT '标签颜色',
     `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     INDEX `idx_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='标签表';

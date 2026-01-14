@@ -18,5 +18,5 @@ public class TagCreateDTO {
     @NotBlank(message = "标签别名不能为空")
     private String slug;
 
-    private String color = "#666666";
+    private String color = "#ff9900";
 }

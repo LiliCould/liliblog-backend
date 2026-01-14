@@ -17,7 +17,7 @@ import java.util.List;
  * 分类服务实现类
  */
 @Service
-@Transactional(isolation = Isolation.READ_COMMITTED)
+@Transactional(isolation = Isolation.READ_COMMITTED,rollbackFor = Exception.class)
 public class CategoryServiceImpl implements CategoryService {
 
     @Autowired

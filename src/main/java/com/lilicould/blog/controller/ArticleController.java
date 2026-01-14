@@ -85,7 +85,7 @@ public class ArticleController {
     /**
      * 更新文章
      * @param id 文章ID
-     * @param article 文章
+     * @param articleUpdateDTO UpdateDTO 文章
      * @return 更新成功VO
      */
     @PutMapping("/{id}")

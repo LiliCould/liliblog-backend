@@ -125,7 +125,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(NoResourceFoundException.class)
     public ResultVO<Void> handleNoResourceFoundException(NoResourceFoundException e) {
-        return ResultVO.error(404, "资源未找到");
+        return ResultVO.error(404, "请求URL获取存在错误");
     }
 
     /**

@@ -26,7 +26,7 @@ import java.util.Date;
  */
 
 @Service()
-@Transactional(isolation = Isolation.READ_COMMITTED)
+@Transactional(isolation = Isolation.READ_COMMITTED,rollbackFor = Exception.class)
 public class AuthServiceImpl implements AuthService {
     @Autowired
     private UserMapper userMapper;

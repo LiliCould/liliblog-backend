@@ -3,7 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lilicould.blog.dao.TagMapper">
     <insert id="insert">
-        insert into tag
+        INSERT INTO tag
         <trim prefix="(" suffix=")" suffixOverrides=",">
             name,
             slug,
@@ -16,11 +16,33 @@
         </trim>
     </insert>
 
+    <select id="selectByName" resultType="com.lilicould.blog.entity.Tag">
+        SELECT * FROM tag WHERE name = #{name}
+    </select>
+
     <select id="selectBySlug" resultType="com.lilicould.blog.entity.Tag">
-        select * from tag where slug = #{slug}
+        SELECT * FROM tag WHERE slug = #{slug}
     </select>
 
     <select id="selectById" resultType="com.lilicould.blog.entity.Tag">
-        select * from tag where id = #{id}
+        SELECT * FROM tag WHERE id = #{id}
     </select>
+
+    <select id="selectAll" resultType="com.lilicould.blog.entity.Tag">
+        SELECT * FROM tag
+    </select>
+
+    <update id="update">
+        UPDATE tag
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="slug != null">slug = #{slug},</if>
+            <if test="color != null">color = #{color},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM tag WHERE id = #{id}
+    </delete>
 </mapper>
