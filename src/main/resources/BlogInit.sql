@@ -166,3 +166,19 @@ INSERT INTO tag (name, slug, color) VALUES
 ('Spring Boot', 'spring-boot', '#6DB33F'),
 ('数据库', 'database', '#4479A1'),
 ('微服务', 'microservices', '#FF6B6B');
+
+INSERT INTO article_tag (article_id, tag_id) VALUES
+(1, 1),
+(1, 2),
+(2, 1),
+(2, 3),
+(3, 2),
+(3, 4),
+(4, 1),
+(4, 3),
+(5, 2),
+(5, 4),
+(6, 1),
+(6, 3),
+(7, 2),
+(7, 4);
