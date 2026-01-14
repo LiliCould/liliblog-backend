@@ -1,5 +1,6 @@
 package com.lilicould.blog.dao;
 
+import com.lilicould.blog.annotation.Log;
 import com.lilicould.blog.dto.TagCreateDTO;
 import com.lilicould.blog.dto.TagUpdateDTO;
 import com.lilicould.blog.entity.Tag;

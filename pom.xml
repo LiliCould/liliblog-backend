@@ -13,7 +13,7 @@
 
     <groupId>com.lilicould</groupId>
     <artifactId>liliblog</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <name>liliblog</name>
     <description>LILI博客系统</description>
 

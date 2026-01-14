@@ -68,6 +68,8 @@ public class PublicController {
             @RequestParam("keyword") String keyword
     ) {
         List<Article> articles = articleService.searchAll(keyword);
+        // 过滤未发布文章
+        articles.removeIf(article -> !article.getStatus().equals("PUBLISH"));
         if (articles.isEmpty()) {
             return ResultVO.error("未找到任何文章");
         }
