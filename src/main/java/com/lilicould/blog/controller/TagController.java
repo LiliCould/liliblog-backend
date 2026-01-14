@@ -5,6 +5,7 @@ import com.lilicould.blog.dto.TagUpdateDTO;
 import com.lilicould.blog.entity.Tag;
 import com.lilicould.blog.service.TagService;
 import com.lilicould.blog.vo.ResultVO;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +35,7 @@ public class TagController {
      * @return 添加结果
      */
     @PostMapping
-    public ResultVO<Void> add(@RequestBody TagCreateDTO tag) {
+    public ResultVO<Void> add(@Valid @RequestBody TagCreateDTO tag) {
         tagService.addTag(tag);
         return ResultVO.success("添加标签成功");
     }
@@ -56,7 +57,7 @@ public class TagController {
      * @return 更新结果
      */
     @PutMapping
-    public ResultVO<Void> update(@RequestBody TagUpdateDTO tag) {
+    public ResultVO<Void> update(@Valid @RequestBody TagUpdateDTO tag) {
         tagService.updateTag(tag);
         return ResultVO.success("更新标签成功");
     }

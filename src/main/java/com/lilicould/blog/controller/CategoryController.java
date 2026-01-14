@@ -5,6 +5,7 @@ import com.lilicould.blog.dto.CategoryUpdateDTO;
 import com.lilicould.blog.entity.Category;
 import com.lilicould.blog.service.CategoryService;
 import com.lilicould.blog.vo.ResultVO;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,7 +44,7 @@ public class CategoryController {
      * @return 分类
      */
     @PostMapping()
-    public ResultVO<Void> add(@RequestBody CategoryCreateDTO category) {
+    public ResultVO<Void> add(@Valid @RequestBody CategoryCreateDTO category) {
         categoryService.add(category);
         return ResultVO.success("添加分类成功");
     }
@@ -54,7 +55,7 @@ public class CategoryController {
      * @return 分类
      */
     @PutMapping()
-    public ResultVO<Void> update(@RequestBody CategoryUpdateDTO category) {
+    public ResultVO<Void> update(@Valid @RequestBody CategoryUpdateDTO category) {
         categoryService.update(category);
         return ResultVO.success("更新分类成功");
     }

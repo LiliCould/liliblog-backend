@@ -1,6 +1,7 @@
 package com.lilicould.blog.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,6 @@ public class CategoryCreateDTO {
     @NotBlank(message = "分类描述不能为空")
     private String description;
 
-    @NotBlank(message = "分类状态不能为空")
+    @NotNull(message = "分类状态不能为空")
     private Integer status;
 }
