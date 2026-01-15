@@ -23,7 +23,7 @@ jwt:
   # 过期时间七天
   expire: 604800000
 
-upload:
-  temp:
-    dir: C:\\Users\\Administrator\\AppData\\Local\\Temp
-#    dir: /opt/liliblog/temp
+# 文件上传路径
+file:
+  upload:
+    path: E:\\test\avatar\

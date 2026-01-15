@@ -95,8 +95,6 @@
             <if test="isRecommend != null">is_recommend = #{isRecommend},</if>
             <if test="authorId != null">author_id = #{authorId},</if>
             <if test="categoryId != null">category_id = #{categoryId},</if>
-            <if test="createTime != null">create_time = #{createTime},</if>
-            <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="publishTime != null">publish_time = #{publishTime},</if>
             update_time = NOW()
             WHERE id = #{id}
