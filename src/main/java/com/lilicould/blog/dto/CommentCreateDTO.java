@@ -16,8 +16,15 @@ public class CommentCreateDTO {
     @NotBlank(message = "评论内容不能为空")
     private String content;
 
+    @NotNull(message = "评论作者id不能为空")
+    private String authorId;
+
     @NotNull(message = "文章ID不能为空")
     private Long articleId;
 
     private Long parentId = 0L; // 0表示顶级评论
+
+    private String status;
+    private String ipAddress;
+    private String userAgent;
 }

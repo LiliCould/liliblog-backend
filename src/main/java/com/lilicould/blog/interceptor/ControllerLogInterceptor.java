@@ -12,6 +12,9 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.Arrays;
 import java.util.Enumeration;
 
+import static com.lilicould.blog.util.RequestUtil.getClientIP;
+import static com.lilicould.blog.util.RequestUtil.getShortUserAgent;
+
 /**
  * 拦截器 - 控制器日志
  */
@@ -160,41 +163,5 @@ public class ControllerLogInterceptor implements HandlerInterceptor {
                 logger.info(logMsg.toString());
             }
         }
-    }
-
-    /**
-     * 获取客户端IP地址
-     */
-    private String getClientIP(HttpServletRequest request) {
-        String[] headers = {"X-Forwarded-For", "Proxy-Client-IP", "WL-Proxy-Client-IP", "X-Real-IP"};
-
-        for (String header : headers) {
-            String ip = request.getHeader(header);
-            if (ip != null && !ip.isEmpty() && !"unknown".equalsIgnoreCase(ip)) {
-                return ip.split(",")[0].trim();
-            }
-        }
-
-        return request.getRemoteAddr();
-    }
-
-    /**
-     * 获取简化的User-Agent信息
-     */
-    private String getShortUserAgent(HttpServletRequest request) {
-        String userAgent = request.getHeader("User-Agent");
-        if (userAgent == null) {
-            return "Unknown";
-        }
-
-        // 简化User-Agent显示
-        if (userAgent.contains("Chrome")) return "Chrome";
-        if (userAgent.contains("Firefox")) return "Firefox";
-        if (userAgent.contains("Safari")) return "Safari";
-        if (userAgent.contains("Edge")) return "Edge";
-        if (userAgent.contains("Postman")) return "Postman";
-        if (userAgent.contains("curl")) return "curl";
-
-        return "Other";
     }
 }
