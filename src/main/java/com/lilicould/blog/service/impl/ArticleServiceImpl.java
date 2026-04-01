@@ -8,9 +8,11 @@ import com.lilicould.blog.dao.UserMapper;
 import com.lilicould.blog.dto.ArticleCreateDTO;
 import com.lilicould.blog.dto.ArticleUpdateDTO;
 import com.lilicould.blog.entity.Article;
+import com.lilicould.blog.entity.Tag;
 import com.lilicould.blog.entity.User;
 import com.lilicould.blog.exception.BusinessException;
 import com.lilicould.blog.service.ArticleService;
+import com.lilicould.blog.util.BaseContextUtil;
 import com.lilicould.blog.util.MarkdownUtil;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
@@ -111,8 +114,14 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     @Log(value = "分页获取所有文章服务")
     public List<Article> getAllArticles(Integer pageSize, Integer pageNum) {
-        List<Article> articles = articleMapper.selectAllWithAllStatus(pageSize,(pageNum-1)*pageSize);
 
+        String username = BaseContextUtil.get();
+
+        if (username == null) {
+            throw new BusinessException("获取用户名失败",401);
+        }
+
+        List<Article> articles = articleMapper.selectAllWithAllStatus(pageSize,(pageNum-1)*pageSize,username);
         // 填充文章信息
         for (Article article : articles) {
             fillArticle(article);
@@ -331,10 +340,15 @@ public class ArticleServiceImpl implements ArticleService {
     @Log(value = "填充作者姓名，分类和标签等文章信息")
     private void fillArticle(Article article) {
         // 获取作者名称
-        article.setAuthorName(userMapper.selectById(article.getAuthorId()).getUsername());
+        article.setAuthorName(Objects.requireNonNullElse(userMapper.selectById(article.getAuthorId()).getUsername(), "已注销用户"));
         // 获取分类名称
-        article.setCategoryName(categoryMapper.selectById(article.getCategoryId()).getName());
+        article.setCategoryName(Objects.requireNonNullElse(categoryMapper.selectById(article.getCategoryId()).getName(), "未知分类"));
         // 获取标签列表
-        article.setTags(articleTagMapper.getTagsByArticleId(article.getId()));
+        List<Tag> tags = articleTagMapper.getTagsByArticleId(article.getId());
+        if (tags != null && !tags.isEmpty()) {
+            article.setTags(tags);
+        } else {
+            article.setTags(List.of());
+        }
     }
 }

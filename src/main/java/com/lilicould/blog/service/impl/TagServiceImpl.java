@@ -8,6 +8,7 @@ import com.lilicould.blog.dto.TagUpdateDTO;
 import com.lilicould.blog.entity.Tag;
 import com.lilicould.blog.exception.BusinessException;
 import com.lilicould.blog.service.TagService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @Transactional(isolation = Isolation.READ_COMMITTED,rollbackFor = Exception.class)
 public class TagServiceImpl implements TagService {
@@ -71,6 +73,7 @@ public class TagServiceImpl implements TagService {
     public Tag getTag(String tagName) {
         Tag tag = tagMapper.selectByName(tagName);
         if (tag == null) {
+            log.warn("[Service] 标签不存在 - {}", tagName);
             throw new BusinessException("标签不存在",501);
         }
         return tag;

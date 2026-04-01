@@ -30,6 +30,7 @@ public class ArticleController {
     public ResultVO<List<Article>> getAllArticles(
             @RequestParam(value = "pageSize",required = false) Integer pageSize, // 每页数量
             @RequestParam(value = "pageNum",required = false) Integer pageNum // 页码
+
     ) {
         // 如果没有指定每页数量，则默认为10
         if (pageSize == null) {

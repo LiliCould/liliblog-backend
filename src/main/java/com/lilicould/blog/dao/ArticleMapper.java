@@ -62,7 +62,9 @@ public interface ArticleMapper {
      * 查询全部文章
      * @return 文章列表
      */
-    List<Article> selectAllWithAllStatus(@Param("pageSize") Integer pageSize, @Param("pageNum") Integer pageNum);
+    List<Article> selectAllWithAllStatus(@Param("pageSize") Integer pageSize,
+                                         @Param("pageNum") Integer pageNum,
+                                         @Param("username") String username);
     /**
      * 模糊搜索,查询全部
      * @param keyword 关键词

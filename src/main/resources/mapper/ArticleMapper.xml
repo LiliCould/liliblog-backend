@@ -44,7 +44,12 @@
 
     <select id="selectAllWithAllStatus" resultType="com.lilicould.blog.entity.Article">
         SELECT * FROM article
-        WHERE status != 'DELETED'
+        <where>
+            <if test="username != null">
+                author_id IN (SELECT id FROM user_tb WHERE username = #{username})
+            </if>
+            and status != 'DELETED'
+        </where>
         ORDER BY create_time DESC
         LIMIT #{pageSize} OFFSET #{pageNum}
     </select>

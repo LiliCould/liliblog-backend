@@ -1,6 +1,7 @@
 package com.lilicould.blog.interceptor;
 
 import com.lilicould.blog.exception.BusinessException;
+import com.lilicould.blog.util.BaseContextUtil;
 import com.lilicould.blog.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -50,6 +51,8 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
             request.setAttribute("username", username);
             request.setAttribute("role", role);
 
+            BaseContextUtil.set(username);
+
             return true;
 
         } catch (Exception e) {
@@ -70,7 +73,6 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
         // 登录接口，注册接口，获取公开文章接口，公开文章接口
         return path.startsWith("/api/auth/login") ||
                 path.startsWith("/api/auth/register") ||
-                (path.startsWith("/api/articles") && "GET".equalsIgnoreCase(method)) ||
                 path.startsWith("/api/public/");
     }
 

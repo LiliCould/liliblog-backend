@@ -24,7 +24,7 @@ public class TagController {
      * 获取所有标签
      * @return 所有标签
      */
-    @GetMapping()
+    @GetMapping("/list")
     public ResultVO<List<Tag>> list() {
         return ResultVO.success(tagService.getAllTags());
     }
@@ -69,7 +69,6 @@ public class TagController {
      */
     @GetMapping("/{tagName}")
     public ResultVO<Tag> get(@PathVariable("tagName") String tagName) {
-        tagService.getTag(tagName);
         return ResultVO.success(tagService.getTag(tagName));
     }
 }
