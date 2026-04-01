@@ -8,6 +8,7 @@ import com.lilicould.blog.dao.UserMapper;
 import com.lilicould.blog.dto.ArticleCreateDTO;
 import com.lilicould.blog.dto.ArticleUpdateDTO;
 import com.lilicould.blog.entity.Article;
+import com.lilicould.blog.entity.Category;
 import com.lilicould.blog.entity.Tag;
 import com.lilicould.blog.entity.User;
 import com.lilicould.blog.exception.BusinessException;
@@ -339,18 +340,25 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Log(value = "填充作者姓名，分类和标签等文章信息")
     private void fillArticle(Article article) {
-        // 获取作者名称
-        article.setAuthorName(Objects.requireNonNullElse(userMapper.selectById(article.getAuthorId()).getUsername(), "已注销用户"));
-        // 获取分类名称
-        article.setCategoryName(Objects.requireNonNullElse(categoryMapper.selectById(article.getCategoryId()).getName(), "未知分类"));
-        // 获取标签列表
+        Long authorId = article.getAuthorId();
+        Long categoryId = article.getCategoryId();
+
+        // 查询用户和分类
+        User user = (authorId != null) ? userMapper.selectById(authorId) : null;
+        Category category = (categoryId != null) ? categoryMapper.selectById(categoryId) : null;
         List<Tag> tags = articleTagMapper.getTagsByArticleId(article.getId());
-        if (tags != null && !tags.isEmpty()) {
-            article.setTags(tags);
-        } else {
-            article.setTags(List.of());
-        }
-        // 获取作者昵称
-        article.setAuthorNickname(Objects.requireNonNullElse(userMapper.selectById(article.getAuthorId()).getNickname(), "已注销用户"));
+
+        // 获取作者名称
+        String authorName = (user != null && user.getUsername() != null) ? user.getUsername() : "已注销用户";
+        String authorNickname = (user != null && user.getNickname() != null) ? user.getNickname() : "已注销用户";
+
+        // 获取分类名称
+        String categoryName = (category != null && category.getName() != null) ? category.getName() : "未知分类";
+
+        // 设置文章信息
+        article.setAuthorName(authorName);
+        article.setAuthorNickname(authorNickname);
+        article.setCategoryName(categoryName);
+        article.setTags(tags != null ? tags : List.of());
     }
 }
