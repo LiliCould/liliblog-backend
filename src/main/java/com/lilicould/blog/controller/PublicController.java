@@ -3,6 +3,7 @@ package com.lilicould.blog.controller;
 import com.lilicould.blog.entity.Article;
 import com.lilicould.blog.service.ArticleService;
 import com.lilicould.blog.vo.ResultVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +13,7 @@ import java.util.List;
  * 公开控制器
  * @author lilicould
  */
+@Slf4j
 @RestController
 @RequestMapping("/api/public")
 public class PublicController {
@@ -69,7 +71,7 @@ public class PublicController {
     ) {
         List<Article> articles = articleService.searchAll(keyword);
         // 过滤未发布文章
-        articles.removeIf(article -> !article.getStatus().equals("PUBLISH"));
+        articles.removeIf(article -> !article.getStatus().equals("PUBLISHED"));
         if (articles.isEmpty()) {
             return ResultVO.error("未找到任何文章");
         }
