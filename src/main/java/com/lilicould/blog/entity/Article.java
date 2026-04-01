@@ -38,4 +38,5 @@ public class Article {
     private String authorName; // 作者名称
     private String categoryName; // 分类名称
     private List<Tag> tags; // 标签列表
+    private String authorNickname; // 作者昵称
 }

@@ -350,5 +350,7 @@ public class ArticleServiceImpl implements ArticleService {
         } else {
             article.setTags(List.of());
         }
+        // 获取作者昵称
+        article.setAuthorNickname(Objects.requireNonNullElse(userMapper.selectById(article.getAuthorId()).getNickname(), "已注销用户"));
     }
 }
