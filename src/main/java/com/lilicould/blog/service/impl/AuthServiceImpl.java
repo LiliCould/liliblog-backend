@@ -80,6 +80,12 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Log(value = "用户注册服务",logParams = false)
     public void register(RegisterDTO registerDTO) {
+        // 验证码校验
+        String captcha = redisUtil.getString(registerDTO.getEmail());
+        if (!captcha.equals(registerDTO.getCaptcha())) {
+            throw new BusinessException("验证码错误");
+        }
+
         // 检查用户名是否已存在
         if (userMapper.selectByUsername(registerDTO.getUsername()) != null) {
             throw new BusinessException("用户名已存在");
@@ -98,7 +104,13 @@ public class AuthServiceImpl implements AuthService {
         user.setRole("VISITOR");
         user.setStatus(1);
 
-        userMapper.insert(user);
+        // 插入用户
+        if (userMapper.insert(user) > 0) {
+            log.info("用户注册成功:{}", user.getUsername());
+            // 删除redis中的验证码
+            redisUtil.delete(registerDTO.getEmail());
+        }
+
     }
 
     @Override
@@ -175,7 +187,11 @@ public class AuthServiceImpl implements AuthService {
 
             // 异步发送邮件，不阻塞主线程
             String finalCaptcha = captcha; // 避免闭包问题
-            CompletableFuture.runAsync(() -> mailUtil.sendMail(email, finalCaptcha));
+            CompletableFuture.runAsync(() -> {
+                log.info("开始发送验证码到邮箱");
+                mailUtil.sendMail(email, finalCaptcha);
+                log.info("验证码已发送到邮箱:{}", email);
+            });
 
             // 保存验证码到redis中，并设置过期时间为5分钟
             redisUtil.setString(email, captcha, 5 * 60 * 1000);

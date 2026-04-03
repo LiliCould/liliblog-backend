@@ -15,6 +15,9 @@ public class RegisterDTO {
     @Size(min = 3, max = 50, message = "用户名长度在3-50个字符")
     private String username;
 
+    @NotBlank(message = "验证码不能为空")
+    private String captcha;
+
     @NotBlank(message = "邮箱不能为空")
     @Email(message = "邮箱格式不正确")
     private String email;
