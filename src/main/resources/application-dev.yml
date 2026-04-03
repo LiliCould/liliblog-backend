@@ -1,0 +1,32 @@
+# 数据源配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/liliblog?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+  # 编码处理
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+
+# MyBatis配置
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath:mapper/*.xml
+  
+# JWT配置
+jwt:
+  secret: mynameisliliandiamabackenddeveloper
+  # 过期时间七天
+  expire: 604800000
+
+server:
+  base-url: http://localhost:8080
+
+# 文件上传路径
+file:
+  upload:
+    path: ./uploads/

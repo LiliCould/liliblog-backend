@@ -1,26 +1,32 @@
 package com.lilicould.blog.service.impl;
 
 import com.lilicould.blog.service.FileUploadService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 
+@Slf4j
 @Service
 @Transactional(isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
 public class FileUploadServiceImpl implements FileUploadService {
 
-    @Value("${file.upload.path:classpath:static/avatar/}")
+    @Value("${file.upload.path:./uploads/}")
     private String uploadPath;
 
-    // 文件大小限制（默认10MB）
+    @Value("${server.base-url:https://lilicould.cn:8888}")
+    private String baseUrl;
+
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024;
 
     @Override
@@ -32,7 +38,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 
         // 2. 文件大小校验
         if (file.getSize() > MAX_FILE_SIZE) {
-            throw new IllegalArgumentException("文件大小不能超过10MB");
+            throw new IllegalArgumentException("文件大小不能超过 10MB");
         }
 
         // 3. 文件类型校验
@@ -41,14 +47,28 @@ public class FileUploadServiceImpl implements FileUploadService {
             throw new IllegalArgumentException("文件名不能为空");
         }
 
-        String newName = UUID.randomUUID() + file.getOriginalFilename();
+        String newName = String.valueOf(UUID.randomUUID());
         try {
-            File target = new File(uploadPath,newName);
+            // 获取 JAR 包所在目录
+            String jarDir = System.getProperty("user.dir");
+
+            // 构建完整路径 - 相对于 JAR 包目录
+            Path targetDir = Paths.get(jarDir, uploadPath);
+            File dir = targetDir.toFile();
+            if (!dir.exists()) {
+                if (dir.mkdirs()) {
+                    log.info("创建目录：{}", targetDir);
+                }
+            }
+
+            File target = new File(dir, newName);
             file.transferTo(target);
 
         } catch (IOException e) {
-            throw new RuntimeException("文件上传失败: " + e.getMessage(), e);
+            throw new RuntimeException("文件上传失败：" + e.getMessage(), e);
         }
-        return newName;
+
+        // 返回完整的访问 URL
+        return baseUrl + "/uploads/" + newName;
     }
 }

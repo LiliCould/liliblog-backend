@@ -3,7 +3,7 @@
 <configuration scan="true" scanPeriod="30 seconds" debug="false">
 
     <!-- ========== 全局属性定义 ========== -->
-    <property name="LOG_HOME" value="C:/Users/Lili/Desktop/javaCodes/liliblog/logs" />
+    <property name="LOG_HOME" value="/opt/liliblog/logs" />
     <property name="APP_NAME" value="lili-blog" />
 
     <!-- 日志格式定义 -->

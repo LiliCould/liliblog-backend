@@ -73,7 +73,9 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
         // 登录接口，注册接口，获取公开文章接口，公开文章接口
         return path.startsWith("/api/auth/login") ||
                 path.startsWith("/api/auth/register") ||
-                path.startsWith("/api/public/");
+                path.startsWith("/api/public/") ||
+                (path.startsWith("/api/tag") && method.equals("GET")) ||
+                (path.startsWith("/api/categories") && method.equals("GET"));
     }
 
     /**
