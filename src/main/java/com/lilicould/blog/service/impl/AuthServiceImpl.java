@@ -6,13 +6,16 @@ import com.lilicould.blog.dao.UserMapper;
 import com.lilicould.blog.dto.LoginDTO;
 import com.lilicould.blog.dto.PasswordChangeDTO;
 import com.lilicould.blog.dto.RegisterDTO;
+import com.lilicould.blog.dto.UserUpdateDTO;
 import com.lilicould.blog.entity.User;
 import com.lilicould.blog.exception.BusinessException;
 import com.lilicould.blog.service.AuthService;
+import com.lilicould.blog.util.BaseContextUtil;
 import com.lilicould.blog.util.JwtUtil;
 import com.lilicould.blog.util.PasswordUtil;
 import com.lilicould.blog.vo.LoginVO;
 import com.lilicould.blog.vo.UserVO;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -126,6 +129,24 @@ public class AuthServiceImpl implements AuthService {
                 user.getLastLoginTime(),
                 user.getCreateTime()
         );
+    }
+
+
+    /**
+     * 修改用户信息
+     */
+    @Override
+    @Log("用户修改信息服务")
+    public void updateProfile(UserUpdateDTO userUpdateDTO) {
+        User user = userMapper.selectByUsername(BaseContextUtil.get());
+        if (user == null) {
+            throw new BusinessException("用户不存在或已注销");
+        }
+        BeanUtils.copyProperties(userUpdateDTO, user);
+        if (userMapper.update(user) < 1 ) {
+            throw new BusinessException("修改用户信息失败");
+        }
+
     }
 
     @Override

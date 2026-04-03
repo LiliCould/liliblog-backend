@@ -47,7 +47,14 @@ public class FileUploadServiceImpl implements FileUploadService {
             throw new IllegalArgumentException("文件名不能为空");
         }
 
-        String newName = String.valueOf(UUID.randomUUID());
+        // 提取文件扩展名
+        String extension = "";
+        int lastDotIndex = originalFilename.lastIndexOf(".");
+        if (lastDotIndex > 0 && lastDotIndex < originalFilename.length() - 1) {
+            extension = originalFilename.substring(lastDotIndex);
+        }
+
+        String newName = UUID.randomUUID() + extension;
         try {
             // 获取 JAR 包所在目录
             String jarDir = System.getProperty("user.dir");

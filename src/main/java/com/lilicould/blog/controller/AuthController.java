@@ -3,6 +3,7 @@ package com.lilicould.blog.controller;
 import com.lilicould.blog.dto.LoginDTO;
 import com.lilicould.blog.dto.PasswordChangeDTO;
 import com.lilicould.blog.dto.RegisterDTO;
+import com.lilicould.blog.dto.UserUpdateDTO;
 import com.lilicould.blog.service.AuthService;
 import com.lilicould.blog.vo.LoginVO;
 import com.lilicould.blog.vo.ResultVO;
@@ -79,5 +80,14 @@ public class AuthController {
             authService.logout(token);
         }
         return ResultVO.success("退出成功");
+    }
+
+    /**
+     * 修改用户信息
+     */
+    @PutMapping("/update")
+    public ResultVO<Void> update(@Valid @RequestBody UserUpdateDTO userUpdateDTO) {
+        authService.updateProfile(userUpdateDTO);
+        return ResultVO.success("修改用户信息成功");
     }
 }
