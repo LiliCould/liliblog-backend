@@ -23,4 +23,11 @@ public interface AuthService {
      * @param userUpdateDTO 用户信息
      */
     void updateProfile(@Valid UserUpdateDTO userUpdateDTO);
+
+    /**
+     * 获取验证码
+     * @param email 邮箱
+     * @return 验证码
+     */
+    void getCaptcha(String email);
 }

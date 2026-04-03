@@ -10,11 +10,11 @@ import com.lilicould.blog.dto.UserUpdateDTO;
 import com.lilicould.blog.entity.User;
 import com.lilicould.blog.exception.BusinessException;
 import com.lilicould.blog.service.AuthService;
-import com.lilicould.blog.util.BaseContextUtil;
-import com.lilicould.blog.util.JwtUtil;
-import com.lilicould.blog.util.PasswordUtil;
+import com.lilicould.blog.util.*;
 import com.lilicould.blog.vo.LoginVO;
+import com.lilicould.blog.vo.ResultVO;
 import com.lilicould.blog.vo.UserVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,12 +22,15 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.security.SecureRandom;
 import java.util.Date;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * 认证服务接口实现类
  */
 
+@Slf4j
 @Service()
 @Transactional(isolation = Isolation.READ_COMMITTED,rollbackFor = Exception.class)
 public class AuthServiceImpl implements AuthService {
@@ -40,6 +43,10 @@ public class AuthServiceImpl implements AuthService {
     // 密码工具类
     @Autowired
     private PasswordUtil passwordUtil;
+    @Autowired
+    private RedisUtil redisUtil;
+    @Autowired
+    private MailUtil mailUtil;
 
     @Override
     @Log(value = "用户登录服务",logParams = false)
@@ -147,6 +154,32 @@ public class AuthServiceImpl implements AuthService {
             throw new BusinessException("修改用户信息失败");
         }
 
+    }
+
+    /**
+     * 获取验证码
+     */
+    @Override
+    public void getCaptcha(String email) {
+        // 先检查redis中是否存在验证码
+        String captcha = redisUtil.getString(email);
+        if (captcha != null) {
+            log.error("验证码已发送，请勿重复请求:{}", captcha);
+            throw new BusinessException("验证码已发送，请勿重复请求");
+        } else {
+            // 生成验证码，格式为6位数字
+            SecureRandom random = new SecureRandom();
+            int code = random.nextInt(1000000); // 0~999999
+            captcha = String.format("%06d", code); // 补齐6位
+            log.info("验证码：{}", captcha);
+
+            // 异步发送邮件，不阻塞主线程
+            String finalCaptcha = captcha; // 避免闭包问题
+            CompletableFuture.runAsync(() -> mailUtil.sendMail(email, finalCaptcha));
+
+            // 保存验证码到redis中，并设置过期时间为5分钟
+            redisUtil.setString(email, captcha, 5 * 60 * 1000);
+        }
     }
 
     @Override

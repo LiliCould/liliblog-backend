@@ -4,7 +4,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/liliblog?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
     username: root
-    password: 123456
+    password: 2243556144a
   # 编码处理
   servlet:
     encoding:
@@ -18,12 +18,12 @@ spring:
     default-encoding: UTF-8
     protocol: smtp
     properties:
-        mail:
-          smtp:
-            auth: true
-            starttls:
-              enable: true
-              required: true
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
   data:
     redis:
       database: 4
@@ -36,7 +36,6 @@ spring:
           max-idle: 16
           min-idle: 8
           max-active: 32
-
 # MyBatis配置
 mybatis:
   configuration:
@@ -50,7 +49,7 @@ jwt:
   expire: 604800000
 
 server:
-  base-url: http://localhost:8080
+  base-url: https://lilicould.cn:8888
 
 # 文件上传路径
 file:

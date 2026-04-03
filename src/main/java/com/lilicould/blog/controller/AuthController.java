@@ -5,6 +5,7 @@ import com.lilicould.blog.dto.PasswordChangeDTO;
 import com.lilicould.blog.dto.RegisterDTO;
 import com.lilicould.blog.dto.UserUpdateDTO;
 import com.lilicould.blog.service.AuthService;
+import com.lilicould.blog.util.RedisUtil;
 import com.lilicould.blog.vo.LoginVO;
 import com.lilicould.blog.vo.ResultVO;
 import com.lilicould.blog.vo.UserVO;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     @Autowired
     private AuthService authService;
+    @Autowired
+    private RedisUtil redisUtil;
 
     /**
      * 登录
@@ -42,6 +45,17 @@ public class AuthController {
     public ResultVO<Void> register(@Valid @RequestBody RegisterDTO registerDTO) {
         authService.register(registerDTO);
         return ResultVO.success("注册成功");
+    }
+
+    /**
+     * 获取验证码
+     * @param email 邮箱
+     * @return 验证码
+     */
+    @GetMapping("/captcha")
+    public ResultVO<Void> getCaptcha(@RequestParam String email) {
+        authService.getCaptcha(email);
+        return ResultVO.success("验证码已发送到邮箱(可能有轻微延迟)");
     }
 
     /**
