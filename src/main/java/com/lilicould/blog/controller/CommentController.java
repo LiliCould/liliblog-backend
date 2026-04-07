@@ -17,7 +17,7 @@ import java.util.List;
 public class CommentController {
 
     @GetMapping
-    public ResultVO<List<Comment>> list(HttpServletRequest request) {
+    public ResultVO<List<Comment>> list() {
         return ResultVO.success("213");
     }
 
