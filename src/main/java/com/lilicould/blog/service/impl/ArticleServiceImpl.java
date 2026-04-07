@@ -76,8 +76,12 @@ public class ArticleServiceImpl implements ArticleService {
             article.setSummary(articleCreateDTO.getSummary());
         }
 
-        article.setContent(articleCreateDTO.getContent());
-        article.setContentHtml(articleCreateDTO.getContentHtml());
+        // 去除XSS
+        String noXssContent = MarkdownUtil.escapeHtml(articleCreateDTO.getContent());
+        article.setContent(noXssContent);
+        // 设置HTML
+        String noXssContentHtml = MarkdownUtil.escapeHtml(articleCreateDTO.getContentHtml());
+        article.setContentHtml(noXssContentHtml);
 
         article.setCoverImage(articleCreateDTO.getCoverImage());
 
@@ -275,8 +279,8 @@ public class ArticleServiceImpl implements ArticleService {
         article.setTitle(articleUpdateDTO.getTitle());
         article.setSlug(articleUpdateDTO.getSlug());
         article.setSummary(articleUpdateDTO.getSummary());
-        article.setContent(articleUpdateDTO.getContent());
-        article.setContentHtml(articleUpdateDTO.getContentHtml());
+        article.setContent(MarkdownUtil.escapeHtml(articleUpdateDTO.getContent()));
+        article.setContentHtml(MarkdownUtil.escapeHtml(articleUpdateDTO.getContentHtml()));
         article.setCoverImage(articleUpdateDTO.getCoverImage());
         // 如果更新为发布状态，并且发布时间不存在，说明是第一次发布，更新发布时间
         if ("PUBLISHED".equals(articleUpdateDTO.getStatus()) && article.getPublishTime() == null){

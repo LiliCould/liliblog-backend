@@ -13,4 +13,29 @@ public class MarkdownUtil {
         Node document = parser.parse(markdown);
         return renderer.render(document);
     }
+
+    // 转义HTML字符
+    public static String escapeHtml(String html) {
+        if (html == null || html.isEmpty()) {
+            return html;
+        }
+
+        StringBuilder sb = new StringBuilder(html.length());
+        for (int i = 0; i < html.length(); i++) {
+            char c = html.charAt(i);
+            switch (c) {
+                case '<':
+                    sb.append("&lt;");
+                    break;
+                case '>':
+                    sb.append("&gt;");
+                    break;
+                default:
+                    sb.append(c);
+                    break;
+            }
+        }
+        return sb.toString();
+    }
+
 }
