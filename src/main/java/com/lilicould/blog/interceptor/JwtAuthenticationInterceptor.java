@@ -75,6 +75,7 @@ public class JwtAuthenticationInterceptor implements HandlerInterceptor {
                 path.startsWith("/api/auth/register") ||
                 path.startsWith("/api/auth/captcha") ||
                 path.startsWith("/api/public/") ||
+                (path.startsWith("/api/chat") && method.equals("GET")) ||
                 (path.startsWith("/api/tag") && method.equals("GET")) ||
                 (path.startsWith("/api/categories") && method.equals("GET"));
     }

@@ -1,6 +1,10 @@
 package com.lilicould.blog.dao;
 
+import com.lilicould.blog.dto.ChatMessageDTO;
 import com.lilicould.blog.entity.ChatMessage;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author Lili_Could
@@ -22,4 +26,9 @@ public interface ChatMessageMapper {
 
     int updateByPrimaryKey(ChatMessage record);
 
+    /**
+     * 列出七天内的聊天记录
+     * @return 聊天记录
+     */
+    List<ChatMessageDTO> listHistory();
 }

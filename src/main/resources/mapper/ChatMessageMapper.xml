@@ -16,6 +16,16 @@
             <result property="updateTime" column="update_time" />
     </resultMap>
 
+    <resultMap id="DtoResultMap" type="com.lilicould.blog.dto.ChatMessageDTO">
+        <id property="id" column="id"/>
+        <result property="senderId" column="sender_id"/>
+        <result property="content" column="content"/>
+        <result property="type" column="type"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="ipAddress" column="ip_address"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
     <sql id="Base_Column_List">
         id,sender_id,content,type,parent_id,status,
         ip_address,create_time,update_time
@@ -26,6 +36,27 @@
         <include refid="Base_Column_List" />
         from chat_message
         where  id = #{id} 
+    </select>
+
+    <select id="listHistory" resultMap="DtoResultMap">
+        SELECT
+        cm.id,
+        cm.sender_id,
+        cm.content,
+        cm.type,
+        cm.parent_id,
+        cm.ip_address,
+        cm.create_time,
+        u.username AS sender_username,
+        u.nickname AS sender_name,
+        u.avatar AS sender_avatar
+        FROM chat_message cm
+        LEFT JOIN user_tb u ON cm.sender_id = u.id
+        <where>
+            cm.status = 1
+            AND cm.create_time > DATE_SUB(NOW(), INTERVAL 7 DAY)
+        </where>
+        ORDER BY cm.create_time DESC
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">

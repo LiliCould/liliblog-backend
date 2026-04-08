@@ -55,6 +55,8 @@ public class ChatWebSocketEndpoint {
 
     @OnOpen
     public void onOpen(Session session, EndpointConfig config) {
+        // 设置会话不超时
+        session.setMaxIdleTimeout(0);
         Long userId = (Long) config.getUserProperties().get("userId");
         String ipAddress = (String) config.getUserProperties().get("ipAddress");
 
@@ -63,7 +65,21 @@ public class ChatWebSocketEndpoint {
             session.getUserProperties().put("ipAddress", ipAddress);
             log.info("用户 {} 已连接，IP: {}，当前在线人数: {}", userId, ipAddress, sessions.size());
 
-            sendSystemMessage(session, "欢迎加入聊天室！");
+            User user = userMapper.selectById(userId);
+            String content = "用户 [" + user.getNickname() + "] 风风光光进入了聊天室";
+
+            ChatMessageDTO systemMessage = ChatMessageDTO.builder()
+                    .senderId(0L)
+                    .senderName("系统")
+                    .senderUsername("system")
+                    .content(content)
+                    .type("SYSTEM")
+                    .parentId(0L)
+                    .createTime(new Date())
+                    .build();
+
+            // 向所有人发送信息
+            broadcastMessage(systemMessage);
         } else {
             // 尝试关闭会话
             try {
@@ -75,7 +91,14 @@ public class ChatWebSocketEndpoint {
     }
 
     @OnMessage
-    public void onMessage(Session session, String message) {
+    public void onMessage(Session session, String message) throws IOException {
+
+        // 心跳消息
+        if ("PING".equals(message)) {
+            session.getBasicRemote().sendText("PONG");
+            return;
+        }
+
         Long userId = getUserIdFromSession(session);
         if (userId == null) {
             return;
@@ -125,6 +148,18 @@ public class ChatWebSocketEndpoint {
         Long userId = getUserIdFromSession(session);
         if (userId != null) {
             sessions.remove(userId);
+            User user = userMapper.selectById(userId);
+            String content = "用户 [" + user.getNickname() + "] 悄悄地离开了~~~";
+            ChatMessageDTO systemMessage = ChatMessageDTO.builder()
+                    .senderId(0L)
+                    .senderName("系统")
+                    .senderUsername("system")
+                    .content(content)
+                    .type("SYSTEM")
+                    .parentId(0L)
+                    .createTime(new Date())
+                    .build();
+            broadcastMessage(systemMessage);
             log.info("用户 {} 已断开，当前在线人数: {}", userId, sessions.size());
         }
     }
