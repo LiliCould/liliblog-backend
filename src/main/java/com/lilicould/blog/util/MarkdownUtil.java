@@ -23,16 +23,10 @@ public class MarkdownUtil {
         StringBuilder sb = new StringBuilder(html.length());
         for (int i = 0; i < html.length(); i++) {
             char c = html.charAt(i);
-            switch (c) {
-                case '<':
-                    sb.append("&lt;");
-                    break;
-                case '>':
-                    sb.append("&gt;");
-                    break;
-                default:
-                    sb.append(c);
-                    break;
+            if (c == '<') {
+                sb.append("&lt;");
+            } else {
+                sb.append(c);
             }
         }
         return sb.toString();

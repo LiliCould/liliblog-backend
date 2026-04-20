@@ -16,8 +16,11 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -80,6 +83,9 @@ public class ChatWebSocketEndpoint {
 
             // 向所有人发送信息
             broadcastMessage(systemMessage);
+
+            // 广播在线用户列表
+            broadcastOnlineUsers();
         } else {
             // 尝试关闭会话
             try {
@@ -136,6 +142,9 @@ public class ChatWebSocketEndpoint {
             // 保存消息
             chatMessageMapper.insert(record);
 
+            // 设置消息ID
+            chatMessage.setId(record.getId());
+
             // 广播消息
             broadcastMessage(chatMessage);
         } catch (Exception e) {
@@ -160,6 +169,8 @@ public class ChatWebSocketEndpoint {
                     .createTime(new Date())
                     .build();
             broadcastMessage(systemMessage);
+
+            broadcastOnlineUsers();
             log.info("用户 {} 已断开，当前在线人数: {}", userId, sessions.size());
         }
     }
@@ -227,6 +238,43 @@ public class ChatWebSocketEndpoint {
             session.getBasicRemote().sendText(json);
         } catch (Exception e) {
             log.error("发送系统消息失败", e);
+        }
+    }
+
+    private void broadcastOnlineUsers() {
+        try {
+            List<User> onlineUsers = sessions.keySet().stream()
+                    .map(userId -> userMapper.selectById(userId))
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+
+            ChatMessageDTO onlineListMessage = ChatMessageDTO.builder()
+                    .senderId(0L)
+                    .senderName("系统")
+                    .senderUsername("system")
+                    .type("ONLINE_LIST")
+                    .parentId(0L)
+                    .createTime(new Date())
+                    .build();
+
+            String onlineUsersJson = objectMapper.writeValueAsString(onlineUsers);
+            onlineListMessage.setContent(onlineUsersJson);
+
+            String jsonMessage = objectMapper.writeValueAsString(onlineListMessage);
+
+            sessions.forEach((userId, session) -> {
+                if (session.isOpen()) {
+                    try {
+                        session.getBasicRemote().sendText(jsonMessage);
+                    } catch (IOException e) {
+                        log.error("发送在线用户列表给用户 {} 失败", userId, e);
+                    }
+                }
+            });
+
+            log.info("广播在线用户列表，当前在线人数: {}", onlineUsers.size());
+        } catch (Exception e) {
+            log.error("广播在线用户列表失败", e);
         }
     }
 
