@@ -22,7 +22,9 @@ public class ChatMessageDTO implements Serializable {
     private String senderAvatar;
     private String ipAddress;
     private String content;
+    @Builder.Default
     private String type = "TEXT";
+    @Builder.Default
     private Long parentId = 0L;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
