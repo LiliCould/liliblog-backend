@@ -43,4 +43,5 @@ build/
 ./logs/*
 ./uploads/
 ./uploads/*
+/uploads/*
 src/main/resources/application-prod.yml
