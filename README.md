@@ -1,536 +1,583 @@
-# LILIBLOG - 开发文档
+# LiliBlog 立里博客系统
 
-## 项目概述
+## 项目简介
 
-LILIBLOG是一个基于Spring + MyBatis基础版（非SpringBoot/PLUS）+ SpringMVC的纯后端博客系统。本项目采用经典的MVC架构，实现了用户认证、文章管理等核心功能，并为后续功能扩展提供了良好的架构基础。
+LiliBlog 是一个基于 **Spring Boot 4.0** + **MyBatis** 的现代化博客后端系统，采用经典 MVC 架构设计。系统集成了用户认证、文章管理、分类标签、实时聊天室等完整功能，支持 Markdown 渲染、Redis 缓存、WebSocket 即时通讯等特性，为个人博客或小型社区提供完善的后端解决方案。
 
-## 数据库详细结构
-
-### 完整建表语句
-
-#### User表
-```sql
-CREATE TABLE `user` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '用户ID',
-  `username` varchar(50) NOT NULL COMMENT '用户名',
-  `email` varchar(100) NOT NULL COMMENT '邮箱',
-  `password` varchar(100) NOT NULL COMMENT '密码（加密存储）',
-  `avatar` varchar(255) DEFAULT NULL COMMENT '头像',
-  `bio` varchar(500) DEFAULT NULL COMMENT '个人简介',
-  `role` varchar(20) DEFAULT 'USER' COMMENT '角色',
-  `status` tinyint(4) DEFAULT 1 COMMENT '状态 1-启用 0-禁用',
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `last_login_at` datetime DEFAULT NULL COMMENT '最后登录时间',
-  `login_count` int(11) DEFAULT 0 COMMENT '登录次数',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_username` (`username`),
-  UNIQUE KEY `uk_email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
-```
-
-#### Article表
-```sql
-CREATE TABLE `article` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '文章ID',
-  `title` varchar(200) NOT NULL COMMENT '标题',
-  `content` longtext NOT NULL COMMENT '内容',
-  `excerpt` varchar(500) DEFAULT NULL COMMENT '摘要',
-  `author_id` bigint(20) NOT NULL COMMENT '作者ID',
-  `category_id` bigint(20) DEFAULT NULL COMMENT '分类ID',
-  `status` tinyint(4) DEFAULT 1 COMMENT '状态 1-已发布 0-草稿',
-  `view_count` int(11) DEFAULT 0 COMMENT '浏览量',
-  `comment_count` int(11) DEFAULT 0 COMMENT '评论数',
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `published_at` datetime DEFAULT NULL COMMENT '发布时间',
-  `cover_image` varchar(255) DEFAULT NULL COMMENT '封面图片',
-  `is_top` tinyint(4) DEFAULT 0 COMMENT '是否置顶 1-是 0-否',
-  `is_recommend` tinyint(4) DEFAULT 0 COMMENT '是否推荐 1-是 0-否',
-  `tags` varchar(500) DEFAULT NULL COMMENT '标签列表（JSON格式）',
-  PRIMARY KEY (`id`),
-  KEY `idx_author_id` (`author_id`),
-  KEY `idx_category_id` (`category_id`),
-  KEY `idx_created_at` (`created_at`),
-  KEY `idx_published_at` (`published_at`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='文章表';
-```
-
-#### Category表
-```sql
-CREATE TABLE `category` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '分类ID',
-  `name` varchar(50) NOT NULL COMMENT '分类名称',
-  `slug` varchar(50) NOT NULL COMMENT '分类标识',
-  `parent_id` bigint(20) DEFAULT 0 COMMENT '父分类ID 0-顶级分类',
-  `sort_order` int(11) DEFAULT 0 COMMENT '排序',
-  `description` varchar(255) DEFAULT NULL COMMENT '描述',
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `status` tinyint(4) DEFAULT 1 COMMENT '状态 1-启用 0-禁用',
-  `icon` varchar(50) DEFAULT NULL COMMENT '图标',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_name` (`name`),
-  UNIQUE KEY `uk_slug` (`slug`),
-  KEY `idx_parent_id` (`parent_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='分类表';
-```
-
-#### Comment表
-```sql
-CREATE TABLE `comment` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '评论ID',
-  `content` text NOT NULL COMMENT '评论内容',
-  `article_id` bigint(20) NOT NULL COMMENT '文章ID',
-  `author_id` bigint(20) DEFAULT NULL COMMENT '作者ID',
-  `parent_id` bigint(20) DEFAULT 0 COMMENT '父评论ID 0-顶级评论',
-  `status` tinyint(4) DEFAULT 1 COMMENT '状态 1-已审核 0-待审核',
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `ip_address` varchar(50) DEFAULT NULL COMMENT 'IP地址',
-  `user_agent` varchar(255) DEFAULT NULL COMMENT '用户代理',
-  `is_author_reply` tinyint(4) DEFAULT 0 COMMENT '是否作者回复 1-是 0-否',
-  `likes` int(11) DEFAULT 0 COMMENT '点赞数',
-  PRIMARY KEY (`id`),
-  KEY `idx_article_id` (`article_id`),
-  KEY `idx_author_id` (`author_id`),
-  KEY `idx_parent_id` (`parent_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='评论表';
-```
-
-#### Tag表
-```sql
-CREATE TABLE `tag` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '标签ID',
-  `name` varchar(50) NOT NULL COMMENT '标签名称',
-  `slug` varchar(50) NOT NULL COMMENT '标签标识',
-  `color` varchar(20) DEFAULT '#999999' COMMENT '标签颜色',
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_name` (`name`),
-  UNIQUE KEY `uk_slug` (`slug`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='标签表';
-```
-
-## 待实现接口
-
-### 分类管理接口
-
-#### GET /api/categories
-- 描述: 获取分类列表
-- 公开接口: 是
-
-#### GET /api/categories/{id}
-- 描述: 获取分类详情
-- 公开接口: 是
-
-#### POST /api/categories
-- 描述: 创建分类
-- 参数: name, slug, parentId, sortOrder, description, icon
-- 需认证: 是
-- 权限要求: ADMIN
-
-#### PUT /api/categories/{id}
-- 描述: 更新分类
-- 参数: name, slug, parentId, sortOrder, description, icon, status
-- 需认证: 是
-- 权限要求: ADMIN
-
-#### DELETE /api/categories/{id}
-- 描述: 删除分类
-- 需认证: 是
-- 权限要求: ADMIN
-
-### 评论管理接口
-
-#### GET /api/comments
-- 描述: 获取评论列表
-- 公开接口: 否
-- 需认证: 是
-
-#### GET /api/comments/article/{articleId}
-- 描述: 获取文章评论列表
-- 公开接口: 是
-
-#### POST /api/comments
-- 描述: 创建评论
-- 参数: articleId, content, parentId
-- 需认证: 是
-
-#### PUT /api/comments/{id}
-- 描述: 更新评论
-- 参数: content, status
-- 需认证: 是
-
-#### DELETE /api/comments/{id}
-- 描述: 删除评论
-- 需认证: 是
-
-### 标签管理接口
-
-#### GET /api/tags
-- 描述: 获取标签列表
-- 公开接口: 是
-
-#### POST /api/tags
-- 描述: 创建标签
-- 参数: name, slug, color
-- 需认证: 是
-- 权限要求: ADMIN
-
-#### PUT /api/tags/{id}
-- 描述: 更新标签
-- 参数: name, slug, color
-- 需认证: 是
-- 权限要求: ADMIN
-
-#### DELETE /api/tags/{id}
-- 描述: 删除标签
-- 需认证: 是
-- 权限要求: ADMIN
-
-## 所需工具类
-
-### 1. JwtUtils
-- 功能: JWT令牌生成、解析和验证
-- 主要方法:
-  - generateToken: 根据用户信息生成JWT令牌
-  - parseToken: 解析JWT令牌，获取用户信息
-  - validateToken: 验证JWT令牌是否有效
-
-### 2. PasswordUtils
-- 功能: 密码加密和验证
-- 主要方法:
-  - encodePassword: 对密码进行加密
-  - matchPassword: 验证密码是否匹配
-
-## 功能实现方式
-
-### 1. 用户认证实现
-- 使用JWT进行身份认证
-- 自定义拦截器JwtInterceptor验证请求中的token
-- 密码使用BCrypt加密算法存储
-
-### 2. 文章浏览量统计
-- 使用Redis缓存记录文章浏览量，定时同步到数据库
-- 防止重复计数，基于IP或用户会话进行判断
-
-### 3. 文件上传实现
-- 使用MultipartFile接收上传文件
-- 按照日期和类型组织文件存储路径
-- 文件存储在服务器指定目录，数据库存储访问路径
-
-### 4. 缓存机制
-- 使用Redis缓存热点数据（热门文章、分类统计等）
-- 实现缓存更新策略（Cache Aside Pattern）
-- 设置合理的缓存过期时间
-
-### 5. AOP日志实现
-- 自定义@Log注解标记需要记录日志的方法
-- 实现LogAspect切面类拦截带有@Log注解的方法
-- 记录操作人、操作时间、操作类型、请求参数等信息
-
-### 6. 数据验证实现
-- 使用Bean Validation API进行请求参数验证
-- 自定义验证注解处理复杂业务规则
-- 统一异常处理类捕获验证异常并返回友好提示
-```
+## 前端项目地址
+[前端项目地址](https://github.com/LiliCould/liliblog-frontend "前端地址")
 
 ## 技术栈
 
-- **框架**: Spring 6.1.13 + Spring MVC + MyBatis 3.5.16
-- **数据库**: MySQL
-- **连接池**: Druid
-- **日志**: Logback
-- **安全**: JWT (JSON Web Token) + Spring Security Crypto
-- **验证**: Bean Validation API
-- **工具库**: Lombok, JJWT
-- **构建工具**: Maven
-- **Java版本**: JDK 17
+| 类别 | 技术 | 版本 |
+|------|------|------|
+| 核心框架 | Spring Boot | 4.0.1 |
+| ORM框架 | MyBatis | 4.0.1 |
+| 数据库 | MySQL | 8.x |
+| 缓存 | Redis | - |
+| 认证方式 | JWT (JJWT) | 0.12.3 |
+| 密码加密 | Spring Security Crypto (BCrypt) | 5.8.1 |
+| 即时通讯 | WebSocket (Jakarta) | - |
+| 邮件服务 | JavaMail (Spring Mail) | - |
+| Markdown渲染 | CommonMark | 0.21.0 |
+| HTML解析 | Jsoup | 1.14.3 |
+| AOP编程 | AspectJ | 1.9.21 |
+| 文件上传 | Commons FileUpload | 1.5 |
+| 工具库 | Lombok | 1.18.42 |
+| Java版本 | JDK | 21 |
+| 构建工具 | Maven | 3.x |
+
+## 核心功能
+
+### ✅ 已实现功能
+
+#### 1. 用户认证系统
+- 用户注册（邮箱验证码验证）
+- 用户登录（JWT令牌颁发）
+- 修改密码
+- 获取/更新用户信息
+- 用户登出
+- JWT拦截器自动认证
+
+#### 2. 文章管理系统
+- 文章创建（支持Markdown内容）
+- 文章更新与删除
+- 文章分页查询
+- 通过ID或Slug获取文章
+- 浏览量统计（Redis缓存）
+- 文章搜索（模糊匹配）
+- 置顶/推荐标记
+- 公开文章接口（无需认证）
+
+#### 3. 分类管理
+- 分类CRUD操作
+- 支持层级分类结构
+- 自定义排序和图标
+
+#### 4. 标签管理
+- 标签CRUD操作
+- 自定义颜色标识
+- 文章-标签多对多关联
+
+#### 5. 评论系统
+- 评论创建（记录IP和User-Agent）
+- 评论列表查询
+- 支持回复评论
+
+#### 6. 实时聊天室 ⭐
+- WebSocket长连接通信
+- 实时消息广播
+- 在线用户列表展示
+- 消息持久化存储
+- 心跳检测机制
+- 系统通知（进入/离开提示）
+- 聊天历史记录查询
+
+#### 7. 文件上传
+- 多类型文件上传支持
+- 按日期组织存储路径
+- 文件大小限制（10MB）
+
+#### 8. 缓存与性能优化
+- Redis缓存热点数据
+- 验证码临时存储（5分钟过期）
+- 浏览量异步更新
+- 连接池配置优化
+
+#### 9. 安全特性
+- BCrypt密码加密
+- JWT无状态认证
+- CORS跨域配置
+- 请求参数校验（Bean Validation）
+- IP地址记录
+- 统一异常处理
+
+#### 10. 运维与监控
+- AOP操作日志记录（自定义@Log注解）
+- 请求日志拦截器
+- Spring Actuator健康检查
+- Logback日志配置
 
 ## 项目结构
 
 ```
 src/main/java/com/lilicould/blog/
-├── annotation/     # 自定义注解
-├── aop/            # 面向切面编程
-├── config/         # 配置类
-├── controller/     # 控制器
-├── dao/            # 数据访问层
-├── dto/            # 数据传输对象
-├── entity/         # 实体类
-├── exception/      # 异常处理
-├── interceptor/    # 拦截器
-├── service/        # 业务逻辑层
-│   └── impl/       # 业务逻辑实现
-├── util/           # 工具类
-└── vo/             # 视图对象
+├── LiliBlogApplication.java        # 启动类
+├── annotation/                     # 自定义注解
+│   └── Log.java                    # 日志记录注解
+├── aop/                            # 切面编程
+│   └── ServiceLogAspect.java       # 服务日志切面
+├── config/                         # 配置类
+│   ├── JwtConfig.java              # JWT配置
+│   ├── RedisConfig.java            # Redis配置
+│   ├── WebMvcConfig.java           # Web MVC配置
+│   └── WebSocketConfig.java        # WebSocket配置
+├── controller/                     # 控制器层
+│   ├── AuthController.java         # 认证控制器
+│   ├── ArticleController.java      # 文章控制器
+│   ├── CategoryController.java     # 分类控制器
+│   ├── TagController.java          # 标签控制器
+│   ├── CommentController.java      # 评论控制器
+│   ├── ChatMessageController.java  # 聊天消息控制器
+│   ├── FileUploadController.java   # 文件上传控制器
+│   └── PublicController.java       # 公开接口控制器
+├── dao/                            # 数据访问层（Mapper接口）
+│   ├── UserMapper.java
+│   ├── ArticleMapper.java
+│   ├── CategoryMapper.java
+│   ├── TagMapper.java
+│   ├── CommentMapper.java
+│   ├── ArticleTagMapper.java
+│   └── ChatMessageMapper.java
+├── dto/                            # 数据传输对象
+│   ├── LoginDTO.java / RegisterDTO.java
+│   ├── ArticleCreateDTO.java / ArticleUpdateDTO.java
+│   ├── CategoryCreateDTO.java / CategoryUpdateDTO.java
+│   ├── TagCreateDTO.java / TagUpdateDTO.java
+│   ├── CommentCreateDTO.java / CommentUpdateDTO.java
+│   ├── ChatMessageDTO.java
+│   └── PasswordChangeDTO.java / UserUpdateDTO.java
+├── entity/                         # 实体类
+│   ├── User.java / Article.java
+│   ├── Category.java / Tag.java
+│   ├── Comment.java / LikeRecord.java
+│   ├── ChatMessage.java / MailBean.java
+├── exception/                      # 异常处理
+│   ├── BusinessException.java      # 业务异常
+│   └── GlobalExceptionHandler.java # 全局异常处理器
+├── interceptor/                    # 拦截器
+│   ├── JwtAuthenticationInterceptor.java  # JWT认证拦截器
+│   └── ControllerLogInterceptor.java     # 控制器日志拦截器
+├── service/                        # 服务接口层
+│   ├── AuthService.java
+│   ├── ArticleService.java
+│   ├── CategoryService.java
+│   ├── TagService.java
+│   ├── ChatMessageService.java
+│   └── FileUploadService.java
+├── service/impl/                   # 服务实现层
+│   ├── AuthServiceImpl.java
+│   ├── ArticleServiceImpl.java
+│   ├── CategoryServiceImpl.java
+│   ├── TagServiceImpl.java
+│   ├── ChatMessageServiceImpl.java
+│   └── FileUploadServiceImpl.java
+├── socket/                         # WebSocket
+│   └── ChatWebSocketEndpoint.java  # 聊天端点
+├── util/                           # 工具类
+│   ├── JwtUtil.java                # JWT工具
+│   ├── PasswordUtil.java           # 密码工具
+│   ├── RedisUtil.java              # Redis工具
+│   ├── MailUtil.java               # 邮件工具
+│   ├── MarkdownUtil.java           # Markdown工具
+│   ├── RequestUtil.java            # 请求工具
+│   └── BaseContextUtil.java        # 上下文工具
+└── vo/                             # 视图对象
+    ├── ResultVO.java               # 统一响应格式
+    ├── LoginVO.java                # 登录响应VO
+    └── UserVO.java                 # 用户信息VO
+
+src/main/resources/
+├── application.yml                 # 主配置文件
+├── application-dev.yml             # 开发环境配置
+├── BlogInit.sql                    # 数据库初始化脚本
+├── logback-spring.xml              # 日志配置
+├── mapper/                         # MyBatis XML映射文件
+│   ├── UserMapper.xml
+│   ├── ArticleMapper.xml
+│   ├── CategoryMapper.xml
+│   ├── TagMapper.xml
+│   ├── CommentMapper.xml
+│   ├── ArticleTagMapper.xml
+│   └── ChatMessageMapper.xml
+└── static/avatar/                  # 默认头像资源
 ```
 
-## 核心功能
+## 数据库设计
 
-### 已实现功能
+### ER关系图
 
-#### 1. 用户认证与授权
-- JWT令牌生成与验证
-- 用户登录（密码加密验证）
-- 用户注册（用户名/邮箱唯一性检查）
-- 修改密码
-- 获取用户信息
-- 基于JWT的认证拦截器
+```
+user_tb (用户)
+    │
+    ├────< article (文章)
+    │         │
+    │         ├─┼─< comment (评论)
+    │         │
+    │         └──┼──< article_tag >──┼── tag (标签)
+    │
+    ├────< like_record (点赞记录)
+    │
+    └────< chat_message (聊天消息)
 
-#### 2. 文章管理
-- 文章创建
-- 文章更新
-- 文章删除
-- 文章查询（单篇和列表）
-
-#### 3. 系统配置
-- 数据库连接配置（Druid连接池）
-- MyBatis配置（驼峰命名转换）
-- Spring MVC配置（JSON转换、CORS跨域、拦截器）
-- 全局异常处理
-- 统一响应格式
-
-#### 4. 数据模型
-- User（用户）
-- Article（文章）
-- Category（分类）
-- Comment（评论）
-- Tag（标签）
-
-#### 5. 安全特性
-- 密码加密存储
-- JWT令牌认证
-- 请求拦截与权限控制
-- CORS安全配置
-
-### 待实现功能
-
-#### 1. 文章管理增强
-- 文章浏览量统计（incrementViewCount方法未实现）
-- 文章搜索功能完整实现
-- 文章标签关联管理
-- 文章分类管理
-
-#### 2. 评论系统
-- 评论的增删改查功能
-- 评论回复功能
-- 评论审核功能
-
-#### 3. 分类和标签管理
-- 分类的增删改查功能
-- 标签的增删改查功能
-
-#### 4. 用户管理
-- 用户角色权限完整实现
-- 用户信息编辑
-- 用户头像上传
-
-#### 5. AOP日志
-- Log注解的AOP实现（LogAspect类未找到）
-
-#### 6. 控制器完善
-- ArticleController需要解除注释并完善
-- 其他资源的Controller实现（Category、Comment、Tag等）
-
-#### 7. Web配置
-- web.xml配置文件缺失（Maven已配置禁用web.xml检查）
-
-#### 8. 其他功能
-- 文件上传功能
-- 缓存机制
-- 定时任务
-- 富文本编辑器支持
-
-## 数据库模型
-
-### User表
-- id: 用户ID
-- username: 用户名
-- email: 邮箱
-- password: 密码（加密存储）
-- avatar: 头像
-- bio: 个人简介
-- role: 角色
-- status: 状态
-- createdAt: 创建时间
-- updatedAt: 更新时间
-- lastLoginAt: 最后登录时间
-- loginCount: 登录次数
-
-### Article表
-- id: 文章ID
-- title: 标题
-- content: 内容
-- excerpt: 摘要
-- authorId: 作者ID
-- categoryId: 分类ID
-- status: 状态
-- viewCount: 浏览量
-- commentCount: 评论数
-- createdAt: 创建时间
-- updatedAt: 更新时间
-- publishedAt: 发布时间
-- coverImage: 封面图片
-- isTop: 是否置顶
-- isRecommend: 是否推荐
-- tags: 标签列表（JSON格式）
-
-### Category表
-- id: 分类ID
-- name: 分类名称
-- slug: 分类标识
-- parentId: 父分类ID
-- sortOrder: 排序
-- description: 描述
-- createdAt: 创建时间
-- updatedAt: 更新时间
-- status: 状态
-- icon: 图标
-
-### Comment表
-- id: 评论ID
-- content: 评论内容
-- articleId: 文章ID
-- authorId: 作者ID
-- parentId: 父评论ID
-- status: 状态
-- createdAt: 创建时间
-- updatedAt: 更新时间
-- ipAddress: IP地址
-- userAgent: 用户代理
-- isAuthorReply: 是否作者回复
-- likes: 点赞数
-
-### Tag表
-- id: 标签ID
-- name: 标签名称
-- slug: 标签标识
-- color: 标签颜色
-- createdAt: 创建时间
-- updatedAt: 更新时间
-
-## API接口说明
-
-### 认证接口
-
-#### POST /api/auth/login
-- 描述: 用户登录
-- 参数: username, password
-- 返回: JWT令牌和用户信息
-
-#### POST /api/auth/register
-- 描述: 用户注册
-- 参数: username, email, password
-- 返回: 注册结果
-
-#### PUT /api/auth/password
-- 描述: 修改密码
-- 参数: oldPassword, newPassword
-- 需认证: 是
-
-#### GET /api/auth/profile
-- 描述: 获取用户信息
-- 需认证: 是
-
-#### POST /api/auth/logout
-- 描述: 用户登出
-- 需认证: 是
-
-### 文章接口
-
-#### GET /api/articles
-- 描述: 获取文章列表
-- 公开接口: 是
-
-#### GET /api/articles/{id}
-- 描述: 获取单篇文章
-- 公开接口: 是
-
-#### POST /api/articles
-- 描述: 创建文章
-- 参数: 文章信息
-- 需认证: 是
-
-#### PUT /api/articles/{id}
-- 描述: 更新文章
-- 参数: 文章信息
-- 需认证: 是
-
-#### DELETE /api/articles/{id}
-- 描述: 删除文章
-- 需认证: 是
-
-## 系统配置
-
-### 数据库配置（application.properties）
-```properties
-spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-spring.datasource.url=jdbc:mysql://localhost:3306/liliblog?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
-spring.datasource.username=root
-spring.datasource.password=123456
+category (分类) ──< article (文章)
 ```
 
-### MyBatis配置
-```properties
-mybatis.mapper-locations=classpath:mapper/*.xml
-mybatis.configuration.map-underscore-to-camel-case=true
-### JWT配置
-```properties
-jwt.secret=jwt.secret=mynameisliliandiamabackenddeveloper
-jwt.expire=86400000
+### 核心数据表
+
+#### user_tb 用户表
+```sql
+CREATE TABLE `user_tb` (
+  `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+  `username` VARCHAR(50) UNIQUE NOT NULL,
+  `email` VARCHAR(100) UNIQUE NOT NULL,
+  `password` VARCHAR(255) NOT NULL,
+  `nickname` VARCHAR(50) NOT NULL,
+  `avatar` VARCHAR(255),
+  `role` ENUM('ADMIN','VISITOR') DEFAULT 'VISITOR',
+  `status` TINYINT DEFAULT 1,
+  `last_login_time` DATETIME,
+  `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
 ```
 
-### 上传配置
-```properties
-upload.temp.dir=C:\Users\Administrator\AppData\Local\Temp
+#### article 文章表
+```sql
+CREATE TABLE `article` (
+  `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+  `title` VARCHAR(200) NOT NULL,
+  `slug` VARCHAR(200) UNIQUE,
+  `summary` VARCHAR(500),
+  `content` LONGTEXT NOT NULL,
+  `content_html` LONGTEXT,
+  `cover_image` VARCHAR(255),
+  `status` ENUM('DRAFT','PUBLISHED','HIDDEN','DELETED') DEFAULT 'DRAFT',
+  `view_count` INT DEFAULT 0,
+  `like_count` INT DEFAULT 0,
+  `comment_count` INT DEFAULT 0,
+  `is_top` TINYINT DEFAULT 0,
+  `is_recommend` TINYINT DEFAULT 0,
+  `author_id` BIGINT NOT NULL,
+  `category_id` BIGINT,
+  `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `publish_time` DATETIME,
+  FULLTEXT INDEX `ft_title_content` (`title`, `content`)
+);
 ```
+
+#### 其他表
+- **category**: 分类表（支持层级结构）
+- **tag**: 标签表
+- **article_tag**: 文章-标签关联表（多对多）
+- **comment**: 评论表（支持回复）
+- **like_record**: 点赞记录表
+- **chat_message**: 聊天消息表
+
+> 📄 完整建表语句请查看 [BlogInit.sql](src/main/resources/BlogInit.sql)
+
+## API接口文档
+
+### 基础信息
+- **Base URL**: `http://localhost:8080`
+- **认证方式**: Bearer Token (JWT)
+- **统一响应格式**: `ResultVO<T>`
+
+### 认证模块 `/api/auth`
+
+| 方法 | 路径 | 说明 | 认证 |
+|------|------|------|------|
+| POST | `/api/auth/login` | 用户登录 | ❌ |
+| POST | `/api/auth/register` | 用户注册 | ❌ |
+| GET | `/api/auth/captcha?email=xxx` | 获取邮箱验证码 | ❌ |
+| PUT | `/api/auth/password` | 修改密码 | ✅ |
+| GET | `/api/auth/profile` | 获取当前用户信息 | ✅ |
+| PUT | `/api/auth/update` | 更新用户信息 | ✅ |
+| POST | `/api/auth/logout` | 用户登出 | ✅ |
+
+### 文章模块 `/api/article`
+
+| 方法 | 路径 | 说明 | 认证 |
+|------|------|------|------|
+| GET | `/api/article` | 获取所有文章（分页） | ❌ |
+| GET | `/api/article/{id}` | 根据ID获取文章 | ❌ |
+| GET | `/api/article/slug/{slug}` | 根据Slug获取文章 | ❌ |
+| POST | `/api/article` | 创建文章 | ✅ |
+| PUT | `/api/article/{id}` | 更新文章 | ✅ |
+| DELETE | `/api/article/{id}` | 删除文章 | ✅ |
+
+### 公开接口 `/api/public`
+
+| 方法 | 路径 | 说明 | 认证 |
+|------|------|------|------|
+| GET | `/api/public/articles` | 获取公开文章列表 | ❌ |
+| GET | `/api/public/article/{id}` | 获取公开文章详情 | ❌ |
+| GET | `/api/public/article/slug/{slug}` | 根据Slug获取文章 | ❌ |
+| GET | `/api/public/search?keyword=xxx` | 搜索文章 | ❌ |
+
+### 分类模块 `/api/categories`
+
+| 方法 | 路径 | 说明 | 认证 |
+|------|------|------|------|
+| GET | `/api/categories` | 获取分类列表 | ❌ |
+| GET | `/api/categories/{id}` | 获取分类详情 | ❌ |
+| POST | `/api/categories` | 创建分类 | ✅ |
+| PUT | `/api/categories` | 更新分类 | ✅ |
+| DELETE | `/api/categories/{id}` | 删除分类 | ✅ |
+
+### 标签模块 `/api/tag`
+
+| 方法 | 路径 | 说明 | 认证 |
+|------|------|------|------|
+| GET | `/api/tag/list` | 获取所有标签 | ❌ |
+| GET | `/api/tag/{tagName}` | 获取标签详情 | ❌ |
+| POST | `/api/tag` | 创建标签 | ✅ |
+| PUT | `/api/tag` | 更新标签 | ✅ |
+| DELETE | `/api/tag/{tagName}` | 删除标签 | ✅ |
+
+### 评论模块 `/api/comment`
+
+| 方法 | 路径 | 说明 | 认证 |
+|------|------|------|------|
+| GET | `/api/comment` | 获取评论列表 | ❌ |
+| POST | `/api/comment` | 创建评论 | ✅ |
+
+### 聊天模块 `/api/chat` & WebSocket
+
+| 方法 | 路径 | 说明 | 认证 |
+|------|------|------|------|
+| WS | `/ws/chat` | WebSocket聊天连接 | ✅ |
+| GET | `/api/chat/messages` | 获取聊天历史记录 | ✅ |
+
+### 文件上传 `/api/file`
+
+| 方法 | 路径 | 说明 | 认证 |
+|------|------|------|------|
+| POST | `/api/file?type=xxx` | 上传文件 | ✅ |
+
+## 快速开始
+
+### 环境要求
+
+- JDK 21+
+- Maven 3.6+
+- MySQL 8.0+
+- Redis 6.0+
+
+### 安装步骤
+
+#### 1. 克隆项目
+```bash
+git clone <repository-url>
+cd liliblog-backend
+```
+
+#### 2. 配置数据库
+```bash
+# 创建数据库
+mysql -u root -p < src/main/resources/BlogInit.sql
+```
+
+#### 3. 修改配置文件
+编辑 `src/main/resources/application-dev.yml`：
+
+```yaml
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/liliblog?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: your_username
+    password: your_password
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: your_redis_password
+  mail:
+    host: smtp.qq.com
+    port: 587
+    username: your_email@qq.com
+    password: your_email_auth_code
+```
+
+#### 4. 启动项目
+```bash
+# 方式一：Maven命令行
+mvn spring-boot:run
+
+# 方式二：IDEA直接运行LiliBlogApplication.main()
+```
+
+#### 5. 验证启动
+访问：http://localhost:8080
+
+### Docker部署（可选）
+
+```dockerfile
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+COPY target/liliblog.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
+```
+
+```bash
+# 构建并运行
+docker build -t liliblog .
+docker run -p 8080:8080 liliblog
+```
+
+## 配置说明
+
+### application.yml 主配置
+```yaml
+spring:
+  profiles:
+    default: dev  # 默认使用dev环境
+```
+
+### application-dev.yml 开发环境配置
+
+| 配置项 | 说明 | 默认值 |
+|--------|------|--------|
+| spring.datasource.* | 数据库连接配置 | - |
+| spring.data.redis.* | Redis连接配置 | localhost:6379 |
+| spring.mail.* | 邮件服务配置（QQ邮箱） | - |
+| mybatis.* | MyBatis配置 | 驼峰命名转换 |
+| jwt.secret | JWT密钥 | - |
+| jwt.expire | JWT过期时间(ms) | 604800000 (7天) |
+| server.base-url | 服务基础URL | http://localhost:8080 |
+| file.upload.path | 文件上传路径 | ./uploads/ |
+| spring.servlet.multipart.max-file-size | 单文件大小限制 | 10MB |
 
 ## 开发规范
 
-### 代码规范
-- 使用Lombok减少模板代码
-- 实体类使用@Data、@NoArgsConstructor、@AllArgsConstructor注解
-- 业务方法使用@Transactional管理事务
-- 关键操作使用@Log注解记录日志
+### 代码风格
+- 使用 **Lombok** 减少样板代码（@Data, @Slf4j, @Builder等）
+- 实体类统一使用 **驼峰命名**
+- Service层添加 **@Transactional** 事务管理
+- 关键业务方法添加 **@Log** 注解记录操作日志
+- DTO用于接收参数，VO用于返回数据
+
+### 分层架构规范
+```
+Controller → Service → Mapper → Database
+    ↓           ↓
+   DTO        Entity
+    ↓           ↓
+   VO    ←  ResultVO<T>
+```
 
 ### 安全规范
-- 密码必须使用Spring Security Crypto加密存储
-- 敏感操作必须验证用户身份
-- 使用JWT进行无状态认证
-- 接口参数必须进行验证
+- 所有密码必须使用 **BCrypt** 加密存储
+- 敏感接口必须通过 **JWT拦截器** 认证
+- 输入参数使用 **@Valid** + Bean Validation 校验
+- 业务异常统一抛出 **BusinessException**
 
-### 错误处理
-- 业务逻辑错误抛出BusinessException
-- 使用GlobalExceptionHandler统一处理异常
-- API响应使用ResultVO统一格式
+### API设计规范
+- 遵循 **RESTful** 风格设计接口
+- 统一使用 **ResultVO<T>** 包装响应
+- 认证接口通过请求头传递Token：`Authorization: Bearer {token}`
+- 分页参数：`pageNum`(页码), `pageSize`(每页数量)
 
-## 部署说明
+## 系统架构图
 
-1. 配置数据库：创建名为liliblog的数据库
-2. 配置application.properties中的数据库连接信息
-3. 使用Maven构建项目：`mvn clean package`
-4. 部署生成的war包到Tomcat或其他Java Web服务器
+```
+┌─────────────────────────────────────────────────────────────┐
+│                        Client                               │
+└──────────────────────┬──────────────────────────────────────┘
+                       │ HTTP/WebSocket
+┌──────────────────────▼──────────────────────────────────────┐
+│                    Controller Layer                         │
+│  (AuthController, ArticleController, ...)                   │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────────────────────┐
+│              Interceptor Layer                              │
+│  (JwtAuthenticationInterceptor, ControllerLogInterceptor)   │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────────────────────┐
+│                   Service Layer                             │
+│  (AuthService, ArticleService, ...)                         │
+│         ↓                                                   │
+│  ┌─────────────────┐                                        │
+│  │ AOP Log Aspect  │ ← @Log 注解                           │
+│  └─────────────────┘                                        │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────────────────────┐
+│                    DAO Layer                                │
+│  (UserMapper, ArticleMapper, ...)                           │
+│         ↓                                                   │
+│  ┌─────────────────┐    ┌─────────────────┐                │
+│  │    MySQL        │    │     Redis       │                │
+│  └─────────────────┘    └─────────────────┘                │
+└─────────────────────────────────────────────────────────────┘
+                        │
+┌──────────────────────▼──────────────────────────────────────┐
+│              External Services                              │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
+│  │ SMTP Mail   │  │ WebSocket   │  │ File System │         │
+│  └─────────────┘  └─────────────┘  └─────────────┘         │
+└─────────────────────────────────────────────────────────────┘
+```
 
-## 开发注意事项
+## 特色功能详解
 
-1. 项目是基于Spring+MyBatis基础版，非SpringBoot/PLUS
-2. 所有Controller方法都应返回统一的ResultVO格式
-3. 敏感操作必须添加@Log注解记录操作日志
-4. 数据库操作必须在Service层通过事务管理
-5. 新增实体类时，需要同时创建对应的Mapper接口和XML文件
-6. 所有输入参数必须进行验证，使用Bean Validation API
-7. 接口设计应遵循RESTful风格
+### 🔐 JWT认证流程
+```
+客户端 → 登录请求 → 服务端验证 → 生成JWT Token → 返回Token
+                                                    ↓
+后续请求 → 携带Token → JwtInterceptor解析 → 注入用户信息 → 处理请求
+```
 
-## 后续开发计划
+### 💬 WebSocket聊天室
+- **端点**: `/ws/chat`
+- **认证**: 通过HandshakeInterceptor从Token中提取userId
+- **特性**:
+  - 实时消息广播
+  - 在线用户列表同步
+  - 心跳保活（PING/PONG）
+  - 消息持久化到数据库
+  - 系统事件通知（进入/离开）
 
-1. 完成文章管理增强功能
-2. 实现评论系统
-3. 完善分类和标签管理
-4. 增强用户权限管理
-5. 添加文件上传功能
-6. 实现缓存机制提升性能
-7. 添加富文本编辑器支持
-8. 实现数据统计和报表功能
+### 📧 邮箱验证码
+- 使用QQ邮箱SMTP服务发送
+- 验证码存储在Redis，5分钟过期
+- 异步发送，不阻塞主线程
+- 防止重复发送（频率限制）
+
+### 📝 Markdown渲染
+- 使用CommonMark库解析Markdown
+- 自动生成HTML摘要
+- 支持代码高亮扩展
+
+## 常见问题
+
+### Q: 如何重置管理员密码？
+A: 直接通过数据库更新user_tb表的password字段（BCrypt加密后的值）。
+
+### Q: 如何修改JWT过期时间？
+A: 在`application-dev.yml`中修改`jwt.expire`配置项（单位：毫秒）。
+
+### Q: 文件上传到哪里了？
+A: 默认存储在项目根目录的`./uploads/`文件夹下，可通过`file.upload.path`配置。
+
+### Q: Redis连接失败怎么办？
+A: 检查Redis服务是否启动，确认application-dev.yml中的Redis配置正确。
+
+## 后续规划
+
+- [ ] 引入Spring Security完善权限控制
+- [ ] 添加文章点赞/收藏功能
+- [ ] 实现评论审核工作流
+- [ ] 集成Elasticsearch全文搜索
+- [ ] 添加定时任务（文章归档、数据统计）
+- [ ] 实现文件云存储（OSS/COS）
+- [ ] 添加API限流和防刷机制
+- [ ] 完善单元测试和集成测试
+- [ ] 添加Swagger/Knife4j接口文档
+- [ ] 支持多主题切换
+
+## License
+
+MIT License
+
+## 作者
+
+**lilicould** - [GitHub](https://github.com/lilicould)
+
+---
+
+> 💡 如果这个项目对你有帮助，欢迎给个 Star ⭐
