@@ -13,6 +13,9 @@ import org.springframework.stereotype.Component;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 /**
  * 发送邮件
  */
@@ -76,7 +79,7 @@ public class MailUtil {
                 "</div>" +
                 "<div class='footer'>" +
                 "<p>此邮件为系统自动发送，请勿回复</p>" +
-                "<p>&copy; 2025 立里博客</p>" +
+                "<p>&copy; 2025-"+ LocalDate.now().getYear() +"立里博客</p>" +
                 "</div>" +
                 "</div>" +
                 "</body>" +
