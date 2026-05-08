@@ -5,7 +5,7 @@ spring:
     username: root
     password: 2243556144a
 
-# MyBatis配置
+# MyBatis-plus配置
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
@@ -17,9 +17,14 @@ mybatis-plus:
       logic-not-delete-value: 0   # 0表示未删除
       logic-delete-value: 1       # 1表示已删除
 
-
 jwt:
   # 密钥（secret）必须是经过Base64编码的32字节（或更长）的字符串
   secret: "d29zaGlsaWxpa2Vhc2RhaG5ramRoYWtqc2ZoamFrc2ZobGFrc2hmbGthc2hmbGFqc2ZrbGFoZnNhc2Zhc2Zhc2Y="
   expiration: 3600000 # 访问令牌有效期，单位毫秒，这里设为了1小时
   refresh-expiration: 604800000 # 刷新令牌有效期，单位毫秒，这里设为了7天
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs    # 自定义JSON文档路径
+  swagger-ui:
+    path: /swagger-ui.html # 自定义UI路径
