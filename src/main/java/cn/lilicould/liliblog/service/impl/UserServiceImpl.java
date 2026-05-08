@@ -1,9 +1,15 @@
 package cn.lilicould.liliblog.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import cn.lilicould.liliblog.entity.SecurityUser;
 import cn.lilicould.liliblog.entity.User;
-import cn.lilicould.liliblog.service.UserService;
 import cn.lilicould.liliblog.mapper.UserMapper;
+import cn.lilicould.liliblog.service.UserService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullUnmarked;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,8 +19,19 @@ import org.springframework.stereotype.Service;
 */
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
-    implements UserService{
+    implements UserService {
 
+    @Override
+    @NullUnmarked
+    public UserDetails loadUserByUsername(@NonNull String username) throws UsernameNotFoundException {
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getUsername, username);
+        User user = getOne(queryWrapper);
+        if (user == null) {
+            throw new UsernameNotFoundException(username);
+        }
+        return new SecurityUser(user);
+    }
 }
 
 

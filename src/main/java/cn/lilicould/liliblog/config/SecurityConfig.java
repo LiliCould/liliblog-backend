@@ -1,0 +1,68 @@
+package cn.lilicould.liliblog.config;
+
+import cn.lilicould.liliblog.filter.JwtAuthFilter;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+/**
+ * Spring Security 安全配置类
+ */
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+    /**
+     * 配置安全过滤器链
+     *
+     * @param http          HttpSecurity 对象，用于配置安全策略
+     * @param jwtAuthFilter 自定义的JWT 认证过滤器，处理 Token 验证
+     * @return SecurityFilterChain 安全过滤器链
+     */
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) {
+        http
+            // 禁用 CSRF 防护（前后端分离项目无需 CSRF Token）
+            .csrf(AbstractHttpConfigurer::disable)
+
+            // 配置会话管理为无状态模式（适用于 JWT Token 认证，不创建服务端会话）
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+            // 配置请求授权规则
+            .authorizeHttpRequests(auth -> auth
+                    // 放行无需认证的路径
+                    .requestMatchers(
+                            "/auth/**",           // 认证相关接口（登录、注册等）
+                            "/swagger-ui.html",     // Swagger UI 静态资源
+                            "/swagger-ui/**",
+                            "/v3/api-docs/**"     // OpenAPI 3.0 文档接口
+                    ).permitAll()
+
+                    // 其他所有请求都需要认证才能访问
+                    .anyRequest().authenticated()
+            )
+            .httpBasic(AbstractHttpConfigurer::disable) // 禁用HttpBasic认证：浏览器弹出用户名/密码对话框
+            .formLogin(AbstractHttpConfigurer::disable) // 禁用表单认证
+
+            // 将 JWT 过滤器添加到用户名密码过滤器之前
+            // 确保请求先经过 Token 验证，再进行其他认证流程
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+    /**
+     * 配置密码加密器
+     * @return PasswordEncoder 密码加密器实例
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}
