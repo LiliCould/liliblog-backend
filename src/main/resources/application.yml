@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: liliblog
+  profiles:
+    active: dev

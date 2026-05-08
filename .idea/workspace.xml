@@ -1,0 +1,643 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="liliblog:war exploded" />
+    </artifacts-to-build>
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="965f20b2-ed81-4183-915b-1a9c81f71a67" name="更改" comment="feat(chat): 添加聊天功能实现WebSocket实时通信&#10;&#10;- 新增ChatMessageController提供聊天消息API接口&#10;- 实现ChatWebSocketEndpoint支持实时聊天WebSocket连接&#10;- 添加ChatMessageService和ChatMessageServiceImpl业务逻辑层&#10;- 创建ChatMessageMapper数据访问层及对应的XML映射文件&#10;- 在application-dev.yml中启用MyBatis SQL日志输出&#10;- 配置JWT认证拦截器允许聊天接口公开访问">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources/data_sources_history.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/config/properties/JwtProperties.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/util/JwtUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/application-dev.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="52" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="AnnotationType" />
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;LiliCould&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/LiliCould/liliblog-backend.git&quot;,
+    &quot;accountId&quot;: &quot;2d4c8954-6cf3-4c6b-9712-c4f166d07132&quot;
+  }
+}</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/pom.xml" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/resources/mapper/ChatMessageMapper.xml" root0="SKIP_HIGHLIGHTING" />
+  </component>
+  <component name="LogFilters">
+    <option name="FILTER_ERRORS" value="false" />
+    <option name="FILTER_WARNINGS" value="false" />
+    <option name="FILTER_INFO" value="true" />
+    <option name="FILTER_DEBUG" value="true" />
+    <option name="CUSTOM_FILTER" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="useMavenConfig" value="false" />
+        <option name="userSettingsFile" value="E:\apache-maven-3.9.9\conf\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="35h5BXmmD8G6dwFLZnwlQCzuhFA" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="openDirectoriesWithSingleClick" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JUnit.ArticleMapperTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ArticleMapperTest.testSearchAll.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ArticleMapperTest.testSearchWithPagination.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ArticleMapperTest.testSelectById.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ArticleMapperTest.testSelectBySlug.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ArticleMapperTest.testUpdate.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ArticleServiceTest.testCreateArticle.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.BusinessExceptionTest.testBusinessException.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.JwtUtilTest.extractUsername.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.MapperTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.MapperTest.test.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.MarkdownTest.markdownToPlainTextTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PasswordUtilTest.testEncode.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.TagTest.testInsert.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserMapperTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserMapperTest.test.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserMapperTest.testInsert.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserMapperTest.testSelectByEmail.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserMapperTest.testSelectByUsername.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserMapperTest.testUpdateLastLoginTime.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.liliblog [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.liliblog [install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.liliblog [package].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Notification.DisplayName-DoNotAsk-DatabaseConfigFileWatcher.found&quot;: &quot;发现新的/更新的数据库配置&quot;,
+    &quot;Notification.DoNotAsk-DatabaseConfigFileWatcher.found&quot;: &quot;true&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Spring Boot.LiliBlogApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.LiliblogApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Tomcat 服务器.Tomcat 11.0.1.executor&quot;: &quot;Run&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;deletionFromPopupRequiresConfirmation&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;rewrite/v2&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/workspace/projects/liliblog/liliblog-backend/src/main/resources&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;项目&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;,
+    &quot;应用程序.com.lilicould.blog.test.executor&quot;: &quot;Run&quot;,
+    &quot;应用程序.test.executor&quot;: &quot;Run&quot;,
+    &quot;数据库脚本.BlogInit.sql.executor&quot;: &quot;Run&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
+    ],
+    &quot;RunConfigurationTargetLRU&quot;: [
+      &quot;7d4b3b86-6a40-42f6-9b0a-f6dc43c61ae4/schema/\&quot;liliblog\&quot;&quot;
+    ],
+    &quot;com.intellij.ide.scratch.LRUPopupBuilder$1/SQL Dialect&quot;: [
+      &quot;MySQL&quot;
+    ],
+    &quot;com.intellij.ide.scratch.LRUPopupBuilder$1/SQL 方言&quot;: [
+      &quot;MySQL&quot;
+    ]
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\workspace\projects\liliblog\liliblog-backend\src\main\resources" />
+      <recent name="E:\workspace\projects\liliblog\liliblog-backend" />
+      <recent name="C:\Users\Lili\Desktop\javaCodes\liliblog\src\main\resources" />
+      <recent name="C:\Users\Lili\Desktop\javaCodes\liliblog\src\main\resources\static\avatar" />
+      <recent name="C:\Users\Lili\Desktop\javaCodes\liliblog\src\main\resources\mapper" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Lili\Desktop\javaCodes\liliblog\src\main\resources" />
+      <recent name="C:\Users\Lili\Desktop\javaCodes\liliblog" />
+      <recent name="C:\Users\Lili\Desktop\javaCodes\liliblog\src\main\resources\static" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.JwtUtilTest">
+    <configuration name="JwtUtilTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="liliblog" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="cn.lilicould.liliblog.util.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="cn.lilicould.liliblog.util" />
+      <option name="MAIN_CLASS_NAME" value="cn.lilicould.liliblog.util.JwtUtilTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="JwtUtilTest.testIsTokenExpired_NotExpired" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="liliblog" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="cn.lilicould.liliblog.util.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="cn.lilicould.liliblog.util" />
+      <option name="MAIN_CLASS_NAME" value="cn.lilicould.liliblog.util.JwtUtilTest" />
+      <option name="METHOD_NAME" value="testIsTokenExpired_NotExpired" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="LiliblogApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="liliblog" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="cn.lilicould.liliblog.LiliblogApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="cn.lilicould.liliblog.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" ALTERNATIVE_JRE_ENABLED="false">
+      <deployment />
+      <server-settings>
+        <option name="BASE_DIRECTORY_NAME" value="3a54c89a-6c83-4924-bd59-1b324cc1c80d" />
+      </server-settings>
+      <predefined_log_file enabled="true" id="Tomcat" />
+      <predefined_log_file enabled="true" id="Tomcat Catalina" />
+      <predefined_log_file id="Tomcat Manager" />
+      <predefined_log_file id="Tomcat Host Manager" />
+      <predefined_log_file id="Tomcat Localhost Access" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="9491" />
+      </RunnerSettings>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Debug">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Profile">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Run">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.JwtUtilTest" />
+        <item itemvalue="JUnit.JwtUtilTest.testIsTokenExpired_NotExpired" />
+        <item itemvalue="Spring Boot.LiliblogApplication" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.18034.62" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.18034.62" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="965f20b2-ed81-4183-915b-1a9c81f71a67" name="更改" comment="" />
+      <created>1750005438231</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1750005438231</updated>
+      <workItem from="1763549332871" duration="11672000" />
+      <workItem from="1763563511560" duration="6256000" />
+      <workItem from="1763569825137" duration="7000" />
+      <workItem from="1763627613555" duration="15294000" />
+      <workItem from="1763644344544" duration="14227000" />
+      <workItem from="1763660259061" duration="2158000" />
+      <workItem from="1763698613247" duration="3228000" />
+      <workItem from="1763712497735" duration="5494000" />
+      <workItem from="1763718285269" duration="127000" />
+      <workItem from="1763726120533" duration="6256000" />
+      <workItem from="1763738362877" duration="2193000" />
+      <workItem from="1763789539447" duration="116000" />
+      <workItem from="1763789670455" duration="7193000" />
+      <workItem from="1763796896869" duration="1146000" />
+      <workItem from="1763800496429" duration="252000" />
+      <workItem from="1763874696039" duration="7208000" />
+      <workItem from="1763974028751" duration="5130000" />
+      <workItem from="1763983702768" duration="9413000" />
+      <workItem from="1763995094002" duration="1470000" />
+      <workItem from="1764029967793" duration="12844000" />
+      <workItem from="1764056586914" duration="3819000" />
+      <workItem from="1764060432921" duration="2310000" />
+      <workItem from="1764075576558" duration="2015000" />
+      <workItem from="1764159835829" duration="5995000" />
+      <workItem from="1764208392441" duration="130000" />
+      <workItem from="1764306954911" duration="642000" />
+      <workItem from="1764309696092" duration="946000" />
+      <workItem from="1764470025972" duration="886000" />
+      <workItem from="1764569915726" duration="522000" />
+      <workItem from="1764572689204" duration="69000" />
+      <workItem from="1764574216829" duration="207000" />
+      <workItem from="1764601989280" duration="1109000" />
+      <workItem from="1764603122266" duration="1155000" />
+      <workItem from="1764644965914" duration="2795000" />
+      <workItem from="1764647778025" duration="13173000" />
+      <workItem from="1764677981715" duration="2677000" />
+      <workItem from="1764681720490" duration="1442000" />
+      <workItem from="1764741882700" duration="144000" />
+      <workItem from="1764816965440" duration="694000" />
+      <workItem from="1765196667003" duration="1426000" />
+      <workItem from="1765282248361" duration="2491000" />
+      <workItem from="1765285071057" duration="5647000" />
+      <workItem from="1765417990431" duration="595000" />
+      <workItem from="1765418609252" duration="93000" />
+      <workItem from="1765418719683" duration="272000" />
+      <workItem from="1765626703156" duration="62000" />
+      <workItem from="1765811411897" duration="226000" />
+      <workItem from="1765811660241" duration="422000" />
+      <workItem from="1765958516128" duration="1077000" />
+      <workItem from="1766326868600" duration="177000" />
+      <workItem from="1766391437268" duration="838000" />
+      <workItem from="1767353589453" duration="11110000" />
+      <workItem from="1767419683714" duration="8812000" />
+      <workItem from="1767430063453" duration="9174000" />
+      <workItem from="1767439469990" duration="1157000" />
+      <workItem from="1767535276812" duration="3304000" />
+      <workItem from="1767539847734" duration="767000" />
+      <workItem from="1767866197936" duration="1815000" />
+      <workItem from="1767872769248" duration="9000" />
+      <workItem from="1767875557467" duration="648000" />
+      <workItem from="1768204946332" duration="19000" />
+      <workItem from="1768213572759" duration="8511000" />
+      <workItem from="1768290488750" duration="7487000" />
+      <workItem from="1768305829013" duration="473000" />
+      <workItem from="1768310740753" duration="3554000" />
+      <workItem from="1768373764390" duration="10008000" />
+      <workItem from="1768399166302" duration="124000" />
+      <workItem from="1768399392328" duration="1451000" />
+      <workItem from="1768407479544" duration="3022000" />
+      <workItem from="1768411753605" duration="1896000" />
+      <workItem from="1768481390589" duration="704000" />
+      <workItem from="1768482106265" duration="2984000" />
+      <workItem from="1768495746087" duration="484000" />
+      <workItem from="1768547823901" duration="1297000" />
+      <workItem from="1768549137400" duration="429000" />
+      <workItem from="1768549625856" duration="1709000" />
+      <workItem from="1768729868536" duration="66000" />
+      <workItem from="1775036217413" duration="6109000" />
+      <workItem from="1775054152983" duration="2229000" />
+      <workItem from="1775092270190" duration="11000" />
+      <workItem from="1775182486638" duration="7904000" />
+      <workItem from="1775192319754" duration="132000" />
+      <workItem from="1775199000895" duration="1070000" />
+      <workItem from="1775200222849" duration="11913000" />
+      <workItem from="1775217239316" duration="96000" />
+      <workItem from="1775526913756" duration="5781000" />
+      <workItem from="1775550911617" duration="27445000" />
+      <workItem from="1775610582225" duration="7097000" />
+      <workItem from="1775624402990" duration="4834000" />
+      <workItem from="1775655563991" duration="520000" />
+      <workItem from="1775806079889" duration="53000" />
+      <workItem from="1775808189457" duration="1263000" />
+      <workItem from="1775889679160" duration="516000" />
+      <workItem from="1776675953180" duration="4731000" />
+      <workItem from="1776921042921" duration="1356000" />
+      <workItem from="1776923715371" duration="251000" />
+      <workItem from="1777006181671" duration="8251000" />
+      <workItem from="1777526581459" duration="13000" />
+      <workItem from="1777625012179" duration="641000" />
+      <workItem from="1777981957441" duration="807000" />
+      <workItem from="1778032775914" duration="43000" />
+      <workItem from="1778076031799" duration="1241000" />
+      <workItem from="1778077540222" duration="136000" />
+      <workItem from="1778078029004" duration="2263000" />
+      <workItem from="1778216720103" duration="1546000" />
+      <workItem from="1778218339125" duration="1305000" />
+      <workItem from="1778219717270" duration="3746000" />
+    </task>
+    <task id="LOCAL-00001" summary="没改什么">
+      <option name="closed" value="true" />
+      <created>1764603529060</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1764603529060</updated>
+    </task>
+    <task id="LOCAL-00002" summary="feat(article): 添加获取所有公开文章的功能&#10;&#10;- 在 ArticleService 中新增 getAllPublicArticles 方法&#10;- 新增查询所有公开文章列表接口&#10;- 实现分页查询逻辑，支持 pageSize 和 pageNum 参数&#10;- 优化 MyBatis 查询语句，动态添加 LIMIT 和 OFFSET">
+      <option name="closed" value="true" />
+      <created>1764648230908</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1764648230909</updated>
+    </task>
+    <task id="LOCAL-00003" summary="feat(article): 添加文章管理功能模块&#10;&#10;- 新增 ArticleController 提供完整的 REST API 接口&#10;- 实现文章的增删改查、分页查询和搜索功能&#10;- 添加 ArticleMapper 数据访问层接口定义&#10;- 创建 ArticleMapper.xml SQL 映射文件&#10;- 实现 ArticleServiceImpl 业务逻辑处理&#10;- 集成 JWT 认证拦截器进行权限控制&#10;- 添加 BaseContextUtil 线程本地存储工具类&#10;- 修复 TagController 接口路径映射问题&#10;- 优化 TagServiceImpl 添加日志记录功能">
+      <option name="closed" value="true" />
+      <created>1775046854241</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1775046854241</updated>
+    </task>
+    <task id="LOCAL-00004" summary="fix(article): 修复文章状态过滤逻辑&#10;&#10;- 添加了日志注解支持&#10;- 将文章状态从&quot;PUBLISH&quot;更正为&quot;PUBLISHED&quot;&#10;- 确保搜索功能正确过滤已发布的文章">
+      <option name="closed" value="true" />
+      <created>1775047229959</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1775047229959</updated>
+    </task>
+    <task id="LOCAL-00005" summary="feat(article): 添加作者昵称字段支持&#10;&#10;- 在 Article 实体中新增 authorNickname 字段&#10;- 在文章服务实现中设置作者昵称的获取逻辑&#10;- 当作者存在时使用其昵称，否则显示默认值&quot;已注销用户&quot;">
+      <option name="closed" value="true" />
+      <created>1775047785824</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1775047785824</updated>
+    </task>
+    <task id="LOCAL-00006" summary="refactor(article): 优化文章信息填充逻辑&#10;&#10;- 添加Category实体类导入&#10;- 提取authorId和categoryId变量避免重复查询&#10;- 使用三元运算符简化用户和分类查询逻辑&#10;- 优化作者姓名和昵称的空值处理逻辑&#10;- 优化分类名称的空值处理逻辑&#10;- 简化标签列表的空值判断和设置逻辑&#10;- 统一已注销用户和未知分类的默认值处理">
+      <option name="closed" value="true" />
+      <created>1775058594218</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1775058594218</updated>
+    </task>
+    <task id="LOCAL-00007" summary="refactor(config): 重构应用配置结构并优化文件上传功能&#10;&#10;- 将 application.yml 中的环境配置分离到独立的 application-dev.yml 文件&#10;- 配置文件中添加开发环境 profile 默认设置&#10;- 修改文件上传路径配置为相对路径 ./uploads/&#10;- 在文件上传服务中添加日志记录功能和基础URL配置&#10;- 更新文件上传逻辑以返回完整的访问URL&#10;- 调整JWT拦截器配置，允许标签和分类接口的公共访问&#10;- 修改日志配置文件中的日志存储路径&#10;- 添加静态资源处理器以支持本地文件访问&#10;- 优化文件上传服务中的路径处理逻辑">
+      <option name="closed" value="true" />
+      <created>1775185714747</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1775185714747</updated>
+    </task>
+    <task id="LOCAL-00008" summary="feat(auth): 添加用户信息修改功能&#10;&#10;- 在AuthController中添加update端点用于修改用户信息&#10;- 在AuthService接口中定义updateProfile方法&#10;- 在AuthServiceImpl中实现用户信息修改逻辑&#10;- 创建UserUpdateDTO数据传输对象&#10;- 更新UserMapper.xml移除用户名字段的更新限制&#10;- 修改文件上传逻辑保留原始文件扩展名&#10;- 调整日志配置文件路径为相对路径">
+      <option name="closed" value="true" />
+      <created>1775199091789</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1775199091791</updated>
+    </task>
+    <task id="LOCAL-00009" summary="feat(auth): 添加用户认证模块和环境配置&#10;&#10;- 新增开发环境和生产环境配置文件&#10;- 实现用户认证控制器、服务接口及其实现&#10;- 添加邮件发送工具类和验证码功能&#10;- 集成Redis配置和工具类用于缓存验证码&#10;- 完善JWT认证和密码加密功能">
+      <option name="closed" value="true" />
+      <created>1775210741450</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1775210741450</updated>
+    </task>
+    <task id="LOCAL-00010" summary="feat(auth): 添加用户注册验证码验证功能&#10;&#10;- 在用户注册流程中集成验证码校验机制&#10;- 添加注册DTO中验证码字段验证&#10;- 集成Redis存储和删除验证码功能&#10;- 更新JWT认证拦截器跳过验证码接口验证&#10;- 移除用户更新DTO中的邮箱字段&#10;- 优化Redis工具类使用StringRedisTemplate替代RedisTemplate&#10;- 添加异步发送验证码邮件的日志记录">
+      <option name="closed" value="true" />
+      <created>1775213215684</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1775213215684</updated>
+    </task>
+    <task id="LOCAL-00011" summary="fix(article): 添加XSS防护机制&#10;&#10;- 在文章创建和更新过程中对内容进行HTML转义处理&#10;- 新增MarkdownUtil.escapeHtml方法用于转义HTML特殊字符&#10;- 防止恶意脚本注入攻击，提升系统安全性&#10;- 配置生产环境数据库、邮件、Redis等必要参数">
+      <option name="closed" value="true" />
+      <created>1775551123383</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1775551123383</updated>
+    </task>
+    <task id="LOCAL-00012" summary="feat(chat): 添加聊天室功能和数据库初始化脚本&#10;&#10;- 创建聊天消息数据表和相关实体类&#10;- 实现WebSocket实时聊天功能和消息广播机制&#10;- 添加聊天消息控制器和数据传输对象&#10;- 集成JWT身份验证和用户IP地址获取&#10;- 配置WebSocket握手拦截器和端点管理&#10;- 初始化博客系统数据库结构和表关系">
+      <option name="closed" value="true" />
+      <created>1775566188708</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1775566188708</updated>
+    </task>
+    <task id="LOCAL-00013" summary="feat(chat): 添加聊天消息功能模块&#10;&#10;- 移除评论控制器中的请求参数依赖&#10;- 创建聊天消息实体对应的数据库操作映射器接口&#10;- 实现聊天消息的基础增删改查数据库操作&#10;- 配置聊天消息数据表的MyBatis映射文件&#10;- 定义聊天消息的基本数据结构和字段映射关系">
+      <option name="closed" value="true" />
+      <created>1775566695813</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1775566695813</updated>
+    </task>
+    <task id="LOCAL-00014" summary="feat(chat): 添加聊天功能实现WebSocket实时通信&#10;&#10;- 新增ChatMessageController提供聊天消息API接口&#10;- 实现ChatWebSocketEndpoint支持实时聊天WebSocket连接&#10;- 添加ChatMessageService和ChatMessageServiceImpl业务逻辑层&#10;- 创建ChatMessageMapper数据访问层及对应的XML映射文件&#10;- 在application-dev.yml中启用MyBatis SQL日志输出&#10;- 配置JWT认证拦截器允许聊天接口公开访问">
+      <option name="closed" value="true" />
+      <created>1775618172829</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1775618172831</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="origin/main" />
+                </option>
+              </RecentGroup>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="main" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+        <entry key="User">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="*" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="没改什么" />
+    <MESSAGE value="feat(article): 添加获取所有公开文章的功能&#10;&#10;- 在 ArticleService 中新增 getAllPublicArticles 方法&#10;- 新增查询所有公开文章列表接口&#10;- 实现分页查询逻辑，支持 pageSize 和 pageNum 参数&#10;- 优化 MyBatis 查询语句，动态添加 LIMIT 和 OFFSET" />
+    <MESSAGE value="评论功能，开发中......" />
+    <MESSAGE value="feat(article): 添加文章管理功能模块&#10;&#10;- 新增 ArticleController 提供完整的 REST API 接口&#10;- 实现文章的增删改查、分页查询和搜索功能&#10;- 添加 ArticleMapper 数据访问层接口定义&#10;- 创建 ArticleMapper.xml SQL 映射文件&#10;- 实现 ArticleServiceImpl 业务逻辑处理&#10;- 集成 JWT 认证拦截器进行权限控制&#10;- 添加 BaseContextUtil 线程本地存储工具类&#10;- 修复 TagController 接口路径映射问题&#10;- 优化 TagServiceImpl 添加日志记录功能" />
+    <MESSAGE value="fix(article): 修复文章状态过滤逻辑&#10;&#10;- 添加了日志注解支持&#10;- 将文章状态从&quot;PUBLISH&quot;更正为&quot;PUBLISHED&quot;&#10;- 确保搜索功能正确过滤已发布的文章" />
+    <MESSAGE value="feat(article): 添加作者昵称字段支持&#10;&#10;- 在 Article 实体中新增 authorNickname 字段&#10;- 在文章服务实现中设置作者昵称的获取逻辑&#10;- 当作者存在时使用其昵称，否则显示默认值&quot;已注销用户&quot;" />
+    <MESSAGE value="refactor(article): 优化文章信息填充逻辑&#10;&#10;- 添加Category实体类导入&#10;- 提取authorId和categoryId变量避免重复查询&#10;- 使用三元运算符简化用户和分类查询逻辑&#10;- 优化作者姓名和昵称的空值处理逻辑&#10;- 优化分类名称的空值处理逻辑&#10;- 简化标签列表的空值判断和设置逻辑&#10;- 统一已注销用户和未知分类的默认值处理" />
+    <MESSAGE value="refactor(config): 重构应用配置结构并优化文件上传功能&#10;&#10;- 将 application.yml 中的环境配置分离到独立的 application-dev.yml 文件&#10;- 配置文件中添加开发环境 profile 默认设置&#10;- 修改文件上传路径配置为相对路径 ./uploads/&#10;- 在文件上传服务中添加日志记录功能和基础URL配置&#10;- 更新文件上传逻辑以返回完整的访问URL&#10;- 调整JWT拦截器配置，允许标签和分类接口的公共访问&#10;- 修改日志配置文件中的日志存储路径&#10;- 添加静态资源处理器以支持本地文件访问&#10;- 优化文件上传服务中的路径处理逻辑" />
+    <MESSAGE value="feat(auth): 添加用户信息修改功能&#10;&#10;- 在AuthController中添加update端点用于修改用户信息&#10;- 在AuthService接口中定义updateProfile方法&#10;- 在AuthServiceImpl中实现用户信息修改逻辑&#10;- 创建UserUpdateDTO数据传输对象&#10;- 更新UserMapper.xml移除用户名字段的更新限制&#10;- 修改文件上传逻辑保留原始文件扩展名&#10;- 调整日志配置文件路径为相对路径" />
+    <MESSAGE value="feat(auth): 添加用户认证模块和环境配置&#10;&#10;- 新增开发环境和生产环境配置文件&#10;- 实现用户认证控制器、服务接口及其实现&#10;- 添加邮件发送工具类和验证码功能&#10;- 集成Redis配置和工具类用于缓存验证码&#10;- 完善JWT认证和密码加密功能" />
+    <MESSAGE value="feat(auth): 添加用户注册验证码验证功能&#10;&#10;- 在用户注册流程中集成验证码校验机制&#10;- 添加注册DTO中验证码字段验证&#10;- 集成Redis存储和删除验证码功能&#10;- 更新JWT认证拦截器跳过验证码接口验证&#10;- 移除用户更新DTO中的邮箱字段&#10;- 优化Redis工具类使用StringRedisTemplate替代RedisTemplate&#10;- 添加异步发送验证码邮件的日志记录" />
+    <MESSAGE value="fix(article): 添加XSS防护机制&#10;&#10;- 在文章创建和更新过程中对内容进行HTML转义处理&#10;- 新增MarkdownUtil.escapeHtml方法用于转义HTML特殊字符&#10;- 防止恶意脚本注入攻击，提升系统安全性&#10;- 配置生产环境数据库、邮件、Redis等必要参数" />
+    <MESSAGE value="feat(chat): 添加聊天室功能和数据库初始化脚本&#10;&#10;- 创建聊天消息数据表和相关实体类&#10;- 实现WebSocket实时聊天功能和消息广播机制&#10;- 添加聊天消息控制器和数据传输对象&#10;- 集成JWT身份验证和用户IP地址获取&#10;- 配置WebSocket握手拦截器和端点管理&#10;- 初始化博客系统数据库结构和表关系" />
+    <MESSAGE value="feat(chat): 添加聊天消息功能模块&#10;&#10;- 移除评论控制器中的请求参数依赖&#10;- 创建聊天消息实体对应的数据库操作映射器接口&#10;- 实现聊天消息的基础增删改查数据库操作&#10;- 配置聊天消息数据表的MyBatis映射文件&#10;- 定义聊天消息的基本数据结构和字段映射关系" />
+    <MESSAGE value="feat(chat): 添加聊天功能实现WebSocket实时通信&#10;&#10;- 新增ChatMessageController提供聊天消息API接口&#10;- 实现ChatWebSocketEndpoint支持实时聊天WebSocket连接&#10;- 添加ChatMessageService和ChatMessageServiceImpl业务逻辑层&#10;- 创建ChatMessageMapper数据访问层及对应的XML映射文件&#10;- 在application-dev.yml中启用MyBatis SQL日志输出&#10;- 配置JWT认证拦截器允许聊天接口公开访问" />
+    <MESSAGE value="chore 发送邮件底部时间更正" />
+    <option name="LAST_COMMIT_MESSAGE" value="chore 发送邮件底部时间更正" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="com.lilicould.blog.exception.BusinessException" package="com.lilicould.blog.exception" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
