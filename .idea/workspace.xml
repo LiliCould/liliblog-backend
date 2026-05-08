@@ -13,6 +13,8 @@
       <change afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/common/enums/CodeEnum.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/common/result/Result.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/config/handler/BaseMetaObjectHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/config/mybatis/BaseMetaObjectHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/constant/StatusConstant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/common/constant/StatusConstant.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/entity/SecurityUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/entity/SecurityUser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/enums/RoleType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/common/enums/RoleType.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/filter/JwtAuthFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/filter/JwtAuthFilter.java" afterDir="false" />

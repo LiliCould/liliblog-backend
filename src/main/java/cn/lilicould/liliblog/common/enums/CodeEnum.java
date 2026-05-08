@@ -6,29 +6,31 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum CodeEnum {
-    SUCCESS(200, "成功"),
-    ACCOUNT_NOT_MATCH_PASSWORD(401, "账号或密码错误"),
-    ERROR(500, "失败"),
-    Token_IS_NOT_IN_HEADER(100001, "请求头中不存在token"),
-    TOKEN_IS_ERROR(100002, "token验证失败:token错误，可能被篡改"),
-    TOKEN_IS_NONE_MATCH(100003, "token验证失败，token不匹配"),
-    TOKEN_ID_NOT_EXIST(100004, "token验证失败，token不存在"),
-    SAVA_ERROR(100005, "保存到数据库失败"),
-    UPDATE_ERROR(100006, "更新数据库失败"),
-    DELETE_ERROR(100007,"删除失败" ),
-    FOREIGN_KEY_CONSTRAINT_VIOLATION(100008, "当前数据被其他记录引用，无法删除，若删除的数据为用户数据，可尝试禁用账号。"),  // 外键约束
-    DUPLICATE_ENTRY_FAIL(100009, "存在重复数据"),
-    DATABASE_ERROR(100010, "数据库异常"),
-    SYSTEM_ERROR(100011, "系统异常"),
-    NO_RESOURCE_FOUND(100012, "未找到资源"),
-    QUERY_ERROR(100013,"查询失败"),
-    NO_THIS_DICT_VALUE(100014, "数据库中无此字典"),
-    NO_THIS_PRODUCT(100015,"数据库中无此产品"),
+    // 成功
+    SUCCESS(0, "成功"),
 
-    THE_PHONE_IS_EXIST(100016, "手机号已存在"),
-    USER_ERROR(100017, "用户异常"),
-    PARAMETER_VALIDATION_ERROR(100018, "参数验证失败"),
-    AUTHORIZATION_DENIED_ERROR(100019,"权限不足");
+    // 通用错误 1xxx
+    PARAM_MISSING(1001, "缺少必要参数"),
+    PARAM_FORMAT_ERROR(1002, "参数格式错误"),
+    REQUEST_METHOD_NOT_SUPPORTED(1003, "请求方法不支持"),
+
+    // 认证与用户 2xxx
+    NOT_LOGGED_IN(2001, "请先登录"),
+    ACCOUNT_OR_PASSWORD_ERROR(2002, "账号或密码错误"),
+    USER_NOT_FOUND(2003, "用户不存在"),
+    NO_PERMISSION(2004, "无权限执行此操作"),
+    TOKEN_EXPIRED(2005, "登录已过期，请重新登录"),
+
+    // 资源操作错误 3xxx
+    ARTICLE_NOT_FOUND(3001, "文章不存在"),
+    CATEGORY_ALREADY_EXISTS(3002, "分类已存在"),
+    COMMENT_EMPTY(3003, "评论内容不能为空"),
+    CATEGORY_NOT_FOUND(3004, "分类不存在"),
+
+    // 系统错误 5xxx
+    SYSTEM_ERROR(5000, "系统繁忙，请稍后重试"),
+    DB_ERROR(5001, "数据库错误"),
+    FILE_UPLOAD_FAIL(5002, "文件上传失败");
 
     private final Integer code;
     private final String message;

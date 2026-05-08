@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 public class Result<T> implements Serializable {
 
-    private Integer code; //编码：1成功，0和其它数字为失败
+    private Integer code; // 0代表成功，其他数字代表失败
     private String msg; //错误信息
     private T data; //数据
 
@@ -17,8 +17,8 @@ public class Result<T> implements Serializable {
     public static <T> Result<T> success(T object) {
         Result<T> result = new Result<T>();
         result.data = object;
-        result.code = 200;
-        result.msg = "成功";
+        result.code = CodeEnum.SUCCESS.getCode();
+        result.msg = CodeEnum.SUCCESS.getMessage();
         return result;
     }
 
