@@ -2,7 +2,7 @@ package cn.lilicould.liliblog.filter;
 
 import cn.lilicould.liliblog.entity.SecurityUser;
 import cn.lilicould.liliblog.service.UserService;
-import cn.lilicould.liliblog.util.JwtUtil;
+import cn.lilicould.liliblog.common.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

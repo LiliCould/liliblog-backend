@@ -1,4 +1,4 @@
-package cn.lilicould.liliblog.constant;
+package cn.lilicould.liliblog.common.constant;
 
 public class StatusConstant {
     // ========== 通用状态 ==========

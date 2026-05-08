@@ -1,4 +1,4 @@
-package cn.lilicould.liliblog.config.handler;
+package cn.lilicould.liliblog.config.mybatis;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import org.apache.ibatis.reflection.MetaObject;

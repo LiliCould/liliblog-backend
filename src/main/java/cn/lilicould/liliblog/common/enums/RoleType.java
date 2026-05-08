@@ -1,4 +1,4 @@
-package cn.lilicould.liliblog.enums;
+package cn.lilicould.liliblog.common.enums;
 
 import lombok.Getter;
 

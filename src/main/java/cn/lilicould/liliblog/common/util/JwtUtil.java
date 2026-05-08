@@ -1,4 +1,4 @@
-package cn.lilicould.liliblog.util;
+package cn.lilicould.liliblog.common.util;
 
 import cn.lilicould.liliblog.config.properties.JwtProperties;
 import io.jsonwebtoken.Claims;

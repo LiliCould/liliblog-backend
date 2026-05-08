@@ -1,5 +1,6 @@
 package cn.lilicould.liliblog.util;
 
+import cn.lilicould.liliblog.common.util.JwtUtil;
 import cn.lilicould.liliblog.config.properties.JwtProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
