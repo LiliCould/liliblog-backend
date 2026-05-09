@@ -1,6 +1,6 @@
 package cn.lilicould.liliblog.service;
 
-import cn.lilicould.liliblog.entity.Tag;
+import cn.lilicould.liliblog.pojo.entity.Tag;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

@@ -1,7 +1,7 @@
 package cn.lilicould.liliblog.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import cn.lilicould.liliblog.entity.Comment;
+import cn.lilicould.liliblog.pojo.entity.Comment;
 import cn.lilicould.liliblog.service.CommentService;
 import cn.lilicould.liliblog.mapper.CommentMapper;
 import org.springframework.stereotype.Service;

@@ -37,11 +37,15 @@ public class SecurityConfig {
             // 配置请求授权规则
             .authorizeHttpRequests(auth -> auth
                     // 放行无需认证的路径
+                    .requestMatchers("/auth/**").permitAll() // 认证相关接口（登录、注册等）
+                    // 放行 Knife4j 相关静态资源
                     .requestMatchers(
-                            "/auth/**",           // 认证相关接口（登录、注册等）
-                            "/swagger-ui.html",     // Swagger UI 静态资源
+                            "/doc.html",
+                            "/webjars/**",
+                            "/v3/api-docs/**",
                             "/swagger-ui/**",
-                            "/v3/api-docs/**"     // OpenAPI 3.0 文档接口
+                            "/v3/api-docs/swagger-config",
+                            "/favicon.ico"
                     ).permitAll()
 
                     // 其他所有请求都需要认证才能访问

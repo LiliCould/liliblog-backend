@@ -1,7 +1,7 @@
 package cn.lilicould.liliblog.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import cn.lilicould.liliblog.entity.ArticleTag;
+import cn.lilicould.liliblog.pojo.entity.ArticleTag;
 import cn.lilicould.liliblog.service.ArticleTagService;
 import cn.lilicould.liliblog.mapper.ArticleTagMapper;
 import org.springframework.stereotype.Service;

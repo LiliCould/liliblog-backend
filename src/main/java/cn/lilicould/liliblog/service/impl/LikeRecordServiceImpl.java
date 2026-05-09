@@ -1,7 +1,7 @@
 package cn.lilicould.liliblog.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import cn.lilicould.liliblog.entity.LikeRecord;
+import cn.lilicould.liliblog.pojo.entity.LikeRecord;
 import cn.lilicould.liliblog.service.LikeRecordService;
 import cn.lilicould.liliblog.mapper.LikeRecordMapper;
 import org.springframework.stereotype.Service;

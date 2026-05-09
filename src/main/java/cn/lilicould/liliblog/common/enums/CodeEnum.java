@@ -20,6 +20,7 @@ public enum CodeEnum {
     USER_NOT_FOUND(2003, "用户不存在"),
     NO_PERMISSION(2004, "无权限执行此操作"),
     TOKEN_EXPIRED(2005, "登录已过期，请重新登录"),
+    ACCOUNT_DISABLED(2006,"账号被禁用，请联系管理员"),
 
     // 资源操作错误 3xxx
     ARTICLE_NOT_FOUND(3001, "文章不存在"),

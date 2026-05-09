@@ -1,4 +1,4 @@
-package cn.lilicould.liliblog.entity.base;
+package cn.lilicould.liliblog.pojo.entity.base;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;

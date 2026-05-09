@@ -3,7 +3,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/liliblog?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
     username: root
-    password: 2243556144a
+    password: 123456
 
 # MyBatis-plus配置
 mybatis-plus:
@@ -28,3 +28,7 @@ springdoc:
     path: /v3/api-docs    # 自定义JSON文档路径
   swagger-ui:
     path: /swagger-ui.html # 自定义UI路径
+    enabled: true
+knife4j:
+  enable: true
+  production: false # 生产环境禁用

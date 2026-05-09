@@ -1,6 +1,6 @@
 package cn.lilicould.liliblog.mapper;
 
-import cn.lilicould.liliblog.entity.ChatMessage;
+import cn.lilicould.liliblog.pojo.entity.ChatMessage;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

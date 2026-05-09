@@ -1,6 +1,6 @@
-package cn.lilicould.liliblog.entity;
+package cn.lilicould.liliblog.pojo.entity;
 
-import cn.lilicould.liliblog.entity.base.FullBaseEntity;
+import cn.lilicould.liliblog.pojo.entity.base.FullBaseEntity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;

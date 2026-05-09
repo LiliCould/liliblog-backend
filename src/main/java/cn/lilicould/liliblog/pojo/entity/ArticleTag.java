@@ -1,6 +1,6 @@
-package cn.lilicould.liliblog.entity;
+package cn.lilicould.liliblog.pojo.entity;
 
-import cn.lilicould.liliblog.entity.base.FullBaseEntity;
+import cn.lilicould.liliblog.pojo.entity.base.CreateOnlyEntity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -13,37 +13,32 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 标签表
- * @TableName tag
+ * 文章标签关联表
+ * @TableName article_tag
  */
-@TableName(value ="tag")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Data
-public class Tag extends FullBaseEntity implements Serializable {
+@TableName(value ="article_tag")
+public class ArticleTag extends CreateOnlyEntity implements Serializable {
     /**
-     * 标签ID
+     * 关联ID
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
-     * 标签名称
+     * 文章ID
      */
-    @TableField(value = "name")
-    private String name;
+    @TableField(value = "article_id")
+    private Long articleId;
 
     /**
-     * 标签颜色
+     * 标签ID
      */
-    @TableField(value = "color")
-    private String color;
+    @TableField(value = "tag_id")
+    private Long tagId;
 
-    /**
-     * 逻辑删除：0-未删除，1-已删除
-     */
-    @TableField(value = "deleted")
-    private Integer deleted;
 
     @Serial
     @TableField(exist = false)

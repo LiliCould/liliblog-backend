@@ -1,7 +1,7 @@
 package cn.lilicould.liliblog.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import cn.lilicould.liliblog.entity.ChatMessage;
+import cn.lilicould.liliblog.pojo.entity.ChatMessage;
 import cn.lilicould.liliblog.service.ChatMessageService;
 import cn.lilicould.liliblog.mapper.ChatMessageMapper;
 import org.springframework.stereotype.Service;

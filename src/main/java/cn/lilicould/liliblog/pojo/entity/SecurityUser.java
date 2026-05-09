@@ -1,4 +1,4 @@
-package cn.lilicould.liliblog.entity;
+package cn.lilicould.liliblog.pojo.entity;
 
 import cn.lilicould.liliblog.common.constant.StatusConstant;
 import cn.lilicould.liliblog.common.enums.RoleType;
@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -28,6 +29,7 @@ public class SecurityUser implements UserDetails, Serializable {
     private final String avatar;
     private final Integer role;
     private final Integer status;
+    private final LocalDateTime lastLoginTime;
     private final Collection<? extends GrantedAuthority> authorities;
 
     public SecurityUser(User user) {
@@ -39,11 +41,26 @@ public class SecurityUser implements UserDetails, Serializable {
         this.avatar = user.getAvatar();
         this.role = user.getRole();
         this.status = user.getStatus();
+        this.lastLoginTime = user.getLastLoginTime();
         this.authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + getRoleName(user.getRole())));
     }
 
     private String getRoleName(Integer role) {
         return RoleType.getRoleByCode(role);
+    }
+
+    public User toUser() {
+        return User.builder()
+                .id(this.id)
+                .username(this.username)
+                .password(this.password)
+                .email(this.email)
+                .nickname(this.nickname)
+                .avatar(this.avatar)
+                .role(this.role)
+                .status(this.status)
+                .lastLoginTime(this.lastLoginTime)
+                .build();
     }
 
     @Override

@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.lilicould.liliblog.mapper.UserMapper">
 
-    <resultMap id="BaseResultMap" type="cn.lilicould.liliblog.entity.User">
+    <resultMap id="BaseResultMap" type="cn.lilicould.liliblog.pojo.entity.User">
             <id property="id" column="id" />
             <result property="username" column="username" />
             <result property="email" column="email" />
