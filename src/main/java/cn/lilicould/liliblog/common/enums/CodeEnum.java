@@ -10,6 +10,7 @@ public enum CodeEnum {
     SUCCESS(0, "成功"),
 
     // 通用错误 1xxx
+    COMMON_PARAM_ERROR(1000,"参数异常"),
     PARAM_MISSING(1001, "缺少必要参数"),
     PARAM_FORMAT_ERROR(1002, "参数格式错误"),
     REQUEST_METHOD_NOT_SUPPORTED(1003, "请求方法不支持"),
@@ -23,13 +24,14 @@ public enum CodeEnum {
     ACCOUNT_DISABLED(2006,"账号被禁用，请联系管理员"),
 
     // 资源操作错误 3xxx
+    RESOURCE_NOT_FOUND(3000, "资源不存在"),
     ARTICLE_NOT_FOUND(3001, "文章不存在"),
     CATEGORY_ALREADY_EXISTS(3002, "分类已存在"),
     COMMENT_EMPTY(3003, "评论内容不能为空"),
     CATEGORY_NOT_FOUND(3004, "分类不存在"),
 
     // 系统错误 5xxx
-    SYSTEM_ERROR(5000, "系统繁忙，请稍后重试"),
+    SYSTEM_ERROR(5000, "系统异常，请稍后重试"),
     DB_ERROR(5001, "数据库错误"),
     FILE_UPLOAD_FAIL(5002, "文件上传失败");
 
