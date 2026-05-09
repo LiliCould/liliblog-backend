@@ -1,7 +1,11 @@
 package cn.lilicould.liliblog.config.mybatis;
 
+import cn.lilicould.liliblog.common.constant.StatusConstant;
+import cn.lilicould.liliblog.pojo.entity.SecurityUser;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import org.apache.ibatis.reflection.MetaObject;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -26,6 +30,9 @@ public class BaseMetaObjectHandler implements MetaObjectHandler {
             Long currentUserId = getCurrentUserId();
             this.strictInsertFill(metaObject, "updateBy", Long.class, currentUserId);
         }
+        if (metaObject.hasSetter("deleted")) {
+            this.strictInsertFill(metaObject, "deleted", Integer.class, StatusConstant.NOT_DELETED);
+        }
     }
 
     @Override
@@ -41,7 +48,17 @@ public class BaseMetaObjectHandler implements MetaObjectHandler {
     }
 
     private Long getCurrentUserId() {
-        // todo 后续完善SpringSecurity后从其上下文获取
-        return 0L;
+        // 从SpringContext中获取当前登录用户ID
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // 如果当前用户未认证，返回null
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof SecurityUser user) {
+            return user.getId();
+        }
+        return null;
     }
 }

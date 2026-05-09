@@ -26,3 +26,5 @@ springdoc:
 knife4j:
   enable: true
   production: false # 生产环境禁用
+  setting:
+    language: zh-CN

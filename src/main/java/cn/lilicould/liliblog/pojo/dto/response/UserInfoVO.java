@@ -5,12 +5,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
 @Builder
 @Schema(name = "用户信息")
-public class UserInfoVO {
+public class UserInfoVO implements Serializable {
     @Schema(description = "用户ID")
     private Long id;
     @Schema(description = "用户名")
@@ -23,7 +24,7 @@ public class UserInfoVO {
     private Integer role;
     @Schema(description = "状态，0-禁用，1-启用")
     private Integer status;
-    @Schema(description = "上次登录时间")
+    @Schema(description = "上次登录时间",type = "string",format = "date-time",example = "2026-05-09 14:51:06")
     private LocalDateTime lastLoginTime;
 
     public static UserInfoVO from(User user) {

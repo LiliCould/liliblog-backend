@@ -4,10 +4,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
 @Builder
 @Schema(name = "登录成功结果对象")
-public class LoginVO {
+public class LoginVO implements Serializable {
     @Schema(description = "访问令牌")
     private String accessToken;    // JWT 访问令牌
 

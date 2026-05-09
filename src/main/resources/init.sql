@@ -11,12 +11,12 @@ CREATE TABLE `user` (
     `password` VARCHAR(255) NOT NULL COMMENT '加密密码',
     `nickname` VARCHAR(50) NOT NULL COMMENT '昵称',
     `avatar` VARCHAR(255) DEFAULT NULL COMMENT '头像URL',
-    `role` TINYINT DEFAULT 1 COMMENT '角色：0-ADMIN，1-USER',
-    `status` TINYINT DEFAULT 1 COMMENT '状态：0-禁用，1-启用',
+    `role` TINYINT DEFAULT 1 NOT NULL COMMENT '角色：0-ADMIN，1-USER',
+    `status` TINYINT DEFAULT 1 NOT NULL COMMENT '状态：0-禁用，1-启用',
     `last_login_time` DATETIME DEFAULT NULL COMMENT '最后登录时间',
     `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    `create_by` BIGINT NOT NULL DEFAULT 0 COMMENT '创建者 默认为0-管理员',
+    `create_by` BIGINT NULL DEFAULT 0 COMMENT '创建者 默认为0-管理员',
     `update_by` BIGINT NULL COMMENT '更新者',
     `deleted` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '逻辑删除：0-未删除，1-已删除',
     INDEX `idx_username` (`username`),
@@ -30,10 +30,10 @@ CREATE TABLE `category` (
     `slug` VARCHAR(50) UNIQUE NULL COMMENT '分类别名',
     `description` VARCHAR(200) COMMENT '分类描述',
     `sort_order` INT DEFAULT 0 COMMENT '排序',
-    `status` TINYINT DEFAULT 1 COMMENT '状态：0-禁用，1-启用',
+    `status` TINYINT DEFAULT 1 NOT NULL COMMENT '状态：0-禁用，1-启用',
     `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    `create_by` BIGINT NOT NULL DEFAULT 0 COMMENT '创建者 默认为0-管理员',
+    `create_by` BIGINT NULL DEFAULT 0 COMMENT '创建者 默认为0-管理员',
     `update_by` BIGINT NULL COMMENT '更新者',
     `deleted` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '逻辑删除：0-未删除，1-已删除',
     INDEX `idx_status` (`status`)
@@ -47,12 +47,12 @@ CREATE TABLE `article` (
    `content` LONGTEXT NOT NULL COMMENT '文章内容',
    `content_html` LONGTEXT COMMENT '文章HTML内容',
    `cover_image` VARCHAR(255) COMMENT '封面图片URL',
-   `status` TINYINT DEFAULT 0 COMMENT '状态,0-审核中,1-发布,2-草稿',
+   `status` TINYINT DEFAULT 1 NOT NULL COMMENT '状态：0-禁用，1-启用',
    `view_count` INT DEFAULT 0 COMMENT '阅读数',
    `category_id` BIGINT COMMENT '分类ID',
    `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
    `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-   `create_by` BIGINT NOT NULL DEFAULT 0 COMMENT '创建者 默认为0-管理员',
+   `create_by` BIGINT NULL DEFAULT 0 COMMENT '创建者 默认为0-管理员',
    `update_by` BIGINT NULL COMMENT '更新者',
    `deleted` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '逻辑删除：0-未删除，1-已删除',
    INDEX `idx_title` (`title`),
@@ -67,7 +67,7 @@ CREATE TABLE `tag` (
     `color` VARCHAR(7) DEFAULT '#666666' COMMENT '标签颜色',
     `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    `create_by` BIGINT NOT NULL DEFAULT 0 COMMENT '创建者 默认为0-管理员',
+    `create_by` BIGINT NULL DEFAULT 0 COMMENT '创建者 默认为0-管理员',
     `update_by` BIGINT NULL COMMENT '更新者',
     `deleted` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '逻辑删除：0-未删除，1-已删除',
     INDEX `idx_id` (`id`),
@@ -79,7 +79,7 @@ CREATE TABLE `article_tag` (
    `article_id` BIGINT NOT NULL COMMENT '文章ID',
    `tag_id` BIGINT NOT NULL COMMENT '标签ID',
    `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-   `create_by` BIGINT NOT NULL DEFAULT 0 COMMENT '创建者 默认为0-管理员',
+   `create_by` BIGINT NULL DEFAULT 0 COMMENT '创建者 默认为0-管理员',
    UNIQUE KEY `uk_article_tag` (`article_id`, `tag_id`),
    INDEX `idx_article` (`article_id`),
    INDEX `idx_tag` (`tag_id`)
@@ -96,7 +96,7 @@ CREATE TABLE `comment` (
    `ip_address` VARCHAR(45) COMMENT '评论者IP',
    `user_agent` VARCHAR(500) COMMENT '用户代理',
    `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-   `create_by` BIGINT NOT NULL DEFAULT 0 COMMENT '创建者 默认为0-管理员',
+   `create_by` BIGINT NULL DEFAULT 0 COMMENT '创建者 默认为0-管理员',
    `deleted` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '逻辑删除：0-未删除，1-已删除',
    INDEX `idx_article` (`article_id`),
    INDEX `idx_parent` (`parent_id`),
@@ -110,7 +110,7 @@ CREATE TABLE `like_record` (
    `target_id` BIGINT NOT NULL COMMENT '目标ID（文章ID或评论ID）',
    `target_type` TINYINT NOT NULL COMMENT '目标类型，0-文章，1-评论',
    `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-   `create_by` BIGINT NOT NULL DEFAULT 0 COMMENT '创建者 默认为0-管理员',
+   `create_by` BIGINT NULL DEFAULT 0 COMMENT '创建者 默认为0-管理员',
    UNIQUE KEY `uk_user_target` (`user_id`, `target_id`, `target_type`),
    INDEX `idx_user` (`user_id`),
    INDEX `idx_target` (`target_id`, `target_type`)
@@ -133,3 +133,8 @@ CREATE TABLE `chat_message` (
     INDEX `idx_parent` (`parent_id`),
     INDEX `idx_status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='聊天消息表';
+
+INSERT INTO `liliblog`.`user` (`id`, `username`, `email`, `password`, `nickname`, `avatar`, `role`, `status`, `last_login_time`, `create_time`, `update_time`, `create_by`, `update_by`, `deleted`) VALUES (1, 'admin', '123@qq.com', '$2a$10$C6L3k9u8wJwviUgJxP0DYOi.wXtGuAtJChBS.5jCDZVWMDdToULJu', '管理员', NULL, 1, 1, '2026-05-09 16:40:24', '2026-05-09 00:12:16', '2026-05-09 16:40:24', 0, 0, 0);
+INSERT INTO `liliblog`.`user` (`id`, `username`, `email`, `password`, `nickname`, `avatar`, `role`, `status`, `last_login_time`, `create_time`, `update_time`, `create_by`, `update_by`, `deleted`) VALUES (2, 'lilicould', 'lilicould@qq.com', '$2a$10$gbGYrtKxnCnQIKT88KU1iePULdoOec4zQ0Py455XvwFC67ybDvelG', '立里可', NULL, 1, 1, NULL, '2026-05-09 17:16:33', '2026-05-09 17:16:33', 0, NULL, 0);
+INSERT INTO `liliblog`.`user` (`id`, `username`, `email`, `password`, `nickname`, `avatar`, `role`, `status`, `last_login_time`, `create_time`, `update_time`, `create_by`, `update_by`, `deleted`) VALUES (3, 'lilicould2', 'lilicould@aqq.com', '$2a$10$avWnDDafzU/Z7gMns6LSXuAYp5E25ivMuOimzemkj9wKApf9BELny', '立里可', NULL, 1, 1, NULL, '2026-05-09 17:40:09', '2026-05-09 17:40:09', NULL, NULL, 0);
+INSERT INTO `liliblog`.`user` (`id`, `username`, `email`, `password`, `nickname`, `avatar`, `role`, `status`, `last_login_time`, `create_time`, `update_time`, `create_by`, `update_by`, `deleted`) VALUES (4, 'lilicould3', 'lilicoul2d@aqq.com', '$2a$10$5P7IGT8CxperKaYdnSvRQ.aYVTStGAIw3/UbMpWyPFgLiRXZ1JSr2', '立里可3', NULL, 1, 1, NULL, '2026-05-09 17:47:33', '2026-05-09 17:47:33', NULL, NULL, 0);

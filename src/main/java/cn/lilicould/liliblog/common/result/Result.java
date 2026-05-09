@@ -6,7 +6,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 
-@Schema(name = "通用返回结果")
+@Schema(description = "通用返回结果")
 @Data
 public class Result<T> implements Serializable {
 

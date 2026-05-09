@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import java.sql.SQLException;
+
 
 /**
  * 全局异常处理
@@ -23,8 +25,8 @@ public class GlobalExceptionHandler {
      * 处理其他业务异常（如有自定义异常）
      */
     @ExceptionHandler(BusinessException.class)
-    public Result<Void> handleBusinessException(BusinessException e) {
-        log.warn("业务异常: code={}, msg={}", e.getCode(), e.getMessage());
+    public Result<?> handleBusinessException(BusinessException e) {
+        log.error("业务异常: code={}, msg={}", e.getCode(), e.getMessage());
         return Result.error(e.getCode(), e.getMessage());
     }
 
@@ -32,14 +34,14 @@ public class GlobalExceptionHandler {
      * 无对应资源异常异常
      */
     @ExceptionHandler(NoResourceFoundException.class)
-    public Result<Void> handleNoResourceFoundException(NoResourceFoundException e) {
-        log.warn("资源不存在 -> {}", e.getMessage());
+    public Result<?> handleNoResourceFoundException(NoResourceFoundException e) {
+        log.error("资源不存在 -> {}", e.getMessage());
         return Result.error(CodeEnum.RESOURCE_NOT_FOUND.getCode(),CodeEnum.RESOURCE_NOT_FOUND + "->" + e.getMessage());
     }
 
     @ExceptionHandler(NoSuchMethodError.class)
-    public Result<Void> handleNoSuchMethodError(NoSuchMethodError e) {
-        log.warn("请求方法 -> {} 不被支持",e.getMessage());
+    public Result<?> handleNoSuchMethodError(NoSuchMethodError e) {
+        log.error("请求方法 -> {} 不被支持",e.getMessage());
 
         return Result.error(CodeEnum.REQUEST_METHOD_NOT_SUPPORTED);
     }
@@ -48,7 +50,7 @@ public class GlobalExceptionHandler {
      * 处理参数验证异常
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Result<Void> handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
+    public Result<?> handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
         // 获取第一个错误消息
         String message = e.getBindingResult().getFieldErrors().stream()
                 .map(fieldError -> {
@@ -59,7 +61,7 @@ public class GlobalExceptionHandler {
                 .findFirst()
                 .orElse("参数验证失败");
 
-        log.warn("参数验证失败 -> {}", message);
+        log.error("参数验证失败 -> {}", message);
         return Result.error(CodeEnum.COMMON_PARAM_ERROR.getCode(),message);
     }
 
@@ -68,9 +70,21 @@ public class GlobalExceptionHandler {
      * @param e 权限不足异常
      */
     @ExceptionHandler(AuthorizationDeniedException.class)
-    public Result<Void> handleAuthorizationDenied(AuthorizationDeniedException e) {
-        log.warn("用户权限不足 -> {}",e.getMessage());
+    public Result<?> handleAuthorizationDenied(AuthorizationDeniedException e) {
+        log.error("用户权限不足 -> {}",e.getMessage());
         return Result.error(CodeEnum.NO_PERMISSION);
+    }
+
+    /**
+     * 处理SQL异常
+     * @param e 异常信息
+     * @return
+     */
+    @ExceptionHandler(SQLException.class)
+    public Result<?> handleSqlException (SQLException e) {
+        log.error("数据库操作异常 -> {}",e.getMessage());
+
+        return Result.error(CodeEnum.DB_ERROR);
     }
 
     /**

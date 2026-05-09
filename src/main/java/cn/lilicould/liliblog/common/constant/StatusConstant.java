@@ -17,4 +17,7 @@ public class StatusConstant {
     // ========== 点赞目标类型 ==========
     public static final Integer TARGET_ARTICLE = 0;  // 文章
     public static final Integer TARGET_COMMENT = 1;  // 评论
+    // ========== 删除状态 ==========
+    public static final Integer DELETED = 1;
+    public static final Integer NOT_DELETED = 0;
 }
