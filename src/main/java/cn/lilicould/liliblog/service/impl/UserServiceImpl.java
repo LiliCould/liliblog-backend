@@ -16,6 +16,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullUnmarked;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,6 +24,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -32,6 +35,7 @@ import java.util.Date;
 */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     implements UserService {
 
@@ -55,6 +59,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     public LoginVO login(LoginRequest request, HttpServletResponse response) {
         // 从数据库查询用户,这里查询不用判空，若空会自己抛出异常
         SecurityUser user = (SecurityUser) loadUserByUsername(request.getUsername());
+
+        // 距离上次成功登录时间过短
+        if (user.getLastLoginTime() != null) {
+            long millis = Duration.between(user.getLastLoginTime(), LocalDateTime.now()).toMillis();
+            if (Math.abs(millis) < 5000) { // 这里用abs是为了防止一些时区问题，不然出现负数永远都无法登录了
+                log.error("距离上次成功登录时间过短{}", millis);
+                throw new BusinessException(CodeEnum.LOGIN_TOO_FREQUENT);
+            }
+        }
 
         // 密码不匹配 → 返回认证失败
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
@@ -82,8 +95,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         // todo 将 refreshToken 存储到 Redis，用于后续校验和吊销
         // refreshTokenService.saveRefreshToken(user.getId(), refreshToken, jwtUtil.getRefreshTokenTtl());
 
-        // 返回用户信息
+        // 封装用户信息
         UserInfoVO userInfo = UserInfoVO.from(user.toUser());
+
+        // todo 更新上次登录时间
+        User newUser = user.toUser();
+        newUser.setLastLoginTime(LocalDateTime.now());
+        updateById(newUser);
 
         // 返回登录响应
         return LoginVO.builder()

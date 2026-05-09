@@ -22,6 +22,7 @@ public enum CodeEnum {
     NO_PERMISSION(2004, "无权限执行此操作"),
     TOKEN_EXPIRED(2005, "登录已过期，请重新登录"),
     ACCOUNT_DISABLED(2006,"账号被禁用，请联系管理员"),
+    LOGIN_TOO_FREQUENT(2007, "登录过于频繁，请稍后重试"),
 
     // 资源操作错误 3xxx
     RESOURCE_NOT_FOUND(3000, "资源不存在"),
