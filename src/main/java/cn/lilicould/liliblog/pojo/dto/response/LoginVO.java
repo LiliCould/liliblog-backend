@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Builder
-@Schema(description = "登录成功结果对象")
+@Schema(name = "登录成功结果对象")
 public class LoginVO {
     @Schema(description = "访问令牌")
     private String accessToken;    // JWT 访问令牌

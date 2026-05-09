@@ -4,7 +4,7 @@ public class StatusConstant {
     // ========== 通用状态 ==========
     public static final Integer DISABLED = 0;
     public static final Integer ENABLED = 1;
-    // ========== 用户角色 ==========
+    // ========== 用户角色 ========== 更推荐RoleType枚举
     public static final Integer ROLE_ADMIN = 0;
     public static final Integer ROLE_USER = 1;
     // ========== 文章状态 ==========
