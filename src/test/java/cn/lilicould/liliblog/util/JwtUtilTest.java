@@ -2,6 +2,7 @@ package cn.lilicould.liliblog.util;
 
 import cn.lilicould.liliblog.common.util.JwtUtil;
 import cn.lilicould.liliblog.config.properties.JwtProperties;
+import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -98,7 +99,7 @@ class JwtUtilTest {
     @Test
     void testExtractClaim() {
         String token = jwtUtil.generateToken(TEST_USERNAME);
-        String username = jwtUtil.extractClaim(token, claims -> claims.getSubject());
+        String username = jwtUtil.extractClaim(token, Claims::getSubject);
 
         assertEquals(TEST_USERNAME, username);
     }

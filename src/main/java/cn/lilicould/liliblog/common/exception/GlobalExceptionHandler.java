@@ -78,7 +78,7 @@ public class GlobalExceptionHandler {
     /**
      * 处理SQL异常
      * @param e 异常信息
-     * @return
+     * @return 数据库错误
      */
     @ExceptionHandler(SQLException.class)
     public Result<?> handleSqlException (SQLException e) {
