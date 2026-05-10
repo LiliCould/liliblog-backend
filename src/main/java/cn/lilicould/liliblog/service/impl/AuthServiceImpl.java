@@ -1,5 +1,7 @@
 package cn.lilicould.liliblog.service.impl;
 
+import cn.lilicould.liliblog.common.cache.RedisHelper;
+import cn.lilicould.liliblog.common.constant.RedisPrefixConstant;
 import cn.lilicould.liliblog.common.constant.StatusConstant;
 import cn.lilicould.liliblog.common.enums.CodeEnum;
 import cn.lilicould.liliblog.common.enums.RoleType;
@@ -25,7 +27,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Service
 @Slf4j
@@ -36,6 +37,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtUtil jwtUtil;
     private final HttpOnlyCookiesProperties httpOnlyCookiesProperties;
     private final UserService userService;
+    private final RedisHelper redisHelper;
 
     @Override
     public LoginVO login(LoginRequest request, HttpServletResponse response) {
@@ -63,7 +65,7 @@ public class AuthServiceImpl implements AuthService {
 
         // 生成 Access Token 和 Refresh Token
         String accessToken = jwtUtil.generateToken(user.getUsername());
-        long accessExpiresIn = jwtUtil.extractExpiration(accessToken).getTime() - new Date().getTime();
+        long accessExpiresIn = jwtUtil.extractExpiresIn(accessToken);
 
         String refreshToken = jwtUtil.generateRefreshToken(user.getUsername());
 
@@ -74,8 +76,8 @@ public class AuthServiceImpl implements AuthService {
         cookie.setMaxAge(Integer.parseInt(accessExpiresIn + ""));
         response.addCookie(cookie);
 
-        // todo 将 refreshToken 存储到 Redis，用于后续校验和吊销
         // refreshTokenService.saveRefreshToken(user.getId(), refreshToken, jwtUtil.getRefreshTokenTtl());
+        redisHelper.set(RedisPrefixConstant.AUTH_REFRESH_TOKEN + user.getId(),refreshToken,jwtUtil.extractExpiresIn(refreshToken));
 
         // 封装用户信息
         UserInfoVO userInfo = UserInfoVO.from(user.toUser());

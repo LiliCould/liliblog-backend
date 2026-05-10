@@ -21,10 +21,8 @@ public class RedisHelper {
     private final RedisTemplate<String, Object> redisTemplate;
 
     // 全局 key 前缀
-    @Value("${spring.application.name}:liliblog")
-    private String appName;
-
-    private final String APP_PREFIX = appName + ":";
+    @Value("${spring.application.name:liliblog}:")
+    private String APP_PREFIX;
 
     private String buildKey(String key) {
         return this.APP_PREFIX + key;

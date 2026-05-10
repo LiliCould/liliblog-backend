@@ -149,4 +149,9 @@ public class JwtUtil {
     public Boolean isTokenValid(String token) {
         return !isTokenExpired(token);
     }
+
+    // 解析剩余时间
+    public Long extractExpiresIn(String token) {
+        return extractExpiration(token).getTime() - new Date().getTime();
+    }
 }
