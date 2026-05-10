@@ -1,6 +1,7 @@
 package cn.lilicould.liliblog.config;
 
 import cn.lilicould.liliblog.filter.JwtAuthFilter;
+import cn.lilicould.liliblog.filter.WebLogFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,7 +27,7 @@ public class SecurityConfig {
      * @return SecurityFilterChain 安全过滤器链
      */
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) {
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter, WebLogFilter webLogFilter) {
         http
             // 禁用 CSRF 防护（前后端分离项目无需 CSRF Token）
             .csrf(AbstractHttpConfigurer::disable)
@@ -52,11 +53,13 @@ public class SecurityConfig {
                     .anyRequest().authenticated()
             )
             .httpBasic(AbstractHttpConfigurer::disable) // 禁用HttpBasic认证：浏览器弹出用户名/密码对话框
-            .formLogin(AbstractHttpConfigurer::disable) // 禁用表单认证
+            .formLogin(AbstractHttpConfigurer::disable); // 禁用表单认证
 
-            // 将 JWT 过滤器添加到用户名密码过滤器之前
-            // 确保请求先经过 Token 验证，再进行其他认证流程
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        // 将 JWT 过滤器添加到用户名密码过滤器之前
+        // 确保请求先经过 Token 验证，再进行其他认证流程
+        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        // 日志过滤器
+        http.addFilterBefore(webLogFilter, JwtAuthFilter.class);
 
         return http.build();
     }
