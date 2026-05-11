@@ -1,6 +1,4 @@
-spring:
-  application:
-    name: liliblog
+liliblog:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/liliblog?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
@@ -23,28 +21,10 @@ spring:
           max-idle: 8
           min-idle: 2
           max-wait: 5s
-
-
-# MyBatis-plus配置
-mybatis-plus:
-  configuration:
-    map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-  mapper-locations: classpath:mapper/*.xml
-  global-config:
-    db-config:
-      logic-delete-field: deleted # 全局逻辑删除字段
-      logic-not-delete-value: 0   # 0表示未删除
-      logic-delete-value: 1       # 1表示已删除
-
-springdoc:
-  api-docs:
-    path: /v3/api-docs    # 自定义JSON文档路径
-  swagger-ui:
-    path: /swagger-ui.html # 自定义UI路径
-    enabled: true
-knife4j:
-  enable: true
-  production: false # 生产环境禁用
-  setting:
-    language: zh-CN
+  http-only-cookies:
+    ssl: false # 设置为false关闭https验证，生产环境需设为true
+  jwt:
+    # 密钥（secret）必须是经过Base64编码的32字节（或更长）的字符串
+    secret: "d29zaGlsaWxpa2Vhc2RhaG5ramRoYWtqc2ZoamFrc2ZobGFrc2hmbGthc2hmbGFqc2ZrbGFoZnNhc2Zhc2Zhc2Y="
+    expiration: 3600000 # 访问令牌有效期，单位毫秒，这里设为了1小时
+    refresh-expiration: 604800000 # 刷新令牌有效期，单位毫秒，这里设为了7天

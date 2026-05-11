@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "liliblog.jwt")
+@ConfigurationProperties(prefix = "jwt")
 @Data
 public class JwtProperties {
     private String secret;

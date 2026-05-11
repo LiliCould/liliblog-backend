@@ -114,6 +114,13 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- 七牛云对象存储文件上传SDK -->
+		<dependency>
+			<groupId>com.qiniu</groupId>
+			<artifactId>qiniu-java-sdk</artifactId>
+			<version>[7.19.0, 7.19.99]</version>
+		</dependency>
+
 		<!-- web测试依赖 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
