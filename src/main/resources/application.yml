@@ -61,5 +61,5 @@ jwt:
   refresh-expiration: ${liliblog.jwt.refresh-expiration} # 刷新令牌有效期，单位毫秒
 
 oss:
-  access-key: ${liliblog.qiniu-oss.access-key}
-  secret-key: ${liliblog.qiniu-oss.secret-key}
+  access-key: ${liliblog.oss.access-key}
+  secret-key: ${liliblog.oss.secret-key}
