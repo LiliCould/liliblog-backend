@@ -25,6 +25,11 @@ spring:
           max-idle: ${liliblog.data.redis.lettuce.pool.max-idle}
           min-idle: ${liliblog.data.redis.lettuce.pool.min-idle}
           max-wait: ${liliblog.data.redis.lettuce.pool.max-wait}
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
 
 # MyBatis-plus配置
 mybatis-plus:
@@ -63,3 +68,4 @@ jwt:
 oss:
   access-key: ${liliblog.oss.access-key}
   secret-key: ${liliblog.oss.secret-key}
+  bucket: ${liliblog.oss.bucket}

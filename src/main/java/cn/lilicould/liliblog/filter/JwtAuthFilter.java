@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,6 +23,7 @@ import java.io.IOException;
  */
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
@@ -64,10 +66,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     // 将信息存到Security上下文中
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
+                log.error("Token 无效");
             }
         } catch (Exception e) {
             // todo 应该返回前端统一处理
-            logger.error("JWT 认证失败", e);
+            log.error("JWT 认证失败", e);
         }
 
         // 继续执行后续过滤器链
