@@ -21,7 +21,12 @@ public class WebLogFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
+
+        // 忽略 favicon.ico 请求
+        if (isFavicon(request)) {
+            return;
+        }
 
         long startTime = System.currentTimeMillis();
         String method = request.getMethod();
@@ -49,12 +54,15 @@ public class WebLogFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String uri = request.getRequestURI();
 
+        if (isFavicon(request)) {
+            return false; // 为了不忽略 favicon.ico 请求，以便忽略它
+        }
+
         // 忽略常见静态资源路径
         return uri.startsWith("/static/") ||
                 uri.startsWith("/assets/") ||
                 uri.startsWith("/uploads/") ||
                 uri.startsWith("/webjars/") ||
-                uri.startsWith("/favicon.ico") ||
                 uri.matches(".*\\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$");
     }
 
@@ -66,5 +74,10 @@ public class WebLogFilter extends OncePerRequestFilter {
             ip = ip.split(",")[0].trim();
         }
         return ip;
+    }
+
+    public boolean isFavicon(HttpServletRequest request){
+        String uri = request.getRequestURI();
+        return "/favicon.ico".equals(uri);
     }
 }
