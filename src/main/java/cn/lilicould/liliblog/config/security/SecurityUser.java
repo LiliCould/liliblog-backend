@@ -1,7 +1,8 @@
-package cn.lilicould.liliblog.pojo.entity;
+package cn.lilicould.liliblog.config.security;
 
 import cn.lilicould.liliblog.common.constant.StatusConstant;
 import cn.lilicould.liliblog.common.enums.RoleType;
+import cn.lilicould.liliblog.pojo.entity.User;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Getter;
 import org.jspecify.annotations.NullUnmarked;
@@ -22,6 +23,7 @@ import java.util.Collections;
 public class SecurityUser implements UserDetails, Serializable {
 
     private final Long id;
+    private final Long githubId;
     private final String username;
     private final String password;
     private final String email;
@@ -34,6 +36,7 @@ public class SecurityUser implements UserDetails, Serializable {
 
     public SecurityUser(User user) {
         this.id = user.getId();
+        this.githubId = user.getGithubId();
         this.username = user.getUsername();
         this.password = user.getPassword();
         this.email = user.getEmail();
@@ -52,6 +55,7 @@ public class SecurityUser implements UserDetails, Serializable {
     public User toUser() {
         return User.builder()
                 .id(this.id)
+                .githubId(this.githubId)
                 .username(this.username)
                 .password(this.password)
                 .email(this.email)

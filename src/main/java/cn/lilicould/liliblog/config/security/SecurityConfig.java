@@ -1,5 +1,7 @@
-package cn.lilicould.liliblog.config;
+package cn.lilicould.liliblog.config.security;
 
+import cn.lilicould.liliblog.config.security.handler.FailureHandler;
+import cn.lilicould.liliblog.config.security.handler.SuccessHandler;
 import cn.lilicould.liliblog.filter.JwtAuthFilter;
 import cn.lilicould.liliblog.filter.WebLogFilter;
 import org.springframework.context.annotation.Bean;
@@ -50,7 +52,13 @@ public class SecurityConfig {
      * @return SecurityFilterChain 安全过滤器链
      */
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter, WebLogFilter webLogFilter) {
+    public SecurityFilterChain filterChain(HttpSecurity http,
+                                           JwtAuthFilter jwtAuthFilter,
+                                           WebLogFilter webLogFilter,
+                                           CustomOAuth2UserService customOAuth2UserService,
+                                           SuccessHandler successHandler,
+                                           FailureHandler failureHandler
+    ) {
         http
             // 禁用 CSRF 防护（前后端分离项目无需 CSRF Token）
             .csrf(AbstractHttpConfigurer::disable)
@@ -71,7 +79,8 @@ public class SecurityConfig {
                             "/swagger-ui/**",
                             "/swagger-ui.html",
                             "/v3/api-docs/swagger-config",
-                            "/favicon.ico"
+                            "/favicon.ico",
+                            "/oauth2/**", "/login/**" // OAuth2 端点公开
                     ).permitAll()
 
                     // 其他所有请求都需要认证才能访问
@@ -83,8 +92,15 @@ public class SecurityConfig {
         // 将 JWT 过滤器添加到用户名密码过滤器之前
         // 确保请求先经过 Token 验证，再进行其他认证流程
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-        // 日志过滤器
-        http.addFilterBefore(webLogFilter, JwtAuthFilter.class);
+
+        http.addFilterBefore(webLogFilter, JwtAuthFilter.class); // 日志过滤器
+
+        // 配置OAuth2登录
+        http.oauth2Login(oauth2 -> oauth2
+                .userInfoEndpoint(endpoint -> endpoint.userService(customOAuth2UserService))
+                .successHandler(successHandler) // 登录成功处理
+                .failureHandler(failureHandler) // 登录失败处理
+        );
 
         return http.build();
     }

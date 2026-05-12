@@ -1,7 +1,7 @@
 package cn.lilicould.liliblog.service.impl;
 
 import cn.lilicould.liliblog.mapper.UserMapper;
-import cn.lilicould.liliblog.pojo.entity.SecurityUser;
+import cn.lilicould.liliblog.config.security.SecurityUser;
 import cn.lilicould.liliblog.pojo.entity.User;
 import cn.lilicould.liliblog.service.UserService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;

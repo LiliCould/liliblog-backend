@@ -30,6 +30,22 @@ spring:
       enabled: true
       max-file-size: 10MB
       max-request-size: 10MB
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: ${liliblog.github.client-id}          # github上申请的应用ID
+            client-secret: ${liliblog.github.client-secret}  # github上申请的应用密钥
+            scope: read:user, user:email                     # 请求用户信息权限
+            redirect-uri: ${liliblog.github.redirect-uri}    # 回调地址
+        provider:
+          github:
+            authorization-uri: https://github.com/login/oauth/authorize
+            token-uri: https://github.com/login/oauth/access_token
+            user-info-uri: https://api.github.com/user
+            user-name-attribute: id                         # 使用 GitHub 用户的数字 ID（不可变）作为 Principal名称
+
 
 # MyBatis-plus配置
 mybatis-plus:

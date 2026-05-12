@@ -16,6 +16,7 @@ public enum CodeEnum {
     REQUEST_METHOD_NOT_SUPPORTED(1003, "请求方法不支持"),
 
     // 认证与用户 2xxx
+    LOGIN_ERROR(2000, "登录失败"),
     NOT_LOGGED_IN(2001, "请先登录"),
     ACCOUNT_OR_PASSWORD_ERROR(2002, "账号或密码错误"),
     USER_NOT_FOUND(2003, "用户不存在"),

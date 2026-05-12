@@ -29,6 +29,9 @@ public class User extends FullBaseEntity implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
+    @TableField(value = "github_id")
+    private Long githubId;
+
     /**
      * 用户名
      */

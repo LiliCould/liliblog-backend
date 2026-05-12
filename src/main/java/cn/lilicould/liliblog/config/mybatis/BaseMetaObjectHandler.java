@@ -1,7 +1,7 @@
 package cn.lilicould.liliblog.config.mybatis;
 
 import cn.lilicould.liliblog.common.constant.StatusConstant;
-import cn.lilicould.liliblog.pojo.entity.SecurityUser;
+import cn.lilicould.liliblog.config.security.SecurityUser;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.security.core.Authentication;
