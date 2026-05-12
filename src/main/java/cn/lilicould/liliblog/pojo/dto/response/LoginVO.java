@@ -16,5 +16,5 @@ public class LoginVO implements Serializable {
     @Schema(description = "过期时间")
     private Long expiresIn;
     @Schema(description = "用户信息")
-    private UserInfoVO userInfo;   // 用户基本信息
+    private UserInfo userInfo;   // 用户基本信息
 }

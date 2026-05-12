@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 @Schema(name = "用户信息")
-public class UserInfoVO implements Serializable {
+public class UserInfo implements Serializable {
     @Schema(description = "用户ID")
     private Long id;
     @Schema(description = "用户名")
@@ -27,8 +27,8 @@ public class UserInfoVO implements Serializable {
     @Schema(description = "上次登录时间",type = "string",format = "date-time",example = "2026-05-09 14:51:06")
     private LocalDateTime lastLoginTime;
 
-    public static UserInfoVO from(User user) {
-        return UserInfoVO.builder()
+    public static UserInfo from(User user) {
+        return UserInfo.builder()
                 .id(user.getId())
                 .username(user.getUsername())
                 .nickname(user.getNickname())

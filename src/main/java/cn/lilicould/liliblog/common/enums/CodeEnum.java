@@ -26,6 +26,7 @@ public enum CodeEnum {
     PASSWORD_MISMATCH(2008, "两次密码不一致"),
     USERNAME_ALREADY_EXISTS(2009, "用户名已存在"),
     EMAIL_ALREADY_EXISTS(2010, "邮箱已被注册"),
+    NOT_SUPPORTED(2011, "不支持的登录类型"),
 
     // 资源操作错误 3xxx
     RESOURCE_NOT_FOUND(3000, "资源不存在"),

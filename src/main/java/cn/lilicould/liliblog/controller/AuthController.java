@@ -1,7 +1,9 @@
 package cn.lilicould.liliblog.controller;
 
+import cn.lilicould.liliblog.common.constant.LoginStrategyConstant;
 import cn.lilicould.liliblog.common.result.Result;
-import cn.lilicould.liliblog.pojo.dto.request.LoginRequest;
+import cn.lilicould.liliblog.pojo.dto.request.EmailLoginRequest;
+import cn.lilicould.liliblog.pojo.dto.request.PwdLoginRequest;
 import cn.lilicould.liliblog.pojo.dto.request.RegisterRequest;
 import cn.lilicould.liliblog.pojo.dto.response.LoginVO;
 import cn.lilicould.liliblog.service.AuthService;
@@ -26,11 +28,24 @@ public class AuthController {
 
     private final AuthService authService;          // 你的用户服务
 
-    @PostMapping("/login")
-    @Operation(summary = "登录接口", description = "通过账号密码登录")
+    @PostMapping("/login/pwd")
+    @Operation(summary = "用户名密码登录", description = "通过用户名和密码登录")
     @ApiResponse(responseCode = "200",description = "响应成功，登录成功与否看响应状态码")
-    public Result<LoginVO> login(@RequestBody @Valid LoginRequest request,
+    public Result<LoginVO> login(@RequestBody @Valid PwdLoginRequest request,
                                  HttpServletResponse response) {
+
+        request.setLoginType(LoginStrategyConstant.PWD);
+        LoginVO loginVO = authService.login(request,response); // 调用登录接口
+
+        return Result.success(loginVO);
+    }
+
+    // 微信登录
+    @PostMapping("/login/email")
+    @Operation(summary = "邮箱登录",description = "通过邮箱和验证码登录")
+    public Result<LoginVO> wechatLogin(@RequestBody @Valid EmailLoginRequest request,
+                                       HttpServletResponse response) {
+        request.setLoginType(LoginStrategyConstant.EMAIL);
 
         LoginVO loginVO = authService.login(request,response);
 
