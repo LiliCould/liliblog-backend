@@ -63,6 +63,7 @@ public class WebLogFilter extends OncePerRequestFilter {
                 uri.startsWith("/assets/") ||
                 uri.startsWith("/uploads/") ||
                 uri.startsWith("/webjars/") ||
+                uri.startsWith("/v3/") ||
                 uri.matches(".*\\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$");
     }
 

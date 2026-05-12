@@ -66,7 +66,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     // 将信息存到Security上下文中
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
-                log.error("Token 无效");
             }
         } catch (Exception e) {
             // todo 应该返回前端统一处理

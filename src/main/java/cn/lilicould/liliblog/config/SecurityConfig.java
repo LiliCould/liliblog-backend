@@ -12,6 +12,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 /**
  * Spring Security 安全配置类
@@ -19,6 +24,24 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    /**
+     * 配置跨域
+     */
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOriginPatterns(List.of("*")); // 生产环境建议改成具体域名
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*")); // 必须包含 Authorization
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
     /**
      * 配置安全过滤器链
      *
@@ -31,6 +54,7 @@ public class SecurityConfig {
         http
             // 禁用 CSRF 防护（前后端分离项目无需 CSRF Token）
             .csrf(AbstractHttpConfigurer::disable)
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
             // 配置会话管理为无状态模式（适用于 JWT Token 认证，不创建服务端会话）
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -42,9 +66,10 @@ public class SecurityConfig {
                     // 放行 Knife4j 相关静态资源
                     .requestMatchers(
                             "/doc.html",
-                            "/webjars/**",
+                            "/nextdoc/**",   // NextDoc4j UI 的全部静态资源
                             "/v3/api-docs/**",
                             "/swagger-ui/**",
+                            "/swagger-ui.html",
                             "/v3/api-docs/swagger-config",
                             "/favicon.ico"
                     ).permitAll()
