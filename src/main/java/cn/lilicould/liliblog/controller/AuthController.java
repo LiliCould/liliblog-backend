@@ -14,10 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -40,7 +37,6 @@ public class AuthController {
         return Result.success(loginVO);
     }
 
-    // 微信登录
     @PostMapping("/login/email")
     @Operation(summary = "邮箱登录",description = "通过邮箱和验证码登录")
     public Result<LoginVO> wechatLogin(@RequestBody @Valid EmailLoginRequest request,
