@@ -1,6 +1,6 @@
 package cn.lilicould.liliblog.filter;
 
-import cn.lilicould.liliblog.config.security.SecurityUser;
+import cn.lilicould.liliblog.domain.security.SecurityUser;
 import cn.lilicould.liliblog.service.UserService;
 import cn.lilicould.liliblog.common.util.JwtUtil;
 import jakarta.servlet.FilterChain;

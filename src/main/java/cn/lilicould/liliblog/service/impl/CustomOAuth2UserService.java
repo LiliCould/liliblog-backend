@@ -1,7 +1,8 @@
-package cn.lilicould.liliblog.config.security;
+package cn.lilicould.liliblog.service.impl;
 
 import cn.lilicould.liliblog.common.constant.StatusConstant;
 import cn.lilicould.liliblog.common.enums.RoleType;
+import cn.lilicould.liliblog.domain.security.OAuth2SecurityUser;
 import cn.lilicould.liliblog.pojo.entity.User;
 import cn.lilicould.liliblog.service.UserService;
 import lombok.RequiredArgsConstructor;

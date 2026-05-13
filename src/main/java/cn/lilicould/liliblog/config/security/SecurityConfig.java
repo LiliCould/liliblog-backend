@@ -4,6 +4,7 @@ import cn.lilicould.liliblog.config.security.handler.FailureHandler;
 import cn.lilicould.liliblog.config.security.handler.SuccessHandler;
 import cn.lilicould.liliblog.filter.JwtAuthFilter;
 import cn.lilicould.liliblog.filter.WebLogFilter;
+import cn.lilicould.liliblog.service.impl.CustomOAuth2UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

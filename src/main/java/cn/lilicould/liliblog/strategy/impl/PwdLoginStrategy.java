@@ -6,7 +6,7 @@ import cn.lilicould.liliblog.common.enums.CodeEnum;
 import cn.lilicould.liliblog.common.exception.BusinessException;
 import cn.lilicould.liliblog.common.util.JwtUtil;
 import cn.lilicould.liliblog.config.properties.HttpOnlyCookiesProperties;
-import cn.lilicould.liliblog.config.security.SecurityUser;
+import cn.lilicould.liliblog.domain.security.SecurityUser;
 import cn.lilicould.liliblog.pojo.dto.request.LoginRequest;
 import cn.lilicould.liliblog.pojo.dto.request.PwdLoginRequest;
 import cn.lilicould.liliblog.pojo.dto.response.LoginVO;

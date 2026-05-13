@@ -1,4 +1,4 @@
-package cn.lilicould.liliblog.config.security;
+package cn.lilicould.liliblog.domain.security;
 
 import cn.lilicould.liliblog.common.constant.StatusConstant;
 import cn.lilicould.liliblog.common.enums.RoleType;

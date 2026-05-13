@@ -4,7 +4,7 @@ import cn.lilicould.liliblog.common.cache.RedisHelper;
 import cn.lilicould.liliblog.common.result.Result;
 import cn.lilicould.liliblog.common.util.JwtUtil;
 import cn.lilicould.liliblog.config.properties.HttpOnlyCookiesProperties;
-import cn.lilicould.liliblog.config.security.OAuth2SecurityUser;
+import cn.lilicould.liliblog.domain.security.OAuth2SecurityUser;
 import cn.lilicould.liliblog.pojo.dto.response.LoginVO;
 import cn.lilicould.liliblog.service.impl.TokenService;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,4 +1,4 @@
-package cn.lilicould.liliblog.config.security;
+package cn.lilicould.liliblog.domain.security;
 
 import cn.lilicould.liliblog.pojo.entity.User;
 import org.jspecify.annotations.NullUnmarked;
