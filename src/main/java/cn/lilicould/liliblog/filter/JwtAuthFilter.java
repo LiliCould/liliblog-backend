@@ -1,8 +1,10 @@
 package cn.lilicould.liliblog.filter;
 
+import cn.lilicould.liliblog.common.enums.CodeEnum;
+import cn.lilicould.liliblog.common.result.Result;
+import cn.lilicould.liliblog.common.util.JwtUtil;
 import cn.lilicould.liliblog.domain.security.SecurityUser;
 import cn.lilicould.liliblog.service.UserService;
-import cn.lilicould.liliblog.common.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,12 +12,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * JWT 认证过滤器
@@ -31,6 +36,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final UserService userService;
+    private final ObjectMapper objectMapper;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
@@ -68,8 +74,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception e) {
-            // todo 应该返回前端统一处理
             log.error("JWT 认证失败", e);
+
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setCharacterEncoding(StandardCharsets.UTF_8);
+            response.getWriter().write(objectMapper.writeValueAsString(Result.error(CodeEnum.TOKEN_EXPIRED)));
+            return;
         }
 
         // 继续执行后续过滤器链

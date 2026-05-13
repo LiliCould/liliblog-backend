@@ -9,8 +9,8 @@ import lombok.Getter;
 @Getter
 public enum RoleType {
 
-    ADMIN(0, "ADMIN"),
-    USER(1, "USER");
+    ADMIN(0, "ROLE_ADMIN"),
+    USER(1, "ROLE_USER");
 
     private final Integer code;
     private final String name;

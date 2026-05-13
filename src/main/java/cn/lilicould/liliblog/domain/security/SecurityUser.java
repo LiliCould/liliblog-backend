@@ -45,7 +45,7 @@ public class SecurityUser implements UserDetails, Serializable {
         this.role = user.getRole();
         this.status = user.getStatus();
         this.lastLoginTime = user.getLastLoginTime();
-        this.authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + getRoleName(user.getRole())));
+        this.authorities = Collections.singletonList(new SimpleGrantedAuthority(getRoleName(user.getRole())));
     }
 
     private String getRoleName(Integer role) {
