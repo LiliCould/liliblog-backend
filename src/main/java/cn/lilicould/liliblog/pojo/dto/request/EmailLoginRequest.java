@@ -6,10 +6,12 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Schema(name = "邮箱验证码登录请求参数")
-public class EmailLoginRequest extends LoginRequest {
+public class EmailLoginRequest extends LoginRequest implements Serializable {
 
     @NotBlank(message = "邮箱不能为空")
     @Schema(description = "邮箱", example = "lilicould@qq.com", requiredMode = Schema.RequiredMode.REQUIRED)

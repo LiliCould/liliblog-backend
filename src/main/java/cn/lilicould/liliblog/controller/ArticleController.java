@@ -1,12 +1,14 @@
 package cn.lilicould.liliblog.controller;
 
 import cn.lilicould.liliblog.common.result.Result;
+import cn.lilicould.liliblog.pojo.dto.request.ArticleRequest;
 import cn.lilicould.liliblog.pojo.dto.response.ArticleVO;
 import cn.lilicould.liliblog.service.ArticleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -30,5 +32,14 @@ public class ArticleController {
         ArticleVO articleVO = articleService.getArticle(id);
 
         return Result.success(articleVO);
+    }
+
+    @PostMapping
+    @Operation(summary = "保存(写)文章")
+    public Result<?> saveArticle(@RequestBody @Validated ArticleRequest articleRequest) {
+
+        articleService.save(articleRequest);
+
+        return Result.success();
     }
 }

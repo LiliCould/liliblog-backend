@@ -10,7 +10,7 @@ import java.io.Serializable;
 @Schema(name = "登录请求参数父类")
 public class LoginRequest implements Serializable {
 
-    @Schema(description = "登录类型：pwd/sms/wechat", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "登录类型：pwd/sms/wechat", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String loginType;
 
     @Serial

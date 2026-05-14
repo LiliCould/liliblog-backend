@@ -6,6 +6,7 @@ import cn.lilicould.liliblog.common.enums.CodeEnum;
 import cn.lilicould.liliblog.common.enums.TargetType;
 import cn.lilicould.liliblog.common.exception.BusinessException;
 import cn.lilicould.liliblog.mapper.*;
+import cn.lilicould.liliblog.pojo.dto.request.ArticleRequest;
 import cn.lilicould.liliblog.pojo.dto.response.ArticleVO;
 import cn.lilicould.liliblog.pojo.dto.response.CategoryVO;
 import cn.lilicould.liliblog.pojo.dto.response.TagVO;
@@ -17,6 +18,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -37,14 +40,16 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     private final CommentMapper commentMapper;
     private final CategoryMapper categoryMapper;
     private final TagMapper tagMapper;
+    private final ArticleTagMapper articleTagMapper;
 
-    public ArticleServiceImpl(ArticleMapper articleMapper, UserMapper userMapper, LikeRecordMapper likeRecordMapper, CommentMapper commentMapper, CategoryMapper categoryMapper, TagMapper tagMapper) {
+    public ArticleServiceImpl(ArticleMapper articleMapper, UserMapper userMapper, LikeRecordMapper likeRecordMapper, CommentMapper commentMapper, CategoryMapper categoryMapper, TagMapper tagMapper, ArticleTagMapper articleTagMapper) {
         this.articleMapper = articleMapper;
         this.userMapper = userMapper;
         this.likeRecordMapper = likeRecordMapper;
         this.commentMapper = commentMapper;
         this.categoryMapper = categoryMapper;
         this.tagMapper = tagMapper;
+        this.articleTagMapper = articleTagMapper;
     }
 
     @Override
@@ -78,6 +83,49 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
         log.info(articleVO.toString());
         return articleVO;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class,isolation = Isolation.READ_COMMITTED)
+    public void save(ArticleRequest articleRequest) {
+
+        // 拷贝数据
+        Article article = new Article();
+        BeanUtils.copyProperties(articleRequest, article);
+
+        // todo 将markdown内容转为HTML
+        String contentHtml = article.getContent();
+
+        // 设置默认值
+        article.setStatus(calculateStatus(article.getStatus()));
+        article.setViewCount(0); // 阅读量默认0
+
+        // 检查分类是否存在
+        if (!categoryMapper.exists(new LambdaQueryWrapper<Category>().eq(Category::getId, article.getCategoryId()))) {
+            throw new BusinessException(CodeEnum.CATEGORY_NOT_FOUND);
+        }
+
+        // 检查标签列表是否存在
+        for (Long tagId : articleRequest.getTags()) {
+            Tag tag = tagMapper.selectById(tagId);
+            if (tag == null) {
+                throw new BusinessException(CodeEnum.TAG_NOT_FOUND);
+            }
+        }
+        // 存文章
+        articleMapper.insert(article);
+        // 批量插入文章标签关联
+        if (articleRequest.getTags() != null && !articleRequest.getTags().isEmpty()) {
+            List<ArticleTag> articleTags = articleRequest.getTags().stream()
+                    .map(tagId -> {
+                        ArticleTag articleTag = new ArticleTag();
+                        articleTag.setArticleId(article.getId());
+                        articleTag.setTagId(tagId);
+                        return articleTag;
+                    })
+                    .toList();
+            articleTagMapper.insert(articleTags);
+        }
     }
 
     /**
@@ -159,6 +207,31 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
                     return tagVO;
                 })
                 .toList();
+    }
+
+    /**
+     * 计算目标状态
+     */
+    private Integer calculateStatus(Integer targetStatus) {
+        // 如果是草稿，直接保存为草稿（任何人都有权存草稿）
+        if (StatusConstant.ARTICLE_DRAFT.equals(targetStatus)) {
+            return StatusConstant.ARTICLE_DRAFT;
+        }
+        // 如果是发布状态
+        else if (StatusConstant.ARTICLE_PUBLISHED.equals(targetStatus)) {
+            // 管理员：直接发布
+            if (BaseContext.isAdmin()) {
+                return StatusConstant.ARTICLE_PUBLISHED;
+            }
+            // 普通用户：转为待审核
+            else {
+                return StatusConstant.ARTICLE_PENDING;
+            }
+        }
+        // 其他情况（如待审核、或者非法状态），统一归为待审核
+        else {
+            return StatusConstant.ARTICLE_PENDING;
+        }
     }
 }
 
