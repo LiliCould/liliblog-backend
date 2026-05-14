@@ -5,6 +5,7 @@ import cn.lilicould.liliblog.common.context.BaseContext;
 import cn.lilicould.liliblog.common.enums.CodeEnum;
 import cn.lilicould.liliblog.common.enums.TargetType;
 import cn.lilicould.liliblog.common.exception.BusinessException;
+import cn.lilicould.liliblog.common.util.MarkdownUtil;
 import cn.lilicould.liliblog.mapper.*;
 import cn.lilicould.liliblog.pojo.dto.request.ArticleRequest;
 import cn.lilicould.liliblog.pojo.dto.response.ArticleVO;
@@ -15,6 +16,7 @@ import cn.lilicould.liliblog.pojo.entity.*;
 import cn.lilicould.liliblog.service.ArticleService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,7 @@ import java.util.Objects;
 */
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     implements ArticleService{
 
@@ -41,16 +44,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     private final CategoryMapper categoryMapper;
     private final TagMapper tagMapper;
     private final ArticleTagMapper articleTagMapper;
-
-    public ArticleServiceImpl(ArticleMapper articleMapper, UserMapper userMapper, LikeRecordMapper likeRecordMapper, CommentMapper commentMapper, CategoryMapper categoryMapper, TagMapper tagMapper, ArticleTagMapper articleTagMapper) {
-        this.articleMapper = articleMapper;
-        this.userMapper = userMapper;
-        this.likeRecordMapper = likeRecordMapper;
-        this.commentMapper = commentMapper;
-        this.categoryMapper = categoryMapper;
-        this.tagMapper = tagMapper;
-        this.articleTagMapper = articleTagMapper;
-    }
 
     @Override
     public ArticleVO getArticle(Long id) {
@@ -93,8 +86,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         Article article = new Article();
         BeanUtils.copyProperties(articleRequest, article);
 
-        // todo 将markdown内容转为HTML
-        String contentHtml = article.getContent();
+        // 将markdown内容转为HTML
+        String contentHtml = MarkdownUtil.markdownToHtml(article.getContent());
+        article.setContentHtml(contentHtml);
 
         // 设置默认值
         article.setStatus(calculateStatus(article.getStatus()));
