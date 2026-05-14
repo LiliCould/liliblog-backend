@@ -32,6 +32,7 @@ public class SecurityUser implements UserDetails, Serializable {
     private final Integer role;
     private final Integer status;
     private final LocalDateTime lastLoginTime;
+    private final Integer deleted;
     private final Collection<? extends GrantedAuthority> authorities;
 
     public SecurityUser(User user) {
@@ -45,6 +46,7 @@ public class SecurityUser implements UserDetails, Serializable {
         this.role = user.getRole();
         this.status = user.getStatus();
         this.lastLoginTime = user.getLastLoginTime();
+        this.deleted = user.getDeleted();
         this.authorities = Collections.singletonList(new SimpleGrantedAuthority(getRoleName(user.getRole())));
     }
 
@@ -64,6 +66,7 @@ public class SecurityUser implements UserDetails, Serializable {
                 .role(this.role)
                 .status(this.status)
                 .lastLoginTime(this.lastLoginTime)
+                .deleted(this.deleted)
                 .build();
     }
 

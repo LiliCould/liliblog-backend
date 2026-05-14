@@ -49,7 +49,7 @@ CREATE TABLE `article` (
    `content` LONGTEXT NOT NULL COMMENT '文章内容',
    `content_html` LONGTEXT COMMENT '文章HTML内容',
    `cover_image` VARCHAR(255) COMMENT '封面图片URL',
-   `status` TINYINT DEFAULT 1 NOT NULL COMMENT '状态：0-禁用，1-启用',
+   `status` TINYINT DEFAULT 1 NOT NULL COMMENT '状态：0-审核中，1-发布，2-草稿',
    `view_count` INT DEFAULT 0 COMMENT '阅读数',
    `category_id` BIGINT COMMENT '分类ID',
    `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -90,7 +90,6 @@ CREATE TABLE `article_tag` (
 CREATE TABLE `comment` (
    `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '评论ID',
    `content` TEXT NOT NULL COMMENT '评论内容',
-   `author_id` BIGINT NOT NULL COMMENT '评论者ID',
    `article_id` BIGINT NOT NULL COMMENT '文章ID',
    `parent_id` BIGINT DEFAULT 0 COMMENT '父评论ID',
     `status` TINYINT DEFAULT 0 COMMENT '状态,0-审核中,1-发布',
@@ -140,3 +139,50 @@ INSERT INTO `liliblog`.`user` (`id`, `username`, `email`, `password`, `nickname`
 INSERT INTO `liliblog`.`user` (`id`, `username`, `email`, `password`, `nickname`, `avatar`, `role`, `status`, `last_login_time`, `create_time`, `update_time`, `create_by`, `update_by`, `deleted`) VALUES (2, 'lilicould', 'lilicould@qq.com', '$2a$10$gbGYrtKxnCnQIKT88KU1iePULdoOec4zQ0Py455XvwFC67ybDvelG', '立里可', NULL, 1, 1, NULL, '2026-05-09 17:16:33', '2026-05-09 17:16:33', 0, NULL, 0);
 INSERT INTO `liliblog`.`user` (`id`, `username`, `email`, `password`, `nickname`, `avatar`, `role`, `status`, `last_login_time`, `create_time`, `update_time`, `create_by`, `update_by`, `deleted`) VALUES (3, 'lilicould2', 'lilicould@aqq.com', '$2a$10$avWnDDafzU/Z7gMns6LSXuAYp5E25ivMuOimzemkj9wKApf9BELny', '立里可', NULL, 1, 1, NULL, '2026-05-09 17:40:09', '2026-05-09 17:40:09', NULL, NULL, 0);
 INSERT INTO `liliblog`.`user` (`id`, `username`, `email`, `password`, `nickname`, `avatar`, `role`, `status`, `last_login_time`, `create_time`, `update_time`, `create_by`, `update_by`, `deleted`) VALUES (4, 'lilicould3', 'lilicoul2d@aqq.com', '$2a$10$5P7IGT8CxperKaYdnSvRQ.aYVTStGAIw3/UbMpWyPFgLiRXZ1JSr2', '立里可3', NULL, 1, 1, NULL, '2026-05-09 17:47:33', '2026-05-09 17:47:33', NULL, NULL, 0);
+
+-- ==================== 测试数据 ====================
+-- 分类数据
+INSERT INTO `category` (`id`, `name`, `slug`, `description`, `sort_order`, `status`) VALUES 
+(1, '技术分享', 'tech', '编程技术与开发心得', 1, 1),
+(2, '生活随笔', 'life', '日常生活记录与感悟', 2, 1),
+(3, '学习笔记', 'study', '学习过程中的笔记总结', 3, 1);
+
+-- 标签数据
+INSERT INTO `tag` (`id`, `name`, `color`) VALUES 
+(1, 'Java', '#FF5733'),
+(2, 'SpringBoot', '#33FF57'),
+(3, 'MySQL', '#3357FF'),
+(4, 'Redis', '#F333FF'),
+(5, '前端', '#FF33A8'),
+(6, 'Vue', '#33FFF5');
+
+-- 文章数据
+INSERT INTO `article` (`id`, `title`, `slug`, `summary`, `content`, `content_html`, `cover_image`, `status`, `view_count`, `category_id`, `create_by`) VALUES 
+(1, 'Spring Boot 入门教程', 'springboot-intro', '从零开始学习 Spring Boot 框架', '这是 Spring Boot 的入门内容...', '<p>这是 Spring Boot 的入门内容...</p>', NULL, 1, 100, 1, 1),
+(2, 'MySQL 性能优化技巧', 'mysql-optimize', '分享一些 MySQL 数据库优化的实用技巧', 'MySQL 优化有很多方面...', '<p>MySQL 优化有很多方面...</p>', NULL, 1, 85, 1, 1),
+(3, '周末爬山记', 'weekend-hiking', '记录周末去爬山的经历', '今天天气真好，去爬了附近的山...', '<p>今天天气真好，去爬了附近的山...</p>', NULL, 1, 50, 2, 2);
+
+-- 文章标签关联
+INSERT INTO `article_tag` (`article_id`, `tag_id`, `create_by`) VALUES 
+(1, 1, 1),
+(1, 2, 1),
+(2, 3, 1),
+(2, 4, 1);
+
+-- 评论数据
+INSERT INTO `comment` (`id`, `content`, `article_id`, `parent_id`, `status`, `like_count`, `ip_address`, `create_by`) VALUES 
+(1, '写得很好，受益匪浅！', 1, 0, 1, 5, '127.0.0.1', 2),
+(2, '确实，Spring Boot 很方便', 1, 1, 1, 2, '127.0.0.1', 3),
+(3, '有没有更深入的教程？', 1, 0, 1, 1, '127.0.0.1', 4);
+
+-- 点赞记录
+INSERT INTO `like_record` (`user_id`, `target_id`, `target_type`, `create_by`) VALUES 
+(2, 1, 0, 2),
+(3, 1, 0, 3),
+(2, 1, 1, 2);
+
+-- 聊天消息
+INSERT INTO `chat_message` (`sender_id`, `content`, `type`, `parent_id`, `status`, `ip_address`, `create_by`) VALUES 
+(1, '大家好！', 'TEXT', 0, 1, '127.0.0.1', 1),
+(2, '你好呀', 'TEXT', 1, 1, '127.0.0.1', 2),
+(3, '欢迎欢迎', 'TEXT', 0, 1, '127.0.0.1', 3);

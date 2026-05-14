@@ -45,6 +45,9 @@ spring:
             token-uri: https://github.com/login/oauth/access_token
             user-info-uri: https://api.github.com/user
             user-name-attribute: id                         # 使用 GitHub 用户的数字 ID（不可变）作为 Principal名称
+logging:
+  level:
+    root: ${liliblog.logging.level.root}
 
 
 # MyBatis-plus配置

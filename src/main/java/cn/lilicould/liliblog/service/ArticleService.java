@@ -1,5 +1,6 @@
 package cn.lilicould.liliblog.service;
 
+import cn.lilicould.liliblog.pojo.dto.response.ArticleVO;
 import cn.lilicould.liliblog.pojo.entity.Article;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -10,4 +11,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface ArticleService extends IService<Article> {
 
+    /**
+     * 根据id获取文章详情
+     * @param id 文章ID
+     * @return 文章详情
+     */
+    ArticleVO getArticle(Long id);
 }

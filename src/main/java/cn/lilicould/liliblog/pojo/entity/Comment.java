@@ -34,12 +34,6 @@ public class Comment extends CreateOnlyEntity implements Serializable {
     private String content;
 
     /**
-     * 评论者ID
-     */
-    @TableField(value = "author_id")
-    private Long authorId;
-
-    /**
      * 文章ID
      */
     @TableField(value = "article_id")

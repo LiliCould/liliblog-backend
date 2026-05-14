@@ -874,68 +874,68 @@
     <schema id="276" parent="1" name="car_rental_db">
       <CollationName>utf8mb4_unicode_ci</CollationName>
     </schema>
-    <schema id="277" parent="1" name="cloud_study">
+    <schema id="277" parent="1" name="chatdb">
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
-    <schema id="278" parent="1" name="employees">
+    <schema id="278" parent="1" name="cloud_study">
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
-    <schema id="279" parent="1" name="enterprise_labor_education">
+    <schema id="279" parent="1" name="employees">
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
-    <schema id="280" parent="1" name="fast_yunke">
+    <schema id="280" parent="1" name="enterprise_labor_education">
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
-    <schema id="281" parent="1" name="game">
+    <schema id="281" parent="1" name="fast_yunke">
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
-    <schema id="282" parent="1" name="grade_system">
+    <schema id="282" parent="1" name="game">
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
-    <schema id="283" parent="1" name="information_schema">
+    <schema id="283" parent="1" name="grade_system">
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </schema>
+    <schema id="284" parent="1" name="information_schema">
       <CollationName>utf8_general_ci</CollationName>
     </schema>
-    <schema id="284" parent="1" name="liliblog">
+    <schema id="285" parent="1" name="liliblog">
       <AutoIntrospectionLevel>3</AutoIntrospectionLevel>
       <Current>1</Current>
       <LastIntrospectionLevel>3</LastIntrospectionLevel>
-      <LastIntrospectionLocalTimestamp>2026-05-12.12:43:57</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2026-05-14.09:20:43</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
-    <schema id="285" parent="1" name="lilicould">
+    <schema id="286" parent="1" name="lilicould">
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
-    <schema id="286" parent="1" name="mysql">
+    <schema id="287" parent="1" name="mysql">
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
-    <schema id="287" parent="1" name="performance_schema">
+    <schema id="288" parent="1" name="performance_schema">
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
-    <schema id="288" parent="1" name="ry">
+    <schema id="289" parent="1" name="ry">
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
-    <schema id="289" parent="1" name="seata">
+    <schema id="290" parent="1" name="seata">
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
-    <schema id="290" parent="1" name="security_demo">
+    <schema id="291" parent="1" name="security_demo">
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
-    <schema id="291" parent="1" name="sky_take_out">
+    <schema id="292" parent="1" name="sky_take_out">
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
-    <schema id="292" parent="1" name="store">
+    <schema id="293" parent="1" name="store">
       <CollationName>utf8_general_ci</CollationName>
     </schema>
-    <schema id="293" parent="1" name="sys">
+    <schema id="294" parent="1" name="sys">
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
-    <schema id="294" parent="1" name="test">
+    <schema id="295" parent="1" name="test">
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
-    <schema id="295" parent="1" name="user_db">
-      <CollationName>utf8mb4_0900_ai_ci</CollationName>
-    </schema>
-    <schema id="296" parent="1" name="chatdb">
+    <schema id="296" parent="1" name="user_db">
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
     <user id="297" parent="1" name="lilicould">
@@ -959,56 +959,56 @@
     <user id="301" parent="1" name="root">
       <Host>localhost</Host>
     </user>
-    <table id="302" parent="284" name="article">
+    <table id="302" parent="285" name="article">
       <Comment>文章表</Comment>
       <DetailsLevel>3</DetailsLevel>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
-    <table id="303" parent="284" name="article_tag">
+    <table id="303" parent="285" name="article_tag">
       <Comment>文章标签关联表</Comment>
       <DetailsLevel>3</DetailsLevel>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
-    <table id="304" parent="284" name="category">
+    <table id="304" parent="285" name="category">
       <Comment>分类表</Comment>
       <DetailsLevel>3</DetailsLevel>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
-    <table id="305" parent="284" name="chat_message">
+    <table id="305" parent="285" name="chat_message">
       <Comment>聊天消息表</Comment>
       <DetailsLevel>3</DetailsLevel>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
-    <table id="306" parent="284" name="comment">
+    <table id="306" parent="285" name="comment">
       <Comment>评论表</Comment>
       <DetailsLevel>3</DetailsLevel>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
-    <table id="307" parent="284" name="like_record">
+    <table id="307" parent="285" name="like_record">
       <Comment>点赞记录表</Comment>
       <DetailsLevel>3</DetailsLevel>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
-    <table id="308" parent="284" name="tag">
+    <table id="308" parent="285" name="tag">
       <Comment>标签表</Comment>
       <DetailsLevel>3</DetailsLevel>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
-    <table id="309" parent="284" name="user">
+    <table id="309" parent="285" name="user">
       <Comment>用户表</Comment>
       <DetailsLevel>3</DetailsLevel>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
     <column id="310" parent="302" name="id">
-      <AutoIncrement>1</AutoIncrement>
+      <AutoIncrement>4</AutoIncrement>
       <Comment>文章ID</Comment>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -1047,7 +1047,7 @@
       <StoredType>varchar(255)|0s</StoredType>
     </column>
     <column id="317" parent="302" name="status">
-      <Comment>状态：0-禁用，1-启用</Comment>
+      <Comment>状态：0-审核中，1-发布，2-草稿</Comment>
       <DefaultExpression>1</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>8</Position>
@@ -1131,7 +1131,7 @@ content</ColNames>
       <UnderlyingIndexName>slug</UnderlyingIndexName>
     </key>
     <column id="333" parent="303" name="id">
-      <AutoIncrement>1</AutoIncrement>
+      <AutoIncrement>5</AutoIncrement>
       <Comment>关联ID</Comment>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -1189,7 +1189,7 @@ tag_id</ColNames>
       <UnderlyingIndexName>uk_article_tag</UnderlyingIndexName>
     </key>
     <column id="344" parent="304" name="id">
-      <AutoIncrement>1</AutoIncrement>
+      <AutoIncrement>4</AutoIncrement>
       <Comment>分类ID</Comment>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -1278,7 +1278,7 @@ tag_id</ColNames>
       <UnderlyingIndexName>slug</UnderlyingIndexName>
     </key>
     <column id="360" parent="305" name="id">
-      <AutoIncrement>1</AutoIncrement>
+      <AutoIncrement>4</AutoIncrement>
       <Comment>消息ID</Comment>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -1359,7 +1359,7 @@ tag_id</ColNames>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
     <column id="375" parent="306" name="id">
-      <AutoIncrement>1</AutoIncrement>
+      <AutoIncrement>4</AutoIncrement>
       <Comment>评论ID</Comment>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -1371,368 +1371,362 @@ tag_id</ColNames>
       <Position>2</Position>
       <StoredType>text|0s</StoredType>
     </column>
-    <column id="377" parent="306" name="author_id">
-      <Comment>评论者ID</Comment>
+    <column id="377" parent="306" name="article_id">
+      <Comment>文章ID</Comment>
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>bigint|0s</StoredType>
     </column>
-    <column id="378" parent="306" name="article_id">
-      <Comment>文章ID</Comment>
-      <NotNull>1</NotNull>
+    <column id="378" parent="306" name="parent_id">
+      <Comment>父评论ID</Comment>
+      <DefaultExpression>0</DefaultExpression>
       <Position>4</Position>
       <StoredType>bigint|0s</StoredType>
     </column>
-    <column id="379" parent="306" name="parent_id">
-      <Comment>父评论ID</Comment>
-      <DefaultExpression>0</DefaultExpression>
-      <Position>5</Position>
-      <StoredType>bigint|0s</StoredType>
-    </column>
-    <column id="380" parent="306" name="status">
+    <column id="379" parent="306" name="status">
       <Comment>状态,0-审核中,1-发布</Comment>
       <DefaultExpression>0</DefaultExpression>
-      <Position>6</Position>
+      <Position>5</Position>
       <StoredType>tinyint|0s</StoredType>
     </column>
-    <column id="381" parent="306" name="like_count">
+    <column id="380" parent="306" name="like_count">
       <Comment>点赞数</Comment>
       <DefaultExpression>0</DefaultExpression>
-      <Position>7</Position>
+      <Position>6</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="382" parent="306" name="ip_address">
+    <column id="381" parent="306" name="ip_address">
       <Comment>评论者IP</Comment>
-      <Position>8</Position>
+      <Position>7</Position>
       <StoredType>varchar(45)|0s</StoredType>
     </column>
-    <column id="383" parent="306" name="user_agent">
+    <column id="382" parent="306" name="user_agent">
       <Comment>用户代理</Comment>
-      <Position>9</Position>
+      <Position>8</Position>
       <StoredType>varchar(500)|0s</StoredType>
     </column>
-    <column id="384" parent="306" name="create_time">
+    <column id="383" parent="306" name="create_time">
       <Comment>创建时间</Comment>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
-      <Position>10</Position>
+      <Position>9</Position>
       <StoredType>datetime|0s</StoredType>
     </column>
-    <column id="385" parent="306" name="create_by">
+    <column id="384" parent="306" name="create_by">
       <Comment>创建者 默认为0-管理员</Comment>
       <DefaultExpression>0</DefaultExpression>
-      <Position>11</Position>
+      <Position>10</Position>
       <StoredType>bigint|0s</StoredType>
     </column>
-    <column id="386" parent="306" name="deleted">
+    <column id="385" parent="306" name="deleted">
       <Comment>逻辑删除：0-未删除，1-已删除</Comment>
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
-      <Position>12</Position>
+      <Position>11</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <index id="387" parent="306" name="PRIMARY">
+    <index id="386" parent="306" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="388" parent="306" name="idx_article">
+    <index id="387" parent="306" name="idx_article">
       <ColNames>article_id</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="389" parent="306" name="idx_parent">
+    <index id="388" parent="306" name="idx_parent">
       <ColNames>parent_id</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="390" parent="306" name="idx_status">
+    <index id="389" parent="306" name="idx_status">
       <ColNames>status</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="391" parent="306" name="idx_create_time">
+    <index id="390" parent="306" name="idx_create_time">
       <ColNames>create_time</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="392" parent="306" name="PRIMARY">
+    <key id="391" parent="306" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="393" parent="307" name="id">
-      <AutoIncrement>1</AutoIncrement>
+    <column id="392" parent="307" name="id">
+      <AutoIncrement>4</AutoIncrement>
       <Comment>主键</Comment>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>bigint|0s</StoredType>
     </column>
-    <column id="394" parent="307" name="user_id">
+    <column id="393" parent="307" name="user_id">
       <Comment>用户ID</Comment>
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>bigint|0s</StoredType>
     </column>
-    <column id="395" parent="307" name="target_id">
+    <column id="394" parent="307" name="target_id">
       <Comment>目标ID（文章ID或评论ID）</Comment>
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>bigint|0s</StoredType>
     </column>
-    <column id="396" parent="307" name="target_type">
+    <column id="395" parent="307" name="target_type">
       <Comment>目标类型，0-文章，1-评论</Comment>
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>tinyint|0s</StoredType>
     </column>
-    <column id="397" parent="307" name="create_time">
+    <column id="396" parent="307" name="create_time">
       <Comment>创建时间</Comment>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <Position>5</Position>
       <StoredType>datetime|0s</StoredType>
     </column>
-    <column id="398" parent="307" name="create_by">
+    <column id="397" parent="307" name="create_by">
       <Comment>创建者 默认为0-管理员</Comment>
       <DefaultExpression>0</DefaultExpression>
       <Position>6</Position>
       <StoredType>bigint|0s</StoredType>
     </column>
-    <index id="399" parent="307" name="PRIMARY">
+    <index id="398" parent="307" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="400" parent="307" name="uk_user_target">
+    <index id="399" parent="307" name="uk_user_target">
       <ColNames>user_id
 target_id
 target_type</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="401" parent="307" name="idx_user">
+    <index id="400" parent="307" name="idx_user">
       <ColNames>user_id</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="402" parent="307" name="idx_target">
+    <index id="401" parent="307" name="idx_target">
       <ColNames>target_id
 target_type</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="403" parent="307" name="PRIMARY">
+    <key id="402" parent="307" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <key id="404" parent="307" name="uk_user_target">
+    <key id="403" parent="307" name="uk_user_target">
       <UnderlyingIndexName>uk_user_target</UnderlyingIndexName>
     </key>
-    <column id="405" parent="308" name="id">
-      <AutoIncrement>1</AutoIncrement>
+    <column id="404" parent="308" name="id">
+      <AutoIncrement>7</AutoIncrement>
       <Comment>标签ID</Comment>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>bigint|0s</StoredType>
     </column>
-    <column id="406" parent="308" name="name">
+    <column id="405" parent="308" name="name">
       <Comment>标签名称</Comment>
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>varchar(30)|0s</StoredType>
     </column>
-    <column id="407" parent="308" name="color">
+    <column id="406" parent="308" name="color">
       <Comment>标签颜色</Comment>
       <DefaultExpression>&apos;#666666&apos;</DefaultExpression>
       <Position>3</Position>
       <StoredType>varchar(7)|0s</StoredType>
     </column>
-    <column id="408" parent="308" name="create_time">
+    <column id="407" parent="308" name="create_time">
       <Comment>创建时间</Comment>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <Position>4</Position>
       <StoredType>datetime|0s</StoredType>
     </column>
-    <column id="409" parent="308" name="update_time">
+    <column id="408" parent="308" name="update_time">
       <Comment>更新时间</Comment>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <OnUpdate>CURRENT_TIMESTAMP</OnUpdate>
       <Position>5</Position>
       <StoredType>datetime|0s</StoredType>
     </column>
-    <column id="410" parent="308" name="create_by">
+    <column id="409" parent="308" name="create_by">
       <Comment>创建者 默认为0-管理员</Comment>
       <DefaultExpression>0</DefaultExpression>
       <Position>6</Position>
       <StoredType>bigint|0s</StoredType>
     </column>
-    <column id="411" parent="308" name="update_by">
+    <column id="410" parent="308" name="update_by">
       <Comment>更新者</Comment>
       <Position>7</Position>
       <StoredType>bigint|0s</StoredType>
     </column>
-    <column id="412" parent="308" name="deleted">
+    <column id="411" parent="308" name="deleted">
       <Comment>逻辑删除：0-未删除，1-已删除</Comment>
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>8</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <index id="413" parent="308" name="PRIMARY">
+    <index id="412" parent="308" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="414" parent="308" name="name">
+    <index id="413" parent="308" name="name">
       <ColNames>name</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="415" parent="308" name="idx_id">
+    <index id="414" parent="308" name="idx_id">
       <ColNames>id</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="416" parent="308" name="idx_name">
+    <index id="415" parent="308" name="idx_name">
       <ColNames>name</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="417" parent="308" name="PRIMARY">
+    <key id="416" parent="308" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <key id="418" parent="308" name="name">
+    <key id="417" parent="308" name="name">
       <UnderlyingIndexName>name</UnderlyingIndexName>
     </key>
-    <column id="419" parent="309" name="id">
+    <column id="418" parent="309" name="id">
       <AutoIncrement>5</AutoIncrement>
       <Comment>用户ID</Comment>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>bigint|0s</StoredType>
     </column>
-    <column id="420" parent="309" name="github_id">
+    <column id="419" parent="309" name="github_id">
       <Comment>GitHub ID</Comment>
       <Position>2</Position>
       <StoredType>bigint|0s</StoredType>
     </column>
-    <column id="421" parent="309" name="username">
+    <column id="420" parent="309" name="username">
       <Comment>用户名</Comment>
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>varchar(50)|0s</StoredType>
     </column>
-    <column id="422" parent="309" name="email">
+    <column id="421" parent="309" name="email">
       <Comment>邮箱</Comment>
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>varchar(100)|0s</StoredType>
     </column>
-    <column id="423" parent="309" name="password">
+    <column id="422" parent="309" name="password">
       <Comment>加密密码</Comment>
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StoredType>varchar(255)|0s</StoredType>
     </column>
-    <column id="424" parent="309" name="nickname">
+    <column id="423" parent="309" name="nickname">
       <Comment>昵称</Comment>
       <NotNull>1</NotNull>
       <Position>6</Position>
       <StoredType>varchar(50)|0s</StoredType>
     </column>
-    <column id="425" parent="309" name="avatar">
+    <column id="424" parent="309" name="avatar">
       <Comment>头像URL</Comment>
       <Position>7</Position>
       <StoredType>varchar(255)|0s</StoredType>
     </column>
-    <column id="426" parent="309" name="role">
+    <column id="425" parent="309" name="role">
       <Comment>角色：0-ADMIN，1-USER</Comment>
       <DefaultExpression>1</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>8</Position>
       <StoredType>tinyint|0s</StoredType>
     </column>
-    <column id="427" parent="309" name="status">
+    <column id="426" parent="309" name="status">
       <Comment>状态：0-禁用，1-启用</Comment>
       <DefaultExpression>1</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>9</Position>
       <StoredType>tinyint|0s</StoredType>
     </column>
-    <column id="428" parent="309" name="last_login_time">
+    <column id="427" parent="309" name="last_login_time">
       <Comment>最后登录时间</Comment>
       <Position>10</Position>
       <StoredType>datetime|0s</StoredType>
     </column>
-    <column id="429" parent="309" name="create_time">
+    <column id="428" parent="309" name="create_time">
       <Comment>创建时间</Comment>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <Position>11</Position>
       <StoredType>datetime|0s</StoredType>
     </column>
-    <column id="430" parent="309" name="update_time">
+    <column id="429" parent="309" name="update_time">
       <Comment>更新时间</Comment>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <OnUpdate>CURRENT_TIMESTAMP</OnUpdate>
       <Position>12</Position>
       <StoredType>datetime|0s</StoredType>
     </column>
-    <column id="431" parent="309" name="create_by">
+    <column id="430" parent="309" name="create_by">
       <Comment>创建者 默认为0-管理员</Comment>
       <DefaultExpression>0</DefaultExpression>
       <Position>13</Position>
       <StoredType>bigint|0s</StoredType>
     </column>
-    <column id="432" parent="309" name="update_by">
+    <column id="431" parent="309" name="update_by">
       <Comment>更新者</Comment>
       <Position>14</Position>
       <StoredType>bigint|0s</StoredType>
     </column>
-    <column id="433" parent="309" name="deleted">
+    <column id="432" parent="309" name="deleted">
       <Comment>逻辑删除：0-未删除，1-已删除</Comment>
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>15</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <index id="434" parent="309" name="PRIMARY">
+    <index id="433" parent="309" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="435" parent="309" name="uk_github_id">
+    <index id="434" parent="309" name="uk_github_id">
       <ColNames>github_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="436" parent="309" name="username">
+    <index id="435" parent="309" name="username">
       <ColNames>username</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="437" parent="309" name="email">
+    <index id="436" parent="309" name="email">
       <ColNames>email</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="438" parent="309" name="idx_username">
+    <index id="437" parent="309" name="idx_username">
       <ColNames>username</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="439" parent="309" name="idx_email">
+    <index id="438" parent="309" name="idx_email">
       <ColNames>email</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="440" parent="309" name="idx_status">
+    <index id="439" parent="309" name="idx_status">
       <ColNames>status</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="441" parent="309" name="PRIMARY">
+    <key id="440" parent="309" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <key id="442" parent="309" name="uk_github_id">
+    <key id="441" parent="309" name="uk_github_id">
       <UnderlyingIndexName>uk_github_id</UnderlyingIndexName>
     </key>
-    <key id="443" parent="309" name="username">
+    <key id="442" parent="309" name="username">
       <UnderlyingIndexName>username</UnderlyingIndexName>
     </key>
-    <key id="444" parent="309" name="email">
+    <key id="443" parent="309" name="email">
       <UnderlyingIndexName>email</UnderlyingIndexName>
     </key>
   </database-model>

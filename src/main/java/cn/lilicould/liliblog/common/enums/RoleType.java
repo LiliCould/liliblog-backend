@@ -21,13 +21,13 @@ public enum RoleType {
     }
 
     /**
-     * 根据 code 获取角色名称（完全对应你的 case 逻辑）
+     * 根据 code 获取角色名称
      */
     public static String getRoleByCode(Integer code) {
         if (ADMIN.code.equals(code)) {
-            return ADMIN.name();
+            return ADMIN.getName();
         }
-        return USER.name();
+        return USER.getName();
     }
 
 }

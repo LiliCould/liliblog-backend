@@ -1,5 +1,6 @@
 package cn.lilicould.liliblog.mapper;
 
+import cn.lilicould.liliblog.pojo.dto.response.ArticleVO;
 import cn.lilicould.liliblog.pojo.entity.Article;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -11,6 +12,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface ArticleMapper extends BaseMapper<Article> {
 
+    ArticleVO selectArticleVOById(Long id);
 }
 
 

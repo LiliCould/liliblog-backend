@@ -60,6 +60,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             // 如果当前 SecurityContext 没有认证信息，则进行认证
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                // todo 应该从token中解析而不是每次都从数据库中查
                 SecurityUser user = (SecurityUser) userService.loadUserByUsername(username);
 
                 // 验证 Token 有效性并设置认证信息
@@ -76,10 +77,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             log.error("JWT 认证失败", e);
 
-            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            response.setCharacterEncoding(StandardCharsets.UTF_8);
-            response.getWriter().write(objectMapper.writeValueAsString(Result.error(CodeEnum.TOKEN_EXPIRED)));
-            return;
+            /*
+                不是认证接口且jwt验证失败的直接返回jwt已经过期
+                前端收到这个的时候应该立刻去获取新的访问令牌
+             */
+            if (!request.getRequestURI().startsWith("/auth")) {
+                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                response.setCharacterEncoding(StandardCharsets.UTF_8);
+                response.getWriter().write(objectMapper.writeValueAsString(Result.error(CodeEnum.TOKEN_EXPIRED)));
+                return;
+            }
         }
 
         // 继续执行后续过滤器链

@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Schema(description = "通用返回结果")
 @Data
@@ -16,6 +17,8 @@ public class Result<T> implements Serializable {
     private String msg; //错误信息
     @Schema(description = "数据")
     private T data; //数据
+    @Schema(description = "响应时间")
+    private LocalDateTime time;
 
     public static <T> Result<T> success() {
         return Result.success(null);
@@ -26,6 +29,7 @@ public class Result<T> implements Serializable {
         result.data = object;
         result.code = CodeEnum.SUCCESS.getCode();
         result.msg = CodeEnum.SUCCESS.getMessage();
+        result.time = LocalDateTime.now();
         return result;
     }
 
@@ -34,6 +38,7 @@ public class Result<T> implements Serializable {
         result.msg = msg;
         result.code = code;
         result.data = null;
+        result.time = LocalDateTime.now();
         return result;
     }
 
