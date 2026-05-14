@@ -36,6 +36,7 @@ public enum CodeEnum {
     COMMENT_EMPTY(3003, "评论内容不能为空"),
     CATEGORY_NOT_FOUND(3004, "分类不存在"),
     TAG_NOT_FOUND(3005, "标签不存在"),
+    SLUG_ALREADY_EXISTS(3006, "别名已存在"),
 
     // 系统错误 5xxx
     SYSTEM_ERROR(5000, "系统异常，请稍后重试"),

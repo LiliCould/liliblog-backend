@@ -94,6 +94,11 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         article.setStatus(calculateStatus(article.getStatus()));
         article.setViewCount(0); // 阅读量默认0
 
+        // 检查别名是否存在
+        if (articleMapper.exists(new LambdaQueryWrapper<Article>().eq(Article::getSlug, article.getSlug()))) {
+            throw new BusinessException(CodeEnum.SLUG_ALREADY_EXISTS);
+        }
+
         // 检查分类是否存在
         if (!categoryMapper.exists(new LambdaQueryWrapper<Category>().eq(Category::getId, article.getCategoryId()))) {
             throw new BusinessException(CodeEnum.CATEGORY_NOT_FOUND);
