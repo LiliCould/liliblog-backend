@@ -1,7 +1,9 @@
 package cn.lilicould.liliblog.pojo.dto.query;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -24,8 +26,10 @@ public class ArticleQuery extends BaseQuery implements Serializable {
     private Integer status;
 
     @Schema(description = "文章发布时间范围(开始)",type = "string",format = "date-time",example = "2026-05-09 14:51:06")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startTime;
 
     @Schema(description = "文章发布时间范围(结束)",type = "string",format = "date-time",example = "2026-05-11 14:51:06")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime endTime;
 }

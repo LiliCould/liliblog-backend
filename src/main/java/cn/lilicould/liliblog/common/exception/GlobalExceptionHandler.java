@@ -62,7 +62,7 @@ public class GlobalExceptionHandler {
                 .orElse("参数验证失败");
 
         log.error("参数验证失败 -> {}", message);
-        return Result.error(CodeEnum.COMMON_PARAM_ERROR.getCode(),message);
+        return Result.error(CodeEnum.COMMON_PARAM_ERROR);
     }
 
     /**
