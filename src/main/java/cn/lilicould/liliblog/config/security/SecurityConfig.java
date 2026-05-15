@@ -7,6 +7,7 @@ import cn.lilicould.liliblog.filter.WebLogFilter;
 import cn.lilicould.liliblog.service.impl.CustomOAuth2UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -70,8 +71,6 @@ public class SecurityConfig {
 
             // 配置请求授权规则
             .authorizeHttpRequests(auth -> auth
-                    // 放行无需认证的路径
-                    .requestMatchers("/auth/**").permitAll() // 认证相关接口（登录、注册等）
                     // 放行 Knife4j 相关静态资源
                     .requestMatchers(
                             "/doc.html",
@@ -83,6 +82,10 @@ public class SecurityConfig {
                             "/favicon.ico",
                             "/oauth2/**", "/login/**" // OAuth2 端点公开
                     ).permitAll()
+
+                    // 放行无需认证的路径
+                    .requestMatchers("/auth/**").permitAll() // 认证相关接口（登录、注册等）
+                    .requestMatchers(HttpMethod.GET, "/api/article/**").permitAll() // 放行文章接口的GET请求方法
 
                     // 其他所有请求都需要认证才能访问
                     .anyRequest().authenticated()

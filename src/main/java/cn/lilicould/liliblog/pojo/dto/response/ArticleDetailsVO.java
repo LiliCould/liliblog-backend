@@ -14,8 +14,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(name = "文章列表对象")
-public class ArticleVO implements Serializable {
+@Schema(name = "文章详情对象")
+public class ArticleDetailsVO implements Serializable {
     @Schema(description = "文章ID")
     private Long id;
     @Schema(description = "文章标题")
@@ -26,6 +26,8 @@ public class ArticleVO implements Serializable {
     private String summary;
     @Schema(description = "封面图片URL")
     private String coverImage;
+    @Schema(description = "HTML内容")
+    private String contentHtml;
     @Schema(description = "阅读数")
     private Integer viewCount;
     @Schema(description = "点赞数") // 联查点赞表
@@ -43,5 +45,5 @@ public class ArticleVO implements Serializable {
     @Schema(description = "创建时间")
     private LocalDateTime createTime;
     @Schema(description = "作者")
-    private UserInfo creator;   // 作者
+    private UserInfo creator;   // 创建者
 }

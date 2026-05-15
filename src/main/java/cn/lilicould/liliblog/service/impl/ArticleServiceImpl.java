@@ -1,5 +1,6 @@
 package cn.lilicould.liliblog.service.impl;
 
+import cn.lilicould.liliblog.common.constant.OrderConstant;
 import cn.lilicould.liliblog.common.constant.StatusConstant;
 import cn.lilicould.liliblog.common.context.BaseContext;
 import cn.lilicould.liliblog.common.enums.CodeEnum;
@@ -7,14 +8,14 @@ import cn.lilicould.liliblog.common.enums.TargetType;
 import cn.lilicould.liliblog.common.exception.BusinessException;
 import cn.lilicould.liliblog.common.util.MarkdownUtil;
 import cn.lilicould.liliblog.mapper.*;
+import cn.lilicould.liliblog.pojo.dto.query.ArticleQuery;
 import cn.lilicould.liliblog.pojo.dto.request.ArticleRequest;
-import cn.lilicould.liliblog.pojo.dto.response.ArticleVO;
-import cn.lilicould.liliblog.pojo.dto.response.CategoryVO;
-import cn.lilicould.liliblog.pojo.dto.response.TagVO;
-import cn.lilicould.liliblog.pojo.dto.response.UserInfo;
+import cn.lilicould.liliblog.pojo.dto.response.*;
 import cn.lilicould.liliblog.pojo.entity.*;
 import cn.lilicould.liliblog.service.ArticleService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,8 +46,13 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     private final TagMapper tagMapper;
     private final ArticleTagMapper articleTagMapper;
 
+    /**
+     * 根据id获取文章详情
+     * @param id 文章ID
+     * @return 文章详情
+     */
     @Override
-    public ArticleVO getArticle(Long id) {
+    public ArticleDetailsVO getArticle(Long id) {
         // 查询文章基础信息
         Article article = articleMapper.selectById(id);
         if (article == null) {
@@ -57,27 +63,83 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
             throw new BusinessException(CodeEnum.NO_PERMISSION);
         }
 
-        ArticleVO articleVO = new ArticleVO();
-        BeanUtils.copyProperties(article, articleVO);
+        ArticleDetailsVO articleDetailsVO = new ArticleDetailsVO();
+        BeanUtils.copyProperties(article, articleDetailsVO);
 
         // 设置作者和更新者信息
-        articleVO.setCreator(buildUserInfo(article.getCreateBy()));
-        articleVO.setUpdater(buildUserInfo(article.getUpdateBy()));
+        articleDetailsVO.setCreator(buildUserInfo(article.getCreateBy()));
+        articleDetailsVO.setUpdater(buildUserInfo(article.getUpdateBy()));
 
         // 设置点赞数和评论数
-        articleVO.setLikeCount(getLikeCount(id));
-        articleVO.setCommentCount(getCommentCount(id));
+        articleDetailsVO.setLikeCount(getLikeCount(id));
+        articleDetailsVO.setCommentCount(getCommentCount(id));
 
         // 设置分类信息
-        articleVO.setCategory(buildCategoryVO(article.getCategoryId()));
+        articleDetailsVO.setCategory(buildCategoryVO(article.getCategoryId()));
 
         // 设置标签列表
-        articleVO.setTags(buildTagVOList(id));
+        articleDetailsVO.setTags(buildTagVOList(id));
 
-        log.info(articleVO.toString());
-        return articleVO;
+        log.info(articleDetailsVO.toString());
+        return articleDetailsVO;
     }
 
+    /**
+     * 获取文章列表
+     * @param articleQuery 查询参数
+     * @return 文章列表
+     */
+    @Override
+    public PageInfo<ArticleVO> getArticleList(ArticleQuery articleQuery) {
+        // 初始化分页参数
+        Page<Article> page = Page.of(articleQuery.getCurrent(), articleQuery.getSize());
+        page.addOrder(OrderItem.desc(OrderConstant.UPDATE_TIME)); // 排序
+
+        // 查询条件
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        // 基础条件：标题模糊查询
+        queryWrapper.like(articleQuery.getTitle() != null, Article::getTitle, articleQuery.getTitle())
+                .eq(articleQuery.getCreateBy() != null, Article::getCreateBy, articleQuery.getCreateBy())
+                .eq(articleQuery.getCategoryId() != null, Article::getCategoryId, articleQuery.getCategoryId())
+                .between(
+                        articleQuery.getStartTime() != null && articleQuery.getEndTime() != null,
+                        Article::getCreateTime,
+                        articleQuery.getStartTime(),
+                        articleQuery.getEndTime()
+                )
+                .select(Article::getId, Article::getTitle, Article::getSlug, Article::getSummary, Article::getCoverImage, Article::getViewCount, Article::getCategoryId, Article::getCreateBy, Article::getUpdateBy, Article::getCreateTime, Article::getUpdateTime);
+
+        // 权限控制：根据用户角色和登录状态过滤文章
+        applyPermissionFilter(queryWrapper, articleQuery.getStatus());
+
+        // 查询
+        Page<Article> articlePage = articleMapper.selectPage(page, queryWrapper);
+
+        if (articlePage.getTotal() == 0)
+            return PageInfo.empty(articleQuery.getCurrent(), articleQuery.getSize());
+
+        // 填充信息并返回
+        List<ArticleVO> records = articlePage.getRecords().stream().map(article -> {
+            ArticleVO articleVO = new ArticleVO();
+            BeanUtils.copyProperties(article, articleVO);
+            articleVO.setCreator(buildUserInfo(article.getCreateBy())); // 设置作者信息
+            articleVO.setUpdater(buildUserInfo(article.getUpdateBy())); // 设置新者信息
+            articleVO.setLikeCount(getLikeCount(article.getId())); // 填充点赞数和评论数
+            articleVO.setCommentCount(getCommentCount(article.getId())); // 填充点赞数和评论数
+            articleVO.setCategory(buildCategoryVO(article.getCategoryId())); // 填充分类信息
+            articleVO.setTags(buildTagVOList(article.getId())); // 填充标签列表
+            return articleVO;
+        }).toList();
+
+        Page<ArticleVO> voPage = new Page<>(articlePage.getCurrent(), articlePage.getSize(), articlePage.getTotal()); // 会自动计算其他信息
+        voPage.setRecords(records);
+        return PageInfo.of(voPage);
+    }
+
+    /**
+     * 保存文章
+     * @param articleRequest 文章参数
+     */
     @Override
     @Transactional(rollbackFor = Exception.class,isolation = Isolation.READ_COMMITTED)
     public void save(ArticleRequest articleRequest) {
@@ -230,6 +292,49 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         // 其他情况（如待审核、或者非法状态），统一归为待审核
         else {
             return StatusConstant.ARTICLE_PENDING;
+        }
+    }
+
+
+    /**
+     * 应用权限过滤条件
+     * @param queryWrapper 查询包装器
+     * @param status 查询的状态（可能为null）
+     */
+    private void applyPermissionFilter(LambdaQueryWrapper<Article> queryWrapper, Integer status) {
+        Long currentUserId = BaseContext.getCurrentUserId();
+        boolean isAdmin = BaseContext.isAdmin();
+
+        // 情况1：管理员 - 可以查所有状态，如果指定了status则按status查
+        if (isAdmin) {
+            queryWrapper.eq(status != null, Article::getStatus, status);
+            return;
+        }
+
+        // 情况2：未登录用户 - 只能查已发布文章
+        if (currentUserId == null) {
+            queryWrapper.eq(Article::getStatus, StatusConstant.ARTICLE_PUBLISHED);
+            return;
+        }
+
+        // 情况3：已登录普通用户
+        if (status != null) {
+            // 如果指定了已发布状态，可以查所有人的已发布文章
+            if (StatusConstant.ARTICLE_PUBLISHED.equals(status)) {
+                queryWrapper.eq(Article::getStatus, status);
+            }
+            // 如果指定了非已发布状态（待审核/草稿），只能查自己的
+            else {
+                queryWrapper.eq(Article::getStatus, status)
+                        .eq(Article::getCreateBy, currentUserId);
+            }
+        } else {
+            // 如果未指定status，可以查：别人的已发布文章 + 自己的所有文章
+            queryWrapper.and(wrapper ->
+                    wrapper.eq(Article::getStatus, StatusConstant.ARTICLE_PUBLISHED)  // 已发布的文章
+                            .or()  // 或者
+                            .eq(Article::getCreateBy, currentUserId)  // 自己创建的文章（所有状态）
+            );
         }
     }
 }

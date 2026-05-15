@@ -22,7 +22,7 @@
         <result property="deleted" column="deleted" />
     </resultMap>
 
-    <resultMap id="articleVOMap" type="cn.lilicould.liliblog.pojo.dto.response.ArticleVO">
+    <resultMap id="articleVOMap" type="cn.lilicould.liliblog.pojo.dto.response.ArticleDetailsVO">
         <!-- 根对象字段 -->
         <id property="id" column="a_id" />
         <result property="title" column="title" />
@@ -83,7 +83,7 @@
         update_time,create_by,update_by,deleted
     </sql>
 
-    <select id="selectArticleVOById" resultType="cn.lilicould.liliblog.pojo.dto.response.ArticleVO">
+    <select id="selectArticleVOById" resultType="cn.lilicould.liliblog.pojo.dto.response.ArticleDetailsVO">
 
     </select>
 </mapper>

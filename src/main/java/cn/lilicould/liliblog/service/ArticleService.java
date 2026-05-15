@@ -1,7 +1,10 @@
 package cn.lilicould.liliblog.service;
 
+import cn.lilicould.liliblog.pojo.dto.query.ArticleQuery;
 import cn.lilicould.liliblog.pojo.dto.request.ArticleRequest;
+import cn.lilicould.liliblog.pojo.dto.response.ArticleDetailsVO;
 import cn.lilicould.liliblog.pojo.dto.response.ArticleVO;
+import cn.lilicould.liliblog.pojo.dto.response.PageInfo;
 import cn.lilicould.liliblog.pojo.entity.Article;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -17,7 +20,18 @@ public interface ArticleService extends IService<Article> {
      * @param id 文章ID
      * @return 文章详情
      */
-    ArticleVO getArticle(Long id);
+    ArticleDetailsVO getArticle(Long id);
 
+    /**
+     * 保存文章
+     * @param articleRequest 文章参数
+     */
     void save(ArticleRequest articleRequest);
+
+    /**
+     * 获取文章列表
+     * @param articleQuery 查询参数
+     * @return 文章列表
+     */
+    PageInfo<ArticleVO> getArticleList(ArticleQuery articleQuery);
 }

@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Data
-@Schema
+@Schema(name = "文章保存参数")
 public class ArticleRequest implements Serializable {
     @NotBlank(message = "文章标题不能为空")
     @Schema(description = "文章标题",example = "关于AOP的使用")
