@@ -1,7 +1,8 @@
 package cn.lilicould.liliblog.service;
 
 import cn.lilicould.liliblog.pojo.dto.query.ArticleQuery;
-import cn.lilicould.liliblog.pojo.dto.request.ArticleRequest;
+import cn.lilicould.liliblog.pojo.dto.request.ArticleCreateRequest;
+import cn.lilicould.liliblog.pojo.dto.request.ArticleUpdateRequest;
 import cn.lilicould.liliblog.pojo.dto.response.ArticleDetailsVO;
 import cn.lilicould.liliblog.pojo.dto.response.ArticleVO;
 import cn.lilicould.liliblog.pojo.dto.response.PageInfo;
@@ -24,9 +25,9 @@ public interface ArticleService extends IService<Article> {
 
     /**
      * 保存文章
-     * @param articleRequest 文章参数
+     * @param articleCreateRequest 文章参数
      */
-    void save(ArticleRequest articleRequest);
+    void save(ArticleCreateRequest articleCreateRequest);
 
     /**
      * 获取文章列表
@@ -40,4 +41,12 @@ public interface ArticleService extends IService<Article> {
      * @param id 文章ID
      */
     void remove(Long id);
+
+
+    /**
+     * 更新文章
+     * @param id 文章ID
+     * @param articleCreateRequest 文章参数
+     */
+    void update(Long id, ArticleUpdateRequest articleUpdateRequest);
 }

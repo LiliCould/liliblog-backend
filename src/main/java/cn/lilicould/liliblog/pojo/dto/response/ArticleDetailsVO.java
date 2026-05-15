@@ -26,6 +26,8 @@ public class ArticleDetailsVO implements Serializable {
     private String summary;
     @Schema(description = "封面图片URL")
     private String coverImage;
+    @Schema(description = "markdown内容(不做展示，只是修改时候用到,展示请用contentHtml)")
+    private String content;
     @Schema(description = "HTML内容")
     private String contentHtml;
     @Schema(description = "阅读数")

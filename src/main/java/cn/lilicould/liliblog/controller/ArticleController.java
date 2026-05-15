@@ -2,7 +2,8 @@ package cn.lilicould.liliblog.controller;
 
 import cn.lilicould.liliblog.common.result.Result;
 import cn.lilicould.liliblog.pojo.dto.query.ArticleQuery;
-import cn.lilicould.liliblog.pojo.dto.request.ArticleRequest;
+import cn.lilicould.liliblog.pojo.dto.request.ArticleCreateRequest;
+import cn.lilicould.liliblog.pojo.dto.request.ArticleUpdateRequest;
 import cn.lilicould.liliblog.pojo.dto.response.ArticleDetailsVO;
 import cn.lilicould.liliblog.pojo.dto.response.ArticleVO;
 import cn.lilicould.liliblog.pojo.dto.response.PageInfo;
@@ -56,16 +57,27 @@ public class ArticleController {
 
     @PostMapping
     @Operation(summary = "保存(写)文章")
-    public Result<?> saveArticle(@RequestBody @Validated ArticleRequest articleRequest) {
+    public Result<?> saveArticle(@RequestBody @Validated ArticleCreateRequest articleCreateRequest) {
 
-        articleService.save(articleRequest);
+        articleService.save(articleCreateRequest);
+
+        return Result.success();
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "更新文章")
+    public Result<?> updateArticle(
+            @PathVariable @Parameter(description = "文章ID") Long id,
+            @RequestBody @Validated ArticleUpdateRequest articleUpdateRequest) {
+
+        articleService.update(id, articleUpdateRequest);
 
         return Result.success();
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除文章")
-    Result<?> delete(@PathVariable @Parameter(description = "文章ID") Long id) {
+    public Result<?> delete(@PathVariable @Parameter(description = "文章ID") Long id) {
 
         articleService.remove(id);
 

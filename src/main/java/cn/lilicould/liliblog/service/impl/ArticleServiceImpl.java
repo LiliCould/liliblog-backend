@@ -9,12 +9,14 @@ import cn.lilicould.liliblog.common.exception.BusinessException;
 import cn.lilicould.liliblog.common.util.MarkdownUtil;
 import cn.lilicould.liliblog.mapper.*;
 import cn.lilicould.liliblog.pojo.dto.query.ArticleQuery;
-import cn.lilicould.liliblog.pojo.dto.request.ArticleRequest;
+import cn.lilicould.liliblog.pojo.dto.request.ArticleCreateRequest;
+import cn.lilicould.liliblog.pojo.dto.request.ArticleUpdateRequest;
 import cn.lilicould.liliblog.pojo.dto.response.*;
 import cn.lilicould.liliblog.pojo.entity.*;
 import cn.lilicould.liliblog.service.ArticleService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
+import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -144,9 +146,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     @Transactional(rollbackFor = Exception.class,isolation = Isolation.READ_COMMITTED)
     public void remove(Long id) {
         // 校验文章是否存在
-        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Article::getId, id);
-        if (!this.exists(queryWrapper)) {
+        if (!this.exists(id)) {
             throw new BusinessException(CodeEnum.RESOURCE_NOT_FOUND);
         }
 
@@ -175,17 +175,90 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         commentMapper.delete(commentQueryWrapper);
     }
 
+
     /**
-     * 保存文章
-     * @param articleRequest 文章参数
+     * 修改文章
+     * @param id 文章ID
+     * @param articleUpdateRequest 文章参数
      */
     @Override
     @Transactional(rollbackFor = Exception.class,isolation = Isolation.READ_COMMITTED)
-    public void save(ArticleRequest articleRequest) {
+    public void update(Long id, ArticleUpdateRequest articleUpdateRequest) {
+        // 校验文章是否存在
+        if (!this.exists(id)) {
+            throw new BusinessException(CodeEnum.RESOURCE_NOT_FOUND);
+        }
+
+        // 校验权限
+        if (!hasWriteAuthority(id)) {
+            throw new BusinessException(CodeEnum.NO_PERMISSION);
+        }
 
         // 拷贝数据
         Article article = new Article();
-        BeanUtils.copyProperties(articleRequest, article);
+        BeanUtils.copyProperties(articleUpdateRequest, article);
+        article.setId(id);
+
+        // 将markdown内容转为HTML
+        String contentHtml = MarkdownUtil.markdownToHtml(article.getContent());
+        article.setContentHtml(contentHtml);
+
+        // 设置状态（根据权限信息计算）
+        article.setStatus(calculateStatus(article.getStatus()));
+
+        // 如果要修改别名，则检查别名是否已存在（排除自己）
+        if (articleUpdateRequest.getSlug() != null && articleMapper.exists(new LambdaQueryWrapper<Article>().eq(Article::getSlug, articleUpdateRequest.getSlug()).ne(Article::getId, id))) {
+            throw new BusinessException(CodeEnum.SLUG_ALREADY_EXISTS);
+        }
+
+        // 检查分类是否存在
+        if (articleUpdateRequest.getCategoryId() != null && !categoryMapper.exists(new LambdaQueryWrapper<Category>().eq(Category::getId, article.getCategoryId()))) {
+            throw new BusinessException(CodeEnum.CATEGORY_NOT_FOUND);
+        }
+
+        // 检查标签列表是否存在
+        for (Long tagId : articleUpdateRequest.getTags()) {
+            Tag tag = tagMapper.selectById(tagId);
+            if (tag == null) {
+                throw new BusinessException(CodeEnum.TAG_NOT_FOUND);
+            }
+        }
+
+        // 删除原来标签
+        LambdaQueryWrapper<ArticleTag> articleTagQueryWrapper = new LambdaQueryWrapper<>();
+        articleTagQueryWrapper.eq(ArticleTag::getArticleId, id);
+        articleTagMapper.delete(articleTagQueryWrapper);
+
+        // 更新文章
+        LambdaUpdateChainWrapper<Article> updateChainWrapper = new LambdaUpdateChainWrapper<>(articleMapper);
+        updateChainWrapper
+                .eq(Article::getId, id)
+                .set(article.getTitle() != null,Article::getTitle, article.getTitle())
+                .set(article.getSummary() != null,Article::getSummary, article.getSummary())
+                .set(article.getCoverImage() != null,Article::getCoverImage, article.getCoverImage())
+                .set(article.getStatus() != null,Article::getStatus, article.getStatus())
+                .set(article.getContent() != null,Article::getContent, article.getContent())
+                .set(article.getCategoryId() != null,Article::getCategoryId, article.getCategoryId())
+                .set(article.getSlug() != null,Article::getSlug, article.getSlug())
+                .set(article.getContentHtml() != null,Article::getContentHtml, article.getContentHtml());
+        articleMapper.updateById(article);
+
+        // 批量插入文章标签关联
+        saveArticleTags(article.getId(), articleUpdateRequest.getTags());
+
+    }
+
+    /**
+     * 保存文章
+     * @param articleCreateRequest 文章参数
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class,isolation = Isolation.READ_COMMITTED)
+    public void save(ArticleCreateRequest articleCreateRequest) {
+
+        // 拷贝数据
+        Article article = new Article();
+        BeanUtils.copyProperties(articleCreateRequest, article);
 
         // 将markdown内容转为HTML
         String contentHtml = MarkdownUtil.markdownToHtml(article.getContent());
@@ -206,7 +279,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         }
 
         // 检查标签列表是否存在
-        for (Long tagId : articleRequest.getTags()) {
+        for (Long tagId : articleCreateRequest.getTags()) {
             Tag tag = tagMapper.selectById(tagId);
             if (tag == null) {
                 throw new BusinessException(CodeEnum.TAG_NOT_FOUND);
@@ -214,18 +287,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         }
         // 存文章
         articleMapper.insert(article);
+
         // 批量插入文章标签关联
-        if (articleRequest.getTags() != null && !articleRequest.getTags().isEmpty()) {
-            List<ArticleTag> articleTags = articleRequest.getTags().stream()
-                    .map(tagId -> {
-                        ArticleTag articleTag = new ArticleTag();
-                        articleTag.setArticleId(article.getId());
-                        articleTag.setTagId(tagId);
-                        return articleTag;
-                    })
-                    .toList();
-            articleTagMapper.insert(articleTags);
-        }
+        saveArticleTags(article.getId(), articleCreateRequest.getTags());
     }
 
     /**
@@ -266,6 +330,15 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         return Objects.equals(BaseContext.getCurrentUserId(), createBy); // 当前用户是否为作者本人
     }
 
+    /**
+     * 判断文章是否存在
+     */
+    private boolean exists(Long articleId) {
+        if (articleId == null) {
+            return false;
+        }
+        return articleMapper.exists(new LambdaQueryWrapper<Article>().eq(Article::getId, articleId));
+    }
     /**
      * 构建用户信息
      */
@@ -397,6 +470,27 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
                             .eq(Article::getCreateBy, currentUserId)  // 自己创建的文章（所有状态）
             );
         }
+    }
+
+    /**
+     * 保存文章标签关联
+     * @param articleId 文章ID
+     * @param tagIds 标签ID列表
+     */
+    private void saveArticleTags(Long articleId, List<Long> tagIds) {
+        if (tagIds == null || tagIds.isEmpty()) {
+            return;
+        }
+
+        List<ArticleTag> articleTags = tagIds.stream()
+                .map(tagId -> {
+                    ArticleTag articleTag = new ArticleTag();
+                    articleTag.setArticleId(articleId);
+                    articleTag.setTagId(tagId);
+                    return articleTag;
+                })
+                .toList();
+        articleTagMapper.insert(articleTags);
     }
 }
 
