@@ -47,8 +47,7 @@ public class ArticleController {
 
     @GetMapping("/{id}")
     @Operation(summary = "根据指定ID获取文章")
-    public Result<ArticleDetailsVO> getArticle(
-            @PathVariable @Parameter(description = "文章ID") Long id) {
+    public Result<ArticleDetailsVO> getArticle(@PathVariable @Parameter(description = "文章ID") Long id) {
 
         ArticleDetailsVO articleDetailsVO = articleService.getArticle(id);
 
@@ -63,4 +62,14 @@ public class ArticleController {
 
         return Result.success();
     }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "删除文章")
+    Result<?> delete(@PathVariable @Parameter(description = "文章ID") Long id) {
+
+        articleService.remove(id);
+
+        return Result.success();
+    }
+
 }

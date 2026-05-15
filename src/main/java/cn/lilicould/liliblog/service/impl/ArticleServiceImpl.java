@@ -59,7 +59,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
             return null;
         }
 
-        if (!hasAuthority(article)) {
+        if (!hasReadAuthority(article)) {
             throw new BusinessException(CodeEnum.NO_PERMISSION);
         }
 
@@ -137,6 +137,45 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     }
 
     /**
+     * 删除文章
+     * @param id 文章ID
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class,isolation = Isolation.READ_COMMITTED)
+    public void remove(Long id) {
+        // 校验文章是否存在
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Article::getId, id);
+        if (!this.exists(queryWrapper)) {
+            throw new BusinessException(CodeEnum.RESOURCE_NOT_FOUND);
+        }
+
+        // 校验权限
+        if (!hasWriteAuthority(id)) {
+            throw new BusinessException(CodeEnum.NO_PERMISSION);
+        }
+
+        // 删除文章
+        this.removeById(id);
+
+        // 删除点赞记录
+        LambdaQueryWrapper<LikeRecord> likeQueryWrapper = new LambdaQueryWrapper<>();
+        likeQueryWrapper.eq(LikeRecord::getTargetId, id)
+                .eq(LikeRecord::getTargetType, TargetType.ARTICLE.getCode());
+        likeRecordMapper.delete(likeQueryWrapper);
+
+        // 删除对应的article_tag记录
+        LambdaQueryWrapper<ArticleTag> articleTagQueryWrapper = new LambdaQueryWrapper<>();
+        articleTagQueryWrapper.eq(ArticleTag::getArticleId, id);
+        articleTagMapper.delete(articleTagQueryWrapper);
+
+        // 删除对应的所有评论
+        LambdaQueryWrapper<Comment> commentQueryWrapper = new LambdaQueryWrapper<>();
+        commentQueryWrapper.eq(Comment::getArticleId, id);
+        commentMapper.delete(commentQueryWrapper);
+    }
+
+    /**
      * 保存文章
      * @param articleRequest 文章参数
      */
@@ -192,7 +231,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     /**
      * 判断当前用户是否有权限访问文章
      */
-    private boolean hasAuthority(Article article) {
+    private boolean hasReadAuthority(Article article) {
         if (BaseContext.isAdmin()) { // 管理员
             return true;
         }
@@ -203,6 +242,28 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         }
 
         return StatusConstant.ARTICLE_PUBLISHED.equals(article.getStatus()); // 已发布则默认所有人可以看
+    }
+
+    /**
+     * 判断当前用户是否有权限修改文章
+     * @param articleId 文章ID
+     * @return 是否有权限
+     */
+    private boolean hasWriteAuthority(Long articleId) {
+        if (BaseContext.isAdmin()) {
+            return true;  // 管理员
+        }
+
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Article::getId, articleId)
+                .select(Article::getCreateBy);
+        Long createBy = articleMapper.selectOne(queryWrapper).getCreateBy(); // 获取作者ID
+
+        if (createBy == null) {
+            return false; // 作者不存在,则只允许管理员修改
+        }
+
+        return Objects.equals(BaseContext.getCurrentUserId(), createBy); // 当前用户是否为作者本人
     }
 
     /**

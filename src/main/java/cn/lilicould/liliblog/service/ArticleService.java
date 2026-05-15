@@ -34,4 +34,10 @@ public interface ArticleService extends IService<Article> {
      * @return 文章列表
      */
     PageInfo<ArticleVO> getArticleList(ArticleQuery articleQuery);
+
+    /**
+     * 删除文章
+     * @param id 文章ID
+     */
+    void remove(Long id);
 }
