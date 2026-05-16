@@ -1,5 +1,6 @@
 package cn.lilicould.liliblog.controller;
 
+import cn.lilicould.liliblog.common.enums.CodeEnum;
 import cn.lilicould.liliblog.common.result.Result;
 import cn.lilicould.liliblog.pojo.dto.query.ArticleQuery;
 import cn.lilicould.liliblog.pojo.dto.request.ArticleCreateRequest;
@@ -51,6 +52,10 @@ public class ArticleController {
     public Result<ArticleDetailsVO> getArticle(@PathVariable @Parameter(description = "文章ID") Long id) {
 
         ArticleDetailsVO articleDetailsVO = articleService.getArticle(id);
+
+        if (articleDetailsVO == null) {
+            return Result.error(CodeEnum.RESOURCE_NOT_FOUND);
+        }
 
         return Result.success(articleDetailsVO);
     }

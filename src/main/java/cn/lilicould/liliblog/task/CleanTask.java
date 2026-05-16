@@ -18,7 +18,7 @@ public class CleanTask {
         this.articleTagMapper = articleTagMapper;
     }
 
-    @Scheduled(cron = "0 0 0 * * *") // 每天0点执行
+    @Scheduled(cron = "0 0 2 * * *") // 每天0点执行
     public void clean() {
 
         log.info("开始清理数据库中的垃圾数据");
