@@ -1,5 +1,8 @@
 package cn.lilicould.liliblog.service;
 
+import cn.lilicould.liliblog.pojo.dto.query.CategoryQuery;
+import cn.lilicould.liliblog.pojo.dto.response.CategoryVO;
+import cn.lilicould.liliblog.pojo.dto.response.PageInfo;
 import cn.lilicould.liliblog.pojo.entity.Category;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -10,4 +13,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface CategoryService extends IService<Category> {
 
+    /**
+     * 获取分类列表
+     * @param categoryQuery 查询参数
+     * @return 分类列表
+     */
+    PageInfo<CategoryVO> getCategoryList(CategoryQuery categoryQuery);
 }

@@ -1,14 +1,19 @@
 package cn.lilicould.liliblog.controller;
 
+import cn.lilicould.liliblog.common.constant.StatusConstant;
+import cn.lilicould.liliblog.common.context.BaseContext;
 import cn.lilicould.liliblog.common.enums.CodeEnum;
 import cn.lilicould.liliblog.common.result.Result;
+import cn.lilicould.liliblog.pojo.dto.query.CategoryQuery;
 import cn.lilicould.liliblog.pojo.dto.request.CategoryCreateRequest;
 import cn.lilicould.liliblog.pojo.dto.response.CategoryVO;
+import cn.lilicould.liliblog.pojo.dto.response.PageInfo;
 import cn.lilicould.liliblog.pojo.entity.Category;
 import cn.lilicould.liliblog.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -35,10 +40,30 @@ public class CategoryController {
         if (category == null) {
             return Result.error(CodeEnum.RESOURCE_NOT_FOUND);
         }
+        // 判断分类是否可用
+        if (!StatusConstant.ENABLED.equals(category.getStatus()) && !BaseContext.isAdmin()) {
+            return Result.error(CodeEnum.RESOURCE_NOT_FOUND);
+        }
         CategoryVO categoryVO = new CategoryVO();
         BeanUtils.copyProperties(category, categoryVO);
 
         return Result.success(categoryVO);
+    }
+
+    @GetMapping
+    @Operation(summary = "分页获取分类列表")
+    public Result<PageInfo<CategoryVO>> getCategoryList(@ParameterObject CategoryQuery categoryQuery) {
+        // 设置分页默认值
+        if (categoryQuery.getCurrent() == null) {
+            categoryQuery.setCurrent(1L);
+        }
+        if (categoryQuery.getSize() == null) {
+            categoryQuery.setSize(10L);
+        }
+
+        PageInfo<CategoryVO> pageInfo = categoryService.getCategoryList(categoryQuery);
+
+        return Result.success(pageInfo);
     }
 
     @PostMapping
