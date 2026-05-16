@@ -22,7 +22,7 @@ liliblog:
           min-idle: 2
           max-wait: 5s
   http-only-cookies:
-    ssl: true # 设置为false关闭https验证
+    ssl: true # 由于是前后端分离，所以这里设置为true
   jwt:
     # 密钥（secret）必须是经过Base64编码的32字节（或更长）的字符串
     secret: "d29aaGlsaWxpa2Vhc2RhaG5ramRoYWtqc2ZoamFrc2ZobGFrc2hmbGthc2hmbGFqc2ZrbGFoZnNhc2Zhc2Zhc2Y="

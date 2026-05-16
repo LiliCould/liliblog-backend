@@ -1,6 +1,7 @@
 package cn.lilicould.liliblog.controller;
 
 import cn.lilicould.liliblog.common.constant.LoginStrategyConstant;
+import cn.lilicould.liliblog.common.enums.CodeEnum;
 import cn.lilicould.liliblog.common.result.Result;
 import cn.lilicould.liliblog.pojo.dto.request.EmailLoginRequest;
 import cn.lilicould.liliblog.pojo.dto.request.PwdLoginRequest;
@@ -13,12 +14,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -58,6 +57,35 @@ public class AuthController {
     @ApiResponse(responseCode = "200",description = "响应成功，注册成功与否看响应状态码")
     public Result<?> register(@RequestBody @Validated RegisterRequest request) {
         authService.register(request);
+        return Result.success();
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "登出接口", description = "登出接口")
+    public Result<Void> logout(HttpServletResponse response) {
+        // 构建清除 Cookie（maxAge(0)）
+        String clearRefresh = ResponseCookie.from("refresh_token", "")
+                .httpOnly(true).secure(true).sameSite("None")
+                .maxAge(0).path("/api/auth/refresh").build().toString();
+        response.addHeader("Set-Cookie", clearRefresh);
+
+        // todo 从redis中删除refresh_token
+
+        return Result.success();
+    }
+
+    @PostMapping("/refresh")
+    @Operation(summary = "刷新接口", description = "使用刷新令牌获取新的token")
+    public Result<LoginVO> refresh(@CookieValue(name = "refresh_token",required = false) String refreshToken) {
+
+        if (refreshToken == null) {
+            return Result.error(CodeEnum.NO_REFRESH_TOKEN);
+        }
+
+        // todo 解析验证刷新令牌，校验redis中是否存在，暂时先打印个日志
+        log.info("refreshToken: {}", refreshToken);
+
+
         return Result.success();
     }
 }
