@@ -1,8 +1,15 @@
 package cn.lilicould.liliblog.pojo.dto.query;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-public class CategoryQuery extends BaseQuery{
+import java.io.Serializable;
+
+@EqualsAndHashCode(callSuper = true)
+@Data
+@Schema(name = "分类查询参数")
+public class CategoryQuery extends BaseQuery implements Serializable {
 
     @Schema(description = "分类名称")
     private String name;

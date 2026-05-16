@@ -54,7 +54,7 @@ public class ArticleController {
         ArticleDetailsVO articleDetailsVO = articleService.getArticle(id);
 
         if (articleDetailsVO == null) {
-            return Result.error(CodeEnum.RESOURCE_NOT_FOUND);
+            return Result.error(CodeEnum.ARTICLE_NOT_FOUND);
         }
 
         return Result.success(articleDetailsVO);

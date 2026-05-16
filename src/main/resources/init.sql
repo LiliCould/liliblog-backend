@@ -38,7 +38,10 @@ CREATE TABLE `category` (
     `create_by` BIGINT NULL DEFAULT 0 COMMENT '创建者 默认为0-管理员',
     `update_by` BIGINT NULL COMMENT '更新者',
     `deleted` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '逻辑删除：0-未删除，1-已删除',
-    INDEX `idx_status` (`status`)
+    INDEX `idx_status` (`status`),
+    INDEX `idx_slug` (`slug`),
+    INDEX `idx_name` (`name`),
+    UNIQUE INDEX `uk_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='分类表';
 
 CREATE TABLE `article` (

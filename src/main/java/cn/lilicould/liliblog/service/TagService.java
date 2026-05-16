@@ -1,5 +1,8 @@
 package cn.lilicould.liliblog.service;
 
+import cn.lilicould.liliblog.pojo.dto.query.TagQuery;
+import cn.lilicould.liliblog.pojo.dto.response.PageInfo;
+import cn.lilicould.liliblog.pojo.dto.response.TagVO;
 import cn.lilicould.liliblog.pojo.entity.Tag;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -10,4 +13,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface TagService extends IService<Tag> {
 
+    /**
+     * 获取标签列表
+     * @param tagQuery 查询参数
+     * @return 标签列表
+     */
+    PageInfo<TagVO> getTagList(TagQuery tagQuery);
 }

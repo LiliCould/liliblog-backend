@@ -43,17 +43,18 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
         Page<Category> page = Page.of(categoryQuery.getCurrent(), categoryQuery.getSize());
         // 设置排序字段
         page.setOrders(OrderItem.descs(OrderConstant.SORT_ORDER, OrderConstant.UPDATE_TIME, OrderConstant.CREATE_TIME));
-        // 查询
-        Page<Category> categoryPage;
-        if (BaseContext.isAdmin()) {
-            // 管理员
-            categoryPage = baseMapper.selectPage(page, null);
-        } else {
-            // 非管理员只能查到启用的分类
-            LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(Category::getStatus, StatusConstant.ENABLED);
-            categoryPage = baseMapper.selectPage(page, queryWrapper);
+
+        // 创建查询条件
+        LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper
+                .like(categoryQuery.getName() != null, Category::getName, categoryQuery.getName())
+                .eq(categoryQuery.getSlug() != null, Category::getSlug, categoryQuery.getSlug())
+                .like(categoryQuery.getDescription() != null, Category::getDescription, categoryQuery.getDescription());
+        if (!BaseContext.isAdmin()) {
+            queryWrapper.eq(Category::getStatus, StatusConstant.ENABLED); // 如果不是管理员只能查到启用的分类
         }
+        // 查询
+        Page<Category> categoryPage = baseMapper.selectPage(page, queryWrapper);
 
         // 如果是空
         if (categoryPage.getTotal() == 0) {

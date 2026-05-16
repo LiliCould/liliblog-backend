@@ -146,7 +146,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     public void remove(Long id) {
         // 校验文章是否存在
         if (!this.exists(id)) {
-            throw new BusinessException(CodeEnum.RESOURCE_NOT_FOUND);
+            throw new BusinessException(CodeEnum.ARTICLE_NOT_FOUND);
         }
 
         // 校验权限
@@ -189,7 +189,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
         // 校验文章是否存在
         if (!this.exists(id)) {
-            throw new BusinessException(CodeEnum.RESOURCE_NOT_FOUND);
+            throw new BusinessException(CodeEnum.ARTICLE_NOT_FOUND);
         }
 
         // 校验权限

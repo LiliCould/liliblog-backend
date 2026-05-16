@@ -81,6 +81,16 @@ public class CategoryController {
         // 拷贝参数
         Category category = new Category();
         BeanUtils.copyProperties(categoryCreateRequest, category);
+
+        // 检查分类名是否已存在
+        if (categoryService.exists(new LambdaQueryWrapper<Category>().eq(Category::getName, category.getName()))) {
+            throw new BusinessException(CodeEnum.CATEGORY_ALREADY_EXISTS);
+        }
+        // 检查别名是否已存在
+        if (categoryService.exists(new LambdaQueryWrapper<Category>().eq(Category::getSlug, category.getSlug()))) {
+            throw new BusinessException(CodeEnum.SLUG_ALREADY_EXISTS);
+        }
+
         categoryService.save(category); // 保存分类
 
         return Result.success();
