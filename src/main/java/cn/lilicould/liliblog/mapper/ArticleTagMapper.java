@@ -2,6 +2,7 @@ package cn.lilicould.liliblog.mapper;
 
 import cn.lilicould.liliblog.pojo.entity.ArticleTag;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Delete;
 
 /**
 * @author Lili_Could
@@ -11,6 +12,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface ArticleTagMapper extends BaseMapper<ArticleTag> {
 
+    @Delete("DELETE FROM article_tag WHERE article_id NOT IN (SELECT id FROM article)")
+    Long clean();
 }
 
 
