@@ -16,7 +16,6 @@ import cn.lilicould.liliblog.pojo.entity.*;
 import cn.lilicould.liliblog.service.ArticleService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
-import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -184,6 +183,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     @Override
     @Transactional(rollbackFor = Exception.class,isolation = Isolation.READ_COMMITTED)
     public void update(Long id, ArticleUpdateRequest articleUpdateRequest) {
+        if (id == null) {
+            throw new BusinessException(CodeEnum.PARAM_MISSING);
+        }
+
         // 校验文章是否存在
         if (!this.exists(id)) {
             throw new BusinessException(CodeEnum.RESOURCE_NOT_FOUND);
@@ -235,17 +238,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         articleTagMapper.delete(articleTagQueryWrapper);
 
         // 更新文章
-        LambdaUpdateChainWrapper<Article> updateChainWrapper = new LambdaUpdateChainWrapper<>(articleMapper);
-        updateChainWrapper
-                .eq(Article::getId, id)
-                .set(article.getTitle() != null,Article::getTitle, article.getTitle())
-                .set(article.getSummary() != null,Article::getSummary, article.getSummary())
-                .set(article.getCoverImage() != null,Article::getCoverImage, article.getCoverImage())
-                .set(article.getStatus() != null,Article::getStatus, article.getStatus())
-                .set(article.getContent() != null,Article::getContent, article.getContent())
-                .set(article.getCategoryId() != null,Article::getCategoryId, article.getCategoryId())
-                .set(article.getSlug() != null,Article::getSlug, article.getSlug())
-                .set(article.getContentHtml() != null,Article::getContentHtml, article.getContentHtml());
         articleMapper.updateById(article);
 
         // 批量插入文章标签关联

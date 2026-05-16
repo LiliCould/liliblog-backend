@@ -10,11 +10,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="965f20b2-ed81-4183-915b-1a9c81f71a67" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/pojo/dto/query/CategoryQuery.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/pojo/dto/request/CategoryUpdateRequest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/common/constant/OrderConstant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/common/constant/OrderConstant.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/config/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/config/security/SecurityConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/controller/CategoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/controller/CategoryController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/service/CategoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/service/CategoryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/service/impl/ArticleServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/service/impl/ArticleServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/service/impl/CategoryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/service/impl/CategoryServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -57,8 +60,12 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/pom.xml" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/resources/mapper/ChatMessageMapper.xml" root0="SKIP_HIGHLIGHTING" />
+    <setting file="jar://$PROJECT_DIR$/../../../../apache-maven-3.9.9/mvn_repo/com/baomidou/mybatis-plus-extension/3.5.15/mybatis-plus-extension-3.5.15-sources.jar!/com/baomidou/mybatisplus/extension/plugins/pagination/Page.java" root0="SKIP_INSPECTION" />
     <setting file="jar://$PROJECT_DIR$/../../../../apache-maven-3.9.9/mvn_repo/org/mybatis/mybatis/3.5.19/mybatis-3.5.19.jar!/org/apache/ibatis/builder/xml/mybatis-3-mapper.dtd" root0="SKIP_INSPECTION" />
   </component>
+  <component name="HttpClientOnboardingState"><![CDATA[{
+  "isOnboardingCommentShown": true
+}]]></component>
   <component name="LogFilters">
     <option name="FILTER_ERRORS" value="false" />
     <option name="FILTER_WARNINGS" value="false" />
@@ -95,6 +102,8 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "HTTP 请求.generated-requests | #1.executor": "Run",
+    "HTTP 请求.generated-requests | #2.executor": "Run",
     "JUnit.ArticleControllerTest.executor": "Run",
     "JUnit.ArticleMapperTest.executor": "Run",
     "JUnit.ArticleMapperTest.testSearchAll.executor": "Run",
@@ -155,7 +164,7 @@
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "通义灵码",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "to.speed.mode.migration.done": "true",
     "vue.rearranger.settings.migration": "true",
     "应用程序.com.lilicould.blog.test.executor": "Run",
@@ -196,6 +205,7 @@
       <recent name="C:\Users\Lili\Desktop\javaCodes\liliblog" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="cn.lilicould.liliblog.pojo.dto.request" />
       <recent name="cn.lilicould.liliblog.config.properties" />
     </key>
   </component>
@@ -443,7 +453,7 @@
       <workItem from="1778770754484" duration="1025000" />
       <workItem from="1778823238620" duration="262000" />
       <workItem from="1778823535883" duration="24568000" />
-      <workItem from="1778908010801" duration="8392000" />
+      <workItem from="1778908010801" duration="10671000" />
     </task>
     <task id="LOCAL-00001" summary="没改什么">
       <option name="closed" value="true" />

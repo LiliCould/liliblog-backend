@@ -3,8 +3,11 @@ package cn.lilicould.liliblog.service.impl;
 import cn.lilicould.liliblog.common.constant.OrderConstant;
 import cn.lilicould.liliblog.common.constant.StatusConstant;
 import cn.lilicould.liliblog.common.context.BaseContext;
+import cn.lilicould.liliblog.common.enums.CodeEnum;
+import cn.lilicould.liliblog.common.exception.BusinessException;
 import cn.lilicould.liliblog.mapper.CategoryMapper;
 import cn.lilicould.liliblog.pojo.dto.query.CategoryQuery;
+import cn.lilicould.liliblog.pojo.dto.request.CategoryUpdateRequest;
 import cn.lilicould.liliblog.pojo.dto.response.CategoryVO;
 import cn.lilicould.liliblog.pojo.dto.response.PageInfo;
 import cn.lilicould.liliblog.pojo.entity.Category;
@@ -13,7 +16,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -68,6 +74,32 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
         Page<CategoryVO> voPage = new Page<>(categoryPage.getCurrent(), categoryPage.getSize(), categoryPage.getTotal());
         voPage.setRecords(categoryVOList);
         return PageInfo.of(voPage);
+    }
+
+    /**
+     * 修改分类
+     * @param id 分类ID
+     * @param categoryCreateRequest 修改参数
+     * @return 分类
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class,isolation = Isolation.READ_COMMITTED)
+    public void update(Long id, CategoryUpdateRequest categoryCreateRequest) {
+        Category category = new Category();
+        BeanUtils.copyProperties(categoryCreateRequest, category);
+        category.setId(id);
+        // 检查分类是否存在
+        if (!this.exists(new LambdaQueryWrapper<Category>().eq(Category::getId, id))) {
+            throw new BusinessException(CodeEnum.CATEGORY_NOT_FOUND);
+        }
+
+        // 检查其他分类是否已经使用了别名
+        if (this.exists(new LambdaQueryWrapper<Category>().eq(Category::getSlug, category.getSlug()).ne(Category::getId, id))) {
+            throw new BusinessException(CodeEnum.SLUG_ALREADY_EXISTS);
+        }
+
+        // 更新分类，空值不更新
+        this.update(category, new LambdaQueryWrapper<Category>().eq(Category::getId, id));
     }
 }
 

@@ -1,0 +1,43 @@
+{
+  "code": 0,
+  "data": {
+    "current": 1,
+    "size": 10,
+    "totalPage": 1,
+    "total": 4,
+    "hasPrevious": false,
+    "hasNext": false,
+    "records": [
+      {
+        "id": 2,
+        "name": "生活随笔",
+        "slug": "life",
+        "description": "日常生活记录与感悟",
+        "sortOrder": 2
+      },
+      {
+        "id": 10,
+        "name": "生活趣事",
+        "slug": "life-3",
+        "description": "分享生活小事",
+        "sortOrder": 1
+      },
+      {
+        "id": 8,
+        "name": "生活趣事",
+        "slug": "life-2",
+        "description": "分享生活小事",
+        "sortOrder": 1
+      },
+      {
+        "id": 1,
+        "name": "技术分享",
+        "slug": "tech",
+        "description": "编程技术与开发心得",
+        "sortOrder": 1
+      }
+    ]
+  },
+  "msg": "成功",
+  "time": "2026-05-16 15:51:46"
+}

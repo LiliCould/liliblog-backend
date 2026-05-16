@@ -6,6 +6,7 @@ import cn.lilicould.liliblog.common.enums.CodeEnum;
 import cn.lilicould.liliblog.common.result.Result;
 import cn.lilicould.liliblog.pojo.dto.query.CategoryQuery;
 import cn.lilicould.liliblog.pojo.dto.request.CategoryCreateRequest;
+import cn.lilicould.liliblog.pojo.dto.request.CategoryUpdateRequest;
 import cn.lilicould.liliblog.pojo.dto.response.CategoryVO;
 import cn.lilicould.liliblog.pojo.dto.response.PageInfo;
 import cn.lilicould.liliblog.pojo.entity.Category;
@@ -79,6 +80,18 @@ public class CategoryController {
         Category category = new Category();
         BeanUtils.copyProperties(categoryCreateRequest, category);
         categoryService.save(category); // 保存分类
+
+        return Result.success();
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "修改分类", description = "只有管理员才能修改分类")
+    public Result<?> updateCategory(
+            @PathVariable @Parameter(description = "分类ID") Long id,
+            @RequestBody @Validated CategoryUpdateRequest categoryCreateRequest) {
+
+        categoryService.update(id, categoryCreateRequest);
 
         return Result.success();
     }

@@ -1,6 +1,7 @@
 package cn.lilicould.liliblog.service;
 
 import cn.lilicould.liliblog.pojo.dto.query.CategoryQuery;
+import cn.lilicould.liliblog.pojo.dto.request.CategoryUpdateRequest;
 import cn.lilicould.liliblog.pojo.dto.response.CategoryVO;
 import cn.lilicould.liliblog.pojo.dto.response.PageInfo;
 import cn.lilicould.liliblog.pojo.entity.Category;
@@ -19,4 +20,12 @@ public interface CategoryService extends IService<Category> {
      * @return 分类列表
      */
     PageInfo<CategoryVO> getCategoryList(CategoryQuery categoryQuery);
+
+    /**
+     * 更新分类
+     * @param id 分类ID
+     * @param categoryCreateRequest 分类参数
+     * @return 分类
+     */
+    void update(Long id, CategoryUpdateRequest categoryCreateRequest);
 }
