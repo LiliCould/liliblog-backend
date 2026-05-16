@@ -3,6 +3,7 @@ package cn.lilicould.liliblog.controller;
 import cn.lilicould.liliblog.common.constant.StatusConstant;
 import cn.lilicould.liliblog.common.context.BaseContext;
 import cn.lilicould.liliblog.common.enums.CodeEnum;
+import cn.lilicould.liliblog.common.exception.BusinessException;
 import cn.lilicould.liliblog.common.result.Result;
 import cn.lilicould.liliblog.pojo.dto.query.CategoryQuery;
 import cn.lilicould.liliblog.pojo.dto.request.CategoryCreateRequest;
@@ -11,6 +12,7 @@ import cn.lilicould.liliblog.pojo.dto.response.CategoryVO;
 import cn.lilicould.liliblog.pojo.dto.response.PageInfo;
 import cn.lilicould.liliblog.pojo.entity.Category;
 import cn.lilicould.liliblog.service.CategoryService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -92,6 +94,42 @@ public class CategoryController {
             @RequestBody @Validated CategoryUpdateRequest categoryCreateRequest) {
 
         categoryService.update(id, categoryCreateRequest);
+
+        return Result.success();
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "删除分类", description = "只有管理员才能删除分类")
+    public Result<?> deleteCategory(@PathVariable @Parameter(description = "分类ID") Long id) {
+
+        if(!categoryService.exists(new LambdaQueryWrapper<Category>().eq(Category::getId, id))) {
+            throw new BusinessException(CodeEnum.CATEGORY_NOT_FOUND);
+        }
+
+        categoryService.removeById(id);
+
+        return Result.success();
+    }
+
+    @PutMapping("/{id}/status")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "切换分类状态", description = "只有管理员才能切换分类状态")
+    public Result<?> toggleStatus(@PathVariable @Parameter(description = "分类ID") Long id) {
+
+        // 判断分类是否存在
+        if(!categoryService.exists(new LambdaQueryWrapper<Category>().eq(Category::getId, id))) {
+            throw new BusinessException(CodeEnum.CATEGORY_NOT_FOUND);
+        }
+
+        Category category = categoryService.getById(id);
+
+        if (category.getStatus() == null) { // 一般不会出现这种情况
+            category.setStatus(StatusConstant.ENABLED);
+        }
+
+        category.setStatus(StatusConstant.ENABLED.equals(category.getStatus()) ? StatusConstant.DISABLED : StatusConstant.ENABLED);
+        categoryService.updateById(category);
 
         return Result.success();
     }
