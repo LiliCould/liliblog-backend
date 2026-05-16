@@ -10,12 +10,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="965f20b2-ed81-4183-915b-1a9c81f71a67" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/controller/CategoryController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/pojo/dto/request/CategoryCreateRequest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/controller/ArticleController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/controller/ArticleController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/controller/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/task/CleanTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/task/CleanTask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/controller/CategoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/controller/CategoryController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/service/impl/ArticleServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/service/impl/ArticleServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,90 +90,90 @@
     <option name="openDirectoriesWithSingleClick" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;JUnit.ArticleControllerTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ArticleMapperTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ArticleMapperTest.testSearchAll.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ArticleMapperTest.testSearchWithPagination.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ArticleMapperTest.testSelectById.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ArticleMapperTest.testSelectBySlug.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ArticleMapperTest.testUpdate.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ArticleServiceTest.testCreateArticle.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.BusinessExceptionTest.testBusinessException.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.JwtUtilTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.JwtUtilTest.extractUsername.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.JwtUtilTest.testIsTokenExpired_NotExpired.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.MapperTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.MapperTest.test.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.MarkdownTest.markdownToPlainTextTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.PasswordUtilTest.testEncode.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.TagTest.testInsert.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.UserMapperTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.UserMapperTest.test.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.UserMapperTest.testInsert.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.UserMapperTest.testSelectByEmail.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.UserMapperTest.testSelectByUsername.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.UserMapperTest.testUpdateLastLoginTime.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.liliblog [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.liliblog [compile].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.liliblog [install].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.liliblog [package].executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Notification.DisplayName-DoNotAsk-DatabaseConfigFileWatcher.found&quot;: &quot;发现新的/更新的数据库配置&quot;,
-    &quot;Notification.DoNotAsk-DatabaseConfigFileWatcher.found&quot;: &quot;true&quot;,
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Spring Boot.LiliBlogApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.LiliblogApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Tomcat 服务器.Tomcat 11.0.1.executor&quot;: &quot;Run&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;deletionFromPopupRequiresConfirmation&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;rewrite/v2&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/workspace/projects/liliblog/liliblog-backend/src/main/resources&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;项目&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;通义灵码&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;,
-    &quot;应用程序.com.lilicould.blog.test.executor&quot;: &quot;Run&quot;,
-    &quot;应用程序.test.executor&quot;: &quot;Run&quot;,
-    &quot;数据库脚本.BlogInit.sql.executor&quot;: &quot;Run&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "JUnit.ArticleControllerTest.executor": "Run",
+    "JUnit.ArticleMapperTest.executor": "Run",
+    "JUnit.ArticleMapperTest.testSearchAll.executor": "Run",
+    "JUnit.ArticleMapperTest.testSearchWithPagination.executor": "Run",
+    "JUnit.ArticleMapperTest.testSelectById.executor": "Run",
+    "JUnit.ArticleMapperTest.testSelectBySlug.executor": "Run",
+    "JUnit.ArticleMapperTest.testUpdate.executor": "Run",
+    "JUnit.ArticleServiceTest.testCreateArticle.executor": "Run",
+    "JUnit.BusinessExceptionTest.testBusinessException.executor": "Run",
+    "JUnit.JwtUtilTest.executor": "Run",
+    "JUnit.JwtUtilTest.extractUsername.executor": "Run",
+    "JUnit.JwtUtilTest.testIsTokenExpired_NotExpired.executor": "Run",
+    "JUnit.MapperTest.executor": "Run",
+    "JUnit.MapperTest.test.executor": "Run",
+    "JUnit.MarkdownTest.markdownToPlainTextTest.executor": "Run",
+    "JUnit.PasswordUtilTest.testEncode.executor": "Run",
+    "JUnit.TagTest.testInsert.executor": "Run",
+    "JUnit.UserMapperTest.executor": "Run",
+    "JUnit.UserMapperTest.test.executor": "Run",
+    "JUnit.UserMapperTest.testInsert.executor": "Run",
+    "JUnit.UserMapperTest.testSelectByEmail.executor": "Run",
+    "JUnit.UserMapperTest.testSelectByUsername.executor": "Run",
+    "JUnit.UserMapperTest.testUpdateLastLoginTime.executor": "Run",
+    "Maven.liliblog [clean].executor": "Run",
+    "Maven.liliblog [compile].executor": "Run",
+    "Maven.liliblog [install].executor": "Run",
+    "Maven.liliblog [package].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Notification.DisplayName-DoNotAsk-DatabaseConfigFileWatcher.found": "发现新的/更新的数据库配置",
+    "Notification.DoNotAsk-DatabaseConfigFileWatcher.found": "true",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Spring Boot.LiliBlogApplication.executor": "Run",
+    "Spring Boot.LiliblogApplication.executor": "Run",
+    "Tomcat 服务器.Tomcat 11.0.1.executor": "Run",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "deletionFromPopupRequiresConfirmation": "false",
+    "git-widget-placeholder": "rewrite/v2",
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "E:/workspace/projects/liliblog/liliblog-backend/src/main/resources",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "项目",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "通义灵码",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true",
+    "应用程序.com.lilicould.blog.test.executor": "Run",
+    "应用程序.test.executor": "Run",
+    "数据库脚本.BlogInit.sql.executor": "Run"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
     ],
-    &quot;RunConfigurationTargetLRU&quot;: [
-      &quot;7d4b3b86-6a40-42f6-9b0a-f6dc43c61ae4/schema/\&quot;liliblog\&quot;&quot;
+    "RunConfigurationTargetLRU": [
+      "7d4b3b86-6a40-42f6-9b0a-f6dc43c61ae4/schema/\"liliblog\""
     ],
-    &quot;com.intellij.ide.scratch.LRUPopupBuilder$1/SQL Dialect&quot;: [
-      &quot;MySQL&quot;
+    "com.intellij.ide.scratch.LRUPopupBuilder$1/SQL Dialect": [
+      "MySQL"
     ],
-    &quot;com.intellij.ide.scratch.LRUPopupBuilder$1/SQL 方言&quot;: [
-      &quot;MySQL&quot;
+    "com.intellij.ide.scratch.LRUPopupBuilder$1/SQL 方言": [
+      "MySQL"
     ]
   }
-}</component>
+}]]></component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
@@ -443,7 +440,7 @@
       <workItem from="1778770754484" duration="1025000" />
       <workItem from="1778823238620" duration="262000" />
       <workItem from="1778823535883" duration="24568000" />
-      <workItem from="1778908010801" duration="4017000" />
+      <workItem from="1778908010801" duration="6652000" />
     </task>
     <task id="LOCAL-00001" summary="没改什么">
       <option name="closed" value="true" />

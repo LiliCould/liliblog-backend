@@ -211,8 +211,13 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
             throw new BusinessException(CodeEnum.SLUG_ALREADY_EXISTS);
         }
 
-        // 检查分类是否存在
-        if (articleUpdateRequest.getCategoryId() != null && !categoryMapper.exists(new LambdaQueryWrapper<Category>().eq(Category::getId, article.getCategoryId()))) {
+        // 检查分类是否存在且被启用
+        if (articleUpdateRequest.getCategoryId() != null
+                &&
+                !categoryMapper.exists(new LambdaQueryWrapper<Category>()
+                        .eq(Category::getId, articleUpdateRequest.getCategoryId())
+                        .eq(Category::getStatus,StatusConstant.ENABLED)
+                )) {
             throw new BusinessException(CodeEnum.CATEGORY_NOT_FOUND);
         }
 
@@ -273,8 +278,11 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
             throw new BusinessException(CodeEnum.SLUG_ALREADY_EXISTS);
         }
 
-        // 检查分类是否存在
-        if (!categoryMapper.exists(new LambdaQueryWrapper<Category>().eq(Category::getId, article.getCategoryId()))) {
+        // 检查分类是否存在且启用
+        if (!categoryMapper.exists(new LambdaQueryWrapper<Category>()
+                .eq(Category::getId, article.getCategoryId())
+                .eq(article.getStatus() != null, Category::getStatus, StatusConstant.ENABLED)
+        )) {
             throw new BusinessException(CodeEnum.CATEGORY_NOT_FOUND);
         }
 
@@ -379,6 +387,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         }
         Category category = categoryMapper.selectById(categoryId);
         if (category == null) {
+            return null;
+        }
+        if (StatusConstant.DISABLED.equals(category.getStatus())) { // 如果分类被禁用，则不返回
             return null;
         }
         CategoryVO categoryVO = new CategoryVO();
