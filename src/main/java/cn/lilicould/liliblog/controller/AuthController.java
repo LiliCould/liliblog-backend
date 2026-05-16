@@ -11,11 +11,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
@@ -29,7 +32,7 @@ public class AuthController {
     @PostMapping("/login/pwd")
     @Operation(summary = "用户名密码登录", description = "通过用户名和密码登录")
     @ApiResponse(responseCode = "200",description = "响应成功，登录成功与否看响应状态码")
-    public Result<LoginVO> login(@RequestBody @Valid PwdLoginRequest request,
+    public Result<LoginVO> login(@RequestBody @Validated PwdLoginRequest request,
                                  HttpServletResponse response) {
 
         request.setLoginType(LoginStrategyConstant.PWD);
@@ -40,7 +43,7 @@ public class AuthController {
 
     @PostMapping("/login/email")
     @Operation(summary = "邮箱登录",description = "通过邮箱和验证码登录")
-    public Result<LoginVO> wechatLogin(@RequestBody @Valid EmailLoginRequest request,
+    public Result<LoginVO> wechatLogin(@RequestBody @Validated EmailLoginRequest request,
                                        HttpServletResponse response) {
         request.setLoginType(LoginStrategyConstant.EMAIL);
 
@@ -53,7 +56,7 @@ public class AuthController {
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "注册接口", description = "注册接口")
     @ApiResponse(responseCode = "200",description = "响应成功，注册成功与否看响应状态码")
-    public Result<?> register(@RequestBody @Valid RegisterRequest request) {
+    public Result<?> register(@RequestBody @Validated RegisterRequest request) {
         authService.register(request);
         return Result.success();
     }

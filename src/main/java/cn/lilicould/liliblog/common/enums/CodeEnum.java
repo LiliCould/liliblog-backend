@@ -31,12 +31,14 @@ public enum CodeEnum {
 
     // 资源操作错误 3xxx
     RESOURCE_NOT_FOUND(3000, "资源不存在"),
-    ARTICLE_NOT_FOUND(3001, "文章不存在"),
-    CATEGORY_ALREADY_EXISTS(3002, "分类已存在"),
-    COMMENT_EMPTY(3003, "评论内容不能为空"),
+    ARTICLE_ALREADY_EXISTS(3001, "文章已存在"),
+    ARTICLE_NOT_FOUND(3002, "文章不存在"),
+    CATEGORY_ALREADY_EXISTS(3003, "分类已存在"),
     CATEGORY_NOT_FOUND(3004, "分类不存在"),
-    TAG_NOT_FOUND(3005, "标签不存在"),
-    SLUG_ALREADY_EXISTS(3006, "别名已存在"),
+    TAG_ALREADY_EXISTS(3005, "标签已存在"),
+    TAG_NOT_FOUND(3006, "标签不存在"),
+    SLUG_ALREADY_EXISTS(3007, "别名已存在"),
+    SLUG_NOT_FOUND(3008, "别名不存在"),
 
     // 系统错误 5xxx
     SYSTEM_ERROR(5000, "系统异常，请稍后重试"),

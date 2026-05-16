@@ -41,11 +41,11 @@ public class CategoryController {
         Category category = categoryService.getById(id);
 
         if (category == null) {
-            return Result.error(CodeEnum.RESOURCE_NOT_FOUND);
+            return Result.error(CodeEnum.CATEGORY_NOT_FOUND);
         }
         // 判断分类是否可用
         if (!StatusConstant.ENABLED.equals(category.getStatus()) && !BaseContext.isAdmin()) {
-            return Result.error(CodeEnum.RESOURCE_NOT_FOUND);
+            return Result.error(CodeEnum.CATEGORY_NOT_FOUND);
         }
         CategoryVO categoryVO = new CategoryVO();
         BeanUtils.copyProperties(category, categoryVO);
