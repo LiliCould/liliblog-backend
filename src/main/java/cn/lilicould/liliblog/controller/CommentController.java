@@ -25,7 +25,7 @@ public class CommentController {
     }
 
     @GetMapping
-    @Operation(summary = "分页获取评论列表")
+    @Operation(summary = "分页获取评论列表(一级评论)")
     public Result<PageInfo<CommentVO>> list(@ParameterObject @Validated CommentQuery commentQuery) {
         // 设置分页默认值
         if (commentQuery.getCurrent() == null) {
@@ -35,6 +35,24 @@ public class CommentController {
             commentQuery.setSize(10L);
         }
         PageInfo<CommentVO> pageInfo = commentService.getCommentList(commentQuery);
+
+        return Result.success(pageInfo);
+    }
+
+    @GetMapping("/child")
+    @Operation(summary = "分页获取评论列表(二级评论)")
+    public Result<PageInfo<CommentVO>> childList(@ParameterObject @Validated CommentQuery commentQuery) {
+
+        // 设置分页默认值
+        if (commentQuery.getCurrent() == null) {
+            commentQuery.setCurrent(1L);
+        }
+        if (commentQuery.getSize() == null) {
+            commentQuery.setSize(10L);
+        }
+
+        // 获取对应评论的二级评论列表
+        PageInfo<CommentVO> pageInfo = commentService.getChildCommentList(commentQuery);
 
         return Result.success(pageInfo);
     }

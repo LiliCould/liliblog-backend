@@ -35,14 +35,16 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
 
     private final LikeRecordMapper likeRecordMapper;
     private final UserMapper userMapper;
+    private final CommentMapper commentMapper;
 
-    public CommentServiceImpl(LikeRecordMapper likeRecordMapper, UserMapper userMapper) {
+    public CommentServiceImpl(LikeRecordMapper likeRecordMapper, UserMapper userMapper, CommentMapper commentMapper) {
         this.likeRecordMapper = likeRecordMapper;
         this.userMapper = userMapper;
+        this.commentMapper = commentMapper;
     }
 
     /**
-     * 获取评论列表
+     * 获取评论列表（level为0的）
      * @param commentQuery 查询参数
      * @return 评论列表
      */
@@ -50,19 +52,25 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
     public PageInfo<CommentVO> getCommentList(CommentQuery commentQuery) {
         // 初始化分页参数
         Page<Comment> page = new Page<>(commentQuery.getCurrent(), commentQuery.getSize());
-        page.setOrders(OrderItem.descs(OrderConstant.CREATE_TIME));
+        page.setOrders(List.of(
+                OrderItem.asc(OrderConstant.ID),
+                OrderItem.desc(OrderConstant.CREATE_TIME)
+        ));
 
         // 构造查询条件
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Comment::getArticleId, commentQuery.getArticleId());
+        queryWrapper
+                .eq(Comment::getArticleId, commentQuery.getId())
+                .eq(Comment::getParentId, 0);
         if (!BaseContext.isAdmin()) {
             // 非管理员只能查询已发布的评论或自己的评论
-            queryWrapper
+            queryWrapper.and(wrapper -> wrapper
                     .eq(Comment::getStatus, StatusConstant.ENABLED)
                     .or()
-                    .eq(Comment::getStatus, StatusConstant.DISABLED)
-                    .eq(BaseContext.getCurrentUserId() != null,Comment::getCreateBy, BaseContext.getCurrentUserId());
+                    .eq(BaseContext.getCurrentUserId() != null,Comment::getCreateBy, BaseContext.getCurrentUserId())
+            );
         }
+        // 查询
         Page<Comment> commentPage = this.page(page, queryWrapper);
 
         // 构建返回结果
@@ -70,15 +78,80 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
                 .id(comment.getId())
                 .content(comment.getContent())
                 .articleId(comment.getArticleId())
+                .childCount(getChildCount(comment.getId())) // 获取子评论数
                 .creator(buildUserInfo(comment.getCreateBy())) // 构建发布者信息
                 .likeCount(getLikeCount(comment.getId()))
                 .parentId(comment.getParentId())
                 .ipAddress(comment.getIpAddress())
                 .createTime(comment.getCreateTime())
-                .build()).toList();
+                .build()
+        ).toList();
+
+        // 空结果
+        if (records.isEmpty()) {
+            return PageInfo.empty(commentQuery.getCurrent(), commentQuery.getSize());
+        }
 
         // 封装返回
         Page<CommentVO> voPage = Page.of(commentQuery.getCurrent(), commentQuery.getSize(), commentPage.getTotal());
+        voPage.setRecords(records);
+        return PageInfo.of(voPage);
+    }
+
+    /**
+     * 获取二级评论列表
+     * @param commentQuery 评论查询参数
+     * @return 二级评论列表
+     */
+    @Override
+    public PageInfo<CommentVO> getChildCommentList(CommentQuery commentQuery) {
+
+        // 父评论ID
+        Long parentId = commentQuery.getId();
+
+        // 初始化分页参数
+        Page<Comment> page = new Page<>(commentQuery.getCurrent(), commentQuery.getSize());
+        page.setOrders(List.of(
+                OrderItem.asc(OrderConstant.ID),
+                OrderItem.desc(OrderConstant.CREATE_TIME)
+        ));
+
+        // 构造查询条件
+        LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Comment::getParentId, commentQuery.getId());
+        if (!BaseContext.isAdmin()) {
+            // 非管理员只能查询已发布的评论或自己的评论
+            queryWrapper.and(wrapper -> wrapper
+                    .eq(Comment::getStatus, StatusConstant.ENABLED)
+                    .or()
+                    .eq(BaseContext.getCurrentUserId() != null,Comment::getCreateBy, BaseContext.getCurrentUserId())
+            );
+        }
+        // 查询
+        Page<Comment> commentPage = this.page(page, queryWrapper);
+
+        // 构建返回结果
+        List<CommentVO> records = commentPage.getRecords().stream().map(comment -> CommentVO.builder()
+                .id(comment.getId())
+                .content(comment.getContent())
+                .articleId(comment.getArticleId())
+                .childCount(0) // 获取子评论数(二级评论虽然会有回复,但是因为系统只做二级评论，所以子评论数量为0)
+                .creator(buildUserInfo(comment.getCreateBy())) // 构建发布者信息
+                .likeCount(getLikeCount(comment.getId()))
+                .parentId(comment.getParentId())
+                .ipAddress(comment.getIpAddress())
+                .createTime(comment.getCreateTime())
+                .build()
+        ).toList();
+
+        // 封装返回
+        Page<CommentVO> voPage = Page.of(commentQuery.getCurrent(), commentQuery.getSize(), commentPage.getTotal());
+
+        // 空结果
+        if (records.isEmpty()) {
+            return PageInfo.empty(commentQuery.getCurrent(), commentQuery.getSize());
+        }
+
         voPage.setRecords(records);
         return PageInfo.of(voPage);
     }
@@ -96,12 +169,35 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
         return likeRecordMapper.selectCount(queryWrapper).intValue();
     }
 
+    /**
+     * 构建发布者信息
+     * @param userId 发布者ID
+     * @return 发布者信息
+     */
     private UserInfo buildUserInfo(Long userId) {
         if (userId == null) {
             return null;
         }
         User user = userMapper.selectById(userId);
         return user != null ? UserInfo.from(user) : null;
+    }
+
+    /**
+     * 获取子评论数
+     * @param commentId 评论ID
+     * @return 子评论数
+     */
+    private int getChildCount(Long commentId) {
+        LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Comment::getParentId, commentId);
+        if (!BaseContext.isAdmin()) {
+            queryWrapper.and(wrapper -> wrapper
+                    .eq(Comment::getStatus, StatusConstant.ENABLED)
+                    .or()
+                    .eq(BaseContext.getCurrentUserId() != null,Comment::getCreateBy, BaseContext.getCurrentUserId())
+            );
+        }
+        return commentMapper.selectCount(queryWrapper).intValue();
     }
 }
 

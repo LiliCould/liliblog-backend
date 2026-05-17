@@ -19,4 +19,11 @@ public interface CommentService extends IService<Comment> {
      * @return 评论列表
      */
     PageInfo<CommentVO> getCommentList(CommentQuery commentQuery);
+
+    /**
+     * 获取二级评论列表
+     * @param commentQuery 评论查询参数
+     * @return 二级评论列表
+     */
+    PageInfo<CommentVO> getChildCommentList(CommentQuery commentQuery);
 }

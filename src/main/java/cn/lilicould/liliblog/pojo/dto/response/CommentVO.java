@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Schema(name = "评论展示对象")
 public class CommentVO implements Serializable {
     @Schema(description = "评论ID")
@@ -21,6 +21,8 @@ public class CommentVO implements Serializable {
     private String content;
     @Schema(description = "点赞数") // 需要计算点赞数
     private Integer likeCount;
+    @Schema(description = "子评论数")
+    private Integer childCount;
     @Schema(description = "文章ID")
     private Long articleId;
     @Schema(description = "父评论ID")
@@ -31,4 +33,14 @@ public class CommentVO implements Serializable {
     private LocalDateTime createTime;
     @Schema(description = "发布者信息")
     private UserInfo creator;
+    @Schema(description = "评论层级,0-一级评论,1-二级评论")
+    private Integer level;
+
+    public Integer getLevel() {
+        if (parentId == null || parentId == 0) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
 }
