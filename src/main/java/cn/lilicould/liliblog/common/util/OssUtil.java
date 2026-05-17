@@ -32,8 +32,6 @@ public class OssUtil {
         return auth.uploadToken(ossProperties.getBucket());
     }
 
-    // todo 1.使用UUID生成新文件名并上传，同时返回URL
-    // todo 2.异常处理
     public String uploadFile(InputStream inputStream, String fileName,String type) throws QiniuException {
 
         Configuration cfg = Configuration.create(Region.createWithRegionId("z0")); // 配置华东地区
