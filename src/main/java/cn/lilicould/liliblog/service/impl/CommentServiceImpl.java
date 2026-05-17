@@ -189,6 +189,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
         // 删除
         commentMapper.delete(new LambdaQueryWrapper<Comment>()
                 .eq(Comment::getId, id)
+                .or()
                 .eq(Comment::getRootId, id)
         );
     }

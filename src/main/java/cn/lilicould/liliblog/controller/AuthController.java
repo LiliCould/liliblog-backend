@@ -1,13 +1,20 @@
 package cn.lilicould.liliblog.controller;
 
+import cn.lilicould.liliblog.common.cache.RedisHelper;
 import cn.lilicould.liliblog.common.constant.LoginStrategyConstant;
+import cn.lilicould.liliblog.common.constant.RedisPrefixConstant;
 import cn.lilicould.liliblog.common.enums.CodeEnum;
+import cn.lilicould.liliblog.common.exception.BusinessException;
 import cn.lilicould.liliblog.common.result.Result;
+import cn.lilicould.liliblog.common.util.JwtUtil;
+import cn.lilicould.liliblog.domain.security.SecurityUser;
 import cn.lilicould.liliblog.pojo.dto.request.EmailLoginRequest;
 import cn.lilicould.liliblog.pojo.dto.request.PwdLoginRequest;
 import cn.lilicould.liliblog.pojo.dto.request.RegisterRequest;
 import cn.lilicould.liliblog.pojo.dto.response.LoginVO;
+import cn.lilicould.liliblog.pojo.dto.response.UserInfo;
 import cn.lilicould.liliblog.service.AuthService;
+import cn.lilicould.liliblog.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,6 +34,9 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;          // 你的用户服务
+    private final RedisHelper redisHelper;
+    private final JwtUtil jwtUtil;
+    private final UserService userService;
 
     @PostMapping("/login/pwd")
     @Operation(summary = "用户名密码登录", description = "通过用户名和密码登录")
@@ -62,14 +72,23 @@ public class AuthController {
 
     @PostMapping("/logout")
     @Operation(summary = "登出接口", description = "登出接口")
-    public Result<Void> logout(HttpServletResponse response) {
+    public Result<Void> logout(HttpServletResponse response,
+                               @CookieValue(name = "refresh_token",required = false) String refreshToken) {
+
+        if (refreshToken == null) {
+            throw new BusinessException(CodeEnum.NO_REFRESH_TOKEN);
+        }
+
         // 构建清除 Cookie（maxAge(0)）
         String clearRefresh = ResponseCookie.from("refresh_token", "")
                 .httpOnly(true).secure(true).sameSite("None")
-                .maxAge(0).path("/api/auth/refresh").build().toString();
+                .maxAge(0).path("/auth").build().toString();
         response.addHeader("Set-Cookie", clearRefresh);
 
-        // todo 从redis中删除refresh_token
+        String username = jwtUtil.extractUsername(refreshToken);
+
+        // 从redis中删除refresh_token
+        redisHelper.delete(RedisPrefixConstant.AUTH_REFRESH_TOKEN + username);
 
         return Result.success();
     }
@@ -77,15 +96,36 @@ public class AuthController {
     @PostMapping("/refresh")
     @Operation(summary = "刷新接口", description = "使用刷新令牌获取新的token")
     public Result<LoginVO> refresh(@CookieValue(name = "refresh_token",required = false) String refreshToken) {
-
+        log.info("刷新令牌,refreshToken: {}", refreshToken);
+        // 刷新令牌不存在
         if (refreshToken == null) {
             return Result.error(CodeEnum.NO_REFRESH_TOKEN);
         }
+        // 刷新令牌已过期
+        if (!jwtUtil.isTokenValid(refreshToken)) {
+            return Result.error(CodeEnum.TOKEN_EXPIRED);
+        }
 
-        // todo 解析验证刷新令牌，校验redis中是否存在，暂时先打印个日志
-        log.info("refreshToken: {}", refreshToken);
+        String username = jwtUtil.extractUsername(refreshToken);
+        String redisRefreshToken = redisHelper.get(RedisPrefixConstant.AUTH_REFRESH_TOKEN + username,String.class);
+        if (!refreshToken.equals(redisRefreshToken)) {
+            return Result.error(CodeEnum.TOKEN_EXPIRED);
+        }
 
+        // 刷新令牌有效，更新访问令牌
+        String accessToken = jwtUtil.generateRefreshToken(username);
+        long expiresIn = jwtUtil.extractExpiresIn(accessToken);
 
-        return Result.success();
+        // 用户信息
+        SecurityUser user = (SecurityUser) userService.loadUserByUsername(username);
+        UserInfo userInfo = UserInfo.from(user.toUser());
+
+        LoginVO loginVO = LoginVO.builder()
+                .accessToken(accessToken)
+                .expiresIn(expiresIn)
+                .userInfo(userInfo)
+                .build();
+
+        return Result.success(loginVO);
     }
 }

@@ -87,6 +87,9 @@ public class SecurityConfig {
                     .requestMatchers("/auth/**").permitAll() // 认证相关接口（登录、注册等）
                     .requestMatchers(HttpMethod.GET, "/api/article/**").permitAll() // 放行文章接口的GET请求方法
                     .requestMatchers(HttpMethod.GET, "/api/category/**").permitAll() // 放行分类接口的GET请求方法
+                    .requestMatchers(HttpMethod.GET, "/api/tag/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/user/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/comment/**").permitAll()
 
                     // 其他所有请求都需要认证才能访问
                     .anyRequest().authenticated()

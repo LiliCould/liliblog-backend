@@ -35,7 +35,7 @@ public class TokenService {
                 .secure(httpOnlyCookiesProperties.isSsl()) // 这个必须设为true, 否则前端无法获取到 Cookie,因为sameSite设为了 None
                 .sameSite("None") // 设置 SameSite,由于前后端分离，需要设置 SameSite为 None
                 .maxAge(accessExpiresIn)
-                .path("/auth/refresh")
+                .path("/auth")
                 .build()
                 .toString();
         // 不使用 response.addCookie()，因为response.addHeader原生支持Cookie，且可以设置 SameSite
@@ -43,7 +43,7 @@ public class TokenService {
 
 
         // 存储 Redis
-        redisHelper.set(RedisPrefixConstant.AUTH_REFRESH_TOKEN + user.getId(),
+        redisHelper.set(RedisPrefixConstant.AUTH_REFRESH_TOKEN + user.getUsername(),
                 refreshToken, jwtUtil.extractExpiresIn(refreshToken));
 
         // 更新登录时间
