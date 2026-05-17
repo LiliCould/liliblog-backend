@@ -1,6 +1,9 @@
 package cn.lilicould.liliblog.controller;
 
+import cn.lilicould.liliblog.common.constant.StatusConstant;
+import cn.lilicould.liliblog.common.context.BaseContext;
 import cn.lilicould.liliblog.common.enums.CodeEnum;
+import cn.lilicould.liliblog.common.exception.BusinessException;
 import cn.lilicould.liliblog.common.result.Result;
 import cn.lilicould.liliblog.pojo.dto.query.ArticleQuery;
 import cn.lilicould.liliblog.pojo.dto.request.ArticleCreateRequest;
@@ -8,7 +11,11 @@ import cn.lilicould.liliblog.pojo.dto.request.ArticleUpdateRequest;
 import cn.lilicould.liliblog.pojo.dto.response.ArticleDetailsVO;
 import cn.lilicould.liliblog.pojo.dto.response.ArticleVO;
 import cn.lilicould.liliblog.pojo.dto.response.PageInfo;
+import cn.lilicould.liliblog.pojo.entity.Article;
+import cn.lilicould.liliblog.pojo.entity.LikeRecord;
 import cn.lilicould.liliblog.service.ArticleService;
+import cn.lilicould.liliblog.service.LikeRecordService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,10 +31,12 @@ import org.springframework.web.bind.annotation.*;
 public class ArticleController {
 
     private final ArticleService articleService;
+    private final LikeRecordService likeRecordService;
 
     // 构造函数注入
-    public ArticleController(ArticleService articleService) {
+    public ArticleController(ArticleService articleService, LikeRecordService likeRecordService) {
         this.articleService = articleService;
+        this.likeRecordService = likeRecordService;
     }
 
     @GetMapping
@@ -87,6 +96,66 @@ public class ArticleController {
         articleService.remove(id);
 
         return Result.success();
+    }
+
+    @PutMapping("/{id}/like")
+    @Operation(summary = "文章点赞", description = "需要登录")
+    public Result<?> like(@PathVariable @Parameter(description = "文章ID") Long id) {
+        LikeRecord likeRecord = new LikeRecord();
+        likeRecord.setUserId(BaseContext.getCurrentUserId());
+        likeRecord.setTargetId(id);
+        likeRecord.setTargetType(StatusConstant.TARGET_ARTICLE);
+
+        // 检查文章是否存在且状态符合
+        if (!articleService.exists(new LambdaQueryWrapper<Article>().eq(Article::getId, id).eq(Article::getStatus, StatusConstant.ARTICLE_PUBLISHED))) {
+            throw new BusinessException(CodeEnum.ARTICLE_NOT_FOUND);
+        }
+
+        // 已经点赞
+        if (likeRecordService.exists(new LambdaQueryWrapper<LikeRecord>().eq(LikeRecord::getUserId, BaseContext.getCurrentUserId()).eq(LikeRecord::getTargetId, id).eq(LikeRecord::getTargetType, StatusConstant.TARGET_ARTICLE))) {
+            throw new BusinessException(CodeEnum.REPEAT_OPERATION);
+        }
+        // 按理说逻辑上不存在重复点赞（因为上面处理了），只需要save就可以了，但是为了以防万一，这里还是用了saveOrUpdate
+        likeRecordService.saveOrUpdate(likeRecord);
+
+        return Result.success();
+    }
+
+    @PutMapping("/{id}/unlike")
+    @Operation(summary = "文章取消点赞", description = "需要登录")
+    public Result<?> unlike(@PathVariable @Parameter(description = "文章ID") Long id) {
+        long targetId = id;
+        LikeRecord likeRecord = likeRecordService.getOne(
+                new LambdaQueryWrapper<LikeRecord>()
+                        .eq(LikeRecord::getUserId, BaseContext.getCurrentUserId())
+                        .eq(LikeRecord::getTargetId, targetId)
+                        .eq(LikeRecord::getTargetType, StatusConstant.TARGET_ARTICLE));
+        if (likeRecord == null) {
+            log.error("未找到点赞记录");
+            throw new BusinessException(CodeEnum.SYSTEM_ERROR);
+        }
+        likeRecordService.removeById(likeRecord);
+
+        return Result.success();
+    }
+
+    @GetMapping("/{id}/like")
+    @Operation(summary = "用户对此文章是否点赞", description = "查询用户对该文章的点赞状态;如果点赞或取消点赞出现异常，也可调用此接口更新状态")
+    public Result<Boolean> isLiked(@PathVariable @Parameter(description = "文章ID") Long id) {
+        if (BaseContext.getCurrentUserId() == null) {
+            // 未登录
+            return Result.success(false);
+        }
+
+        long targetId = id;
+        int targetType = StatusConstant.TARGET_ARTICLE;
+        LikeRecord likeRecord = likeRecordService.getOne(
+                new LambdaQueryWrapper<LikeRecord>()
+                        .eq(LikeRecord::getUserId, BaseContext.getCurrentUserId())
+                        .eq(LikeRecord::getTargetId, targetId)
+                        .eq(LikeRecord::getTargetType, targetType));
+
+        return Result.success(likeRecord != null);
     }
 
 }

@@ -40,6 +40,7 @@ public enum CodeEnum {
     TAG_NOT_FOUND(3006, "标签不存在"),
     SLUG_ALREADY_EXISTS(3007, "别名已存在"),
     SLUG_NOT_FOUND(3008, "别名不存在"),
+    REPEAT_OPERATION(3009,"请勿重复操作"),
 
     // 系统错误 5xxx
     SYSTEM_ERROR(5000, "系统异常，请稍后重试"),
