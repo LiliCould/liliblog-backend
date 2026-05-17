@@ -39,6 +39,7 @@ spring:
             client-secret: ${liliblog.github.client-secret}  # github上申请的应用密钥
             scope: read:user, user:email                     # 请求用户信息权限
             redirect-uri: ${liliblog.github.redirect-uri}    # 回调地址
+            client-name: GitHub
         provider:
           github:
             authorization-uri: https://github.com/login/oauth/authorize
@@ -85,3 +86,5 @@ oss:
   access-key: ${liliblog.oss.access-key}
   secret-key: ${liliblog.oss.secret-key}
   bucket: ${liliblog.oss.bucket}
+
+front-base-url: "http://locaohost:3000"
