@@ -48,7 +48,7 @@ public class UserController {
     @Operation(summary = "更新用户信息(/修改密码)",description = "无需管理员权限，需要登录,若为修改密码，成功后前端自主调用登出接口，修改其他内容也要调用/api/user/me接口更新一下信息")
     public Result<?> updateUserInfo(@RequestBody UserUpdateRequest userUpdateRequest) {
 
-        User user = userService.getById(BaseContext.getCurrentUserId());git
+        User user = userService.getById(BaseContext.getCurrentUserId());
 
         if (user == null || StatusConstant.DISABLED.equals(user.getStatus())) { // 如果用户不存在或者被禁用，则返回错误
             throw new BusinessException(CodeEnum.USER_NOT_FOUND);

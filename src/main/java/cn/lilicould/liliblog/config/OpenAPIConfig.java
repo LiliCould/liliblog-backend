@@ -32,7 +32,9 @@ public class OpenAPIConfig {
         SecurityScheme securityScheme = new SecurityScheme()
                 .name("Authorization")
                 .type(SecurityScheme.Type.HTTP)
+                .in(SecurityScheme.In.HEADER)
                 .scheme("bearer")
+                .description("使用 Bearer 认证方式，在请求头中携带Bearer ...token")
                 .bearerFormat("JWT");
         // 3. 全局安全要求 (Security Requirement): 默认应用于所有API
         // 声明所有API都需要满足上述的安全方案。
