@@ -3,25 +3,36 @@ package cn.lilicould.liliblog.service.impl;
 import cn.lilicould.liliblog.common.constant.OrderConstant;
 import cn.lilicould.liliblog.common.constant.StatusConstant;
 import cn.lilicould.liliblog.common.context.BaseContext;
+import cn.lilicould.liliblog.common.enums.CodeEnum;
 import cn.lilicould.liliblog.common.enums.TargetType;
+import cn.lilicould.liliblog.common.exception.BusinessException;
+import cn.lilicould.liliblog.common.util.IpUtil;
 import cn.lilicould.liliblog.mapper.CommentMapper;
 import cn.lilicould.liliblog.mapper.LikeRecordMapper;
 import cn.lilicould.liliblog.mapper.UserMapper;
 import cn.lilicould.liliblog.pojo.dto.query.CommentQuery;
+import cn.lilicould.liliblog.pojo.dto.request.CommentCreateRequest;
 import cn.lilicould.liliblog.pojo.dto.response.CommentVO;
 import cn.lilicould.liliblog.pojo.dto.response.PageInfo;
 import cn.lilicould.liliblog.pojo.dto.response.UserInfo;
+import cn.lilicould.liliblog.pojo.entity.Article;
 import cn.lilicould.liliblog.pojo.entity.Comment;
 import cn.lilicould.liliblog.pojo.entity.LikeRecord;
 import cn.lilicould.liliblog.pojo.entity.User;
+import cn.lilicould.liliblog.service.ArticleService;
 import cn.lilicould.liliblog.service.CommentService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
 * @author Lili_Could
@@ -36,11 +47,15 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
     private final LikeRecordMapper likeRecordMapper;
     private final UserMapper userMapper;
     private final CommentMapper commentMapper;
+    private final ArticleService articleService;
+    private final IpUtil ipUtil;
 
-    public CommentServiceImpl(LikeRecordMapper likeRecordMapper, UserMapper userMapper, CommentMapper commentMapper) {
+    public CommentServiceImpl(LikeRecordMapper likeRecordMapper, UserMapper userMapper, CommentMapper commentMapper, ArticleService articleService, IpUtil ipUtil) {
         this.likeRecordMapper = likeRecordMapper;
         this.userMapper = userMapper;
         this.commentMapper = commentMapper;
+        this.articleService = articleService;
+        this.ipUtil = ipUtil;
     }
 
     /**
@@ -106,8 +121,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
     @Override
     public PageInfo<CommentVO> getChildCommentList(CommentQuery commentQuery) {
 
-        // 父评论ID
-        Long parentId = commentQuery.getId();
+        // 根评论ID
+        Long rootId = commentQuery.getId();
 
         // 初始化分页参数
         Page<Comment> page = new Page<>(commentQuery.getCurrent(), commentQuery.getSize());
@@ -118,7 +133,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
 
         // 构造查询条件
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Comment::getParentId, commentQuery.getId());
+        queryWrapper.eq(Comment::getRootId, commentQuery.getId());
         if (!BaseContext.isAdmin()) {
             // 非管理员只能查询已发布的评论或自己的评论
             queryWrapper.and(wrapper -> wrapper
@@ -154,6 +169,79 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
 
         voPage.setRecords(records);
         return PageInfo.of(voPage);
+    }
+
+    /**
+     * 删除评论及其子评论
+     * @param id 评论id
+     */
+    @Override
+    public void deleteAll(Long id) {
+
+        // 校验权限
+        if (!BaseContext.isAdmin()) {
+            // 不是管理员，必须是发布者
+            if (!Objects.equals(id, BaseContext.getCurrentUserId())) {
+                throw new BusinessException(CodeEnum.NO_PERMISSION);
+            }
+        }
+
+        // 删除
+        commentMapper.delete(new LambdaQueryWrapper<Comment>()
+                .eq(Comment::getId, id)
+                .eq(Comment::getRootId, id)
+        );
+    }
+
+    /**
+     * 创建评论
+     * @param commentCreateRequest 创建参数
+     * @param request 请求
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
+    public void createComment(CommentCreateRequest commentCreateRequest, HttpServletRequest request) {
+        Comment comment = new Comment();
+        BeanUtils.copyProperties(commentCreateRequest, comment);
+
+        // 判断文章是否存在
+        if (!articleService.exists(new LambdaQueryWrapper<Article>()
+                .eq(Article::getId, comment.getArticleId())
+                .eq(Article::getStatus, StatusConstant.ARTICLE_PUBLISHED)
+        )) {
+            throw new BusinessException(CodeEnum.ARTICLE_NOT_FOUND);
+        }
+
+        // 设置默认值
+        comment.setStatus(StatusConstant.COMMENT_PENDING);
+        if (comment.getParentId() == null) {
+            comment.setParentId(0L);
+        }
+
+        if (comment.getParentId() != null && comment.getRootId() != null) {
+            // 如果父评论和根评论都指定了，应该判断是不是非法评论
+            // 比如父评论的根评论ID和当前评论的根评论ID不一致
+            Long parentRootId = commentMapper.selectOne(new LambdaQueryWrapper<Comment>()
+                    .select(Comment::getRootId)
+                    .eq(Comment::getId, comment.getParentId())
+            ).getRootId();
+            if (!Objects.equals(parentRootId, comment.getRootId())) {
+                throw new BusinessException(CodeEnum.COMMON_PARAM_ERROR);
+            }
+        }
+
+        // 获取ip和代理
+        comment.setIpAddress(ipUtil.getIpAddress(request));
+        comment.setUserAgent(ipUtil.getUserAgent(request));
+
+        // 创建评论
+        this.save(comment);
+
+        // 如果是一级评论，则设置根评论ID为自身ID
+        if (comment.getParentId() == 0) {
+            comment.setRootId(comment.getId());
+            this.updateById(comment);
+        }
     }
 
 

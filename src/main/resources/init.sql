@@ -95,6 +95,7 @@ CREATE TABLE `comment` (
    `content` TEXT NOT NULL COMMENT '评论内容',
    `article_id` BIGINT NOT NULL COMMENT '文章ID',
    `parent_id` BIGINT DEFAULT 0 COMMENT '父评论ID',
+    `root_id` BIGINT DEFAULT 0 COMMENT '根评论ID',
     `status` TINYINT DEFAULT 0 COMMENT '状态,0-审核中,1-发布',
    `ip_address` VARCHAR(45) COMMENT '评论者IP',
    `user_agent` VARCHAR(500) COMMENT '用户代理',

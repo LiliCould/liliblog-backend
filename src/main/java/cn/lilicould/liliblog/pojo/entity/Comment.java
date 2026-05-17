@@ -46,6 +46,12 @@ public class Comment extends CreateOnlyEntity implements Serializable {
     private Long parentId;
 
     /**
+     * 根评论ID
+     */
+    @TableField(value = "root_id")
+    private Long rootId;
+
+    /**
      * 状态,0-审核中,1-发布
      */
     @TableField(value = "status")

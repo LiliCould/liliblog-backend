@@ -1,24 +1,18 @@
 package cn.lilicould.liliblog.controller;
 
-import cn.lilicould.liliblog.common.constant.StatusConstant;
-import cn.lilicould.liliblog.common.enums.CodeEnum;
-import cn.lilicould.liliblog.common.exception.BusinessException;
 import cn.lilicould.liliblog.common.result.Result;
 import cn.lilicould.liliblog.common.util.IpUtil;
 import cn.lilicould.liliblog.pojo.dto.query.CommentQuery;
 import cn.lilicould.liliblog.pojo.dto.request.CommentCreateRequest;
 import cn.lilicould.liliblog.pojo.dto.response.CommentVO;
 import cn.lilicould.liliblog.pojo.dto.response.PageInfo;
-import cn.lilicould.liliblog.pojo.entity.Article;
-import cn.lilicould.liliblog.pojo.entity.Comment;
 import cn.lilicould.liliblog.service.ArticleService;
 import cn.lilicould.liliblog.service.CommentService;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.beans.BeanUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -75,29 +69,18 @@ public class CommentController {
     public Result<Void> create(
             @Validated @RequestBody CommentCreateRequest commentCreateRequest,
             HttpServletRequest request) {
-        Comment comment = new Comment();
-        BeanUtils.copyProperties(commentCreateRequest, comment);
 
-        // 判断文章是否存在
-        if (!articleService.exists(new LambdaQueryWrapper<Article>()
-                .eq(Article::getId, comment.getArticleId())
-                .eq(Article::getStatus, StatusConstant.ARTICLE_PUBLISHED)
-        )) {
-            throw new BusinessException(CodeEnum.ARTICLE_NOT_FOUND);
-        }
+        commentService.createComment(commentCreateRequest,request);
 
-        // 设置默认值
-        comment.setStatus(StatusConstant.COMMENT_PENDING);
-        if (comment.getParentId() == null) {
-            comment.setParentId(0L);
-        }
+        return Result.success();
+    }
 
-        // 获取ip和代理
-        comment.setIpAddress(ipUtil.getIpAddress(request));
-        comment.setUserAgent(ipUtil.getUserAgent(request));
+    @DeleteMapping("/{id}")
+    @Operation(summary = "删除评论", description = "删除所评论及其子评论(如果有)")
+    public Result<Void> delete(@Parameter(description = "评论ID") @PathVariable Long id) {
 
-        // 创建评论
-        commentService.save(comment);
+        // 删除评论及其子评论
+        commentService.deleteAll(id);
 
         return Result.success();
     }

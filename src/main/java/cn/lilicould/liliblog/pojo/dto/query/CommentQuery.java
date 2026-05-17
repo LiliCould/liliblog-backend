@@ -13,6 +13,6 @@ import java.io.Serializable;
 public class CommentQuery extends BaseQuery implements Serializable {
 
     @NotNull
-    @Schema(description = "如果是查询一级评论，就是文章id,否则是父评论id")
+    @Schema(description = "如果是查询一级评论，就是文章id,否则是根评论id")
     private Long id;
 }
