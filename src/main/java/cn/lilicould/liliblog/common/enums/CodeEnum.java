@@ -29,6 +29,8 @@ public enum CodeEnum {
     EMAIL_ALREADY_EXISTS(2010, "邮箱已被注册"),
     NOT_SUPPORTED(2011, "不支持的登录类型"),
     NO_REFRESH_TOKEN(2012, "未找到刷新令牌"),
+    OLD_PASSWORD_ERROR(2013, "旧密码错误"),
+    PASSWORD_NOT_MATCH(2014, "密码不匹配"),
 
     // 资源操作错误 3xxx
     RESOURCE_NOT_FOUND(3000, "资源不存在"),
