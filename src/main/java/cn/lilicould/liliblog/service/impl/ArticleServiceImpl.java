@@ -120,6 +120,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
             return PageInfo.empty(articleQuery.getCurrent(), articleQuery.getSize());
 
         // 填充信息并返回
+        // todo 有N+1问题，需要优化
         List<ArticleVO> records = articlePage.getRecords().stream().map(article -> {
             ArticleVO articleVO = new ArticleVO();
             BeanUtils.copyProperties(article, articleVO);

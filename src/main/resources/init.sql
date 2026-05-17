@@ -96,7 +96,6 @@ CREATE TABLE `comment` (
    `article_id` BIGINT NOT NULL COMMENT '文章ID',
    `parent_id` BIGINT DEFAULT 0 COMMENT '父评论ID',
     `status` TINYINT DEFAULT 0 COMMENT '状态,0-审核中,1-发布',
-   `like_count` INT DEFAULT 0 COMMENT '点赞数',
    `ip_address` VARCHAR(45) COMMENT '评论者IP',
    `user_agent` VARCHAR(500) COMMENT '用户代理',
    `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

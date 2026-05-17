@@ -1,5 +1,8 @@
 package cn.lilicould.liliblog.service;
 
+import cn.lilicould.liliblog.pojo.dto.query.CommentQuery;
+import cn.lilicould.liliblog.pojo.dto.response.CommentVO;
+import cn.lilicould.liliblog.pojo.dto.response.PageInfo;
 import cn.lilicould.liliblog.pojo.entity.Comment;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -10,4 +13,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface CommentService extends IService<Comment> {
 
+    /**
+     * 获取评论列表
+     * @param commentQuery 查询参数
+     * @return 评论列表
+     */
+    PageInfo<CommentVO> getCommentList(CommentQuery commentQuery);
 }

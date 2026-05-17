@@ -52,12 +52,6 @@ public class Comment extends CreateOnlyEntity implements Serializable {
     private Integer status;
 
     /**
-     * 点赞数
-     */
-    @TableField(value = "like_count")
-    private Integer likeCount;
-
-    /**
      * 评论者IP
      */
     @TableField(value = "ip_address")

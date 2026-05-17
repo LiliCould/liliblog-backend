@@ -140,7 +140,7 @@ public class ArticleController {
     }
 
     @GetMapping("/{id}/like")
-    @Operation(summary = "用户对此文章是否点赞", description = "查询用户对该文章的点赞状态;如果点赞或取消点赞出现异常，也可调用此接口更新状态")
+    @Operation(summary = "是否点赞", description = "查询用户对该文章的点赞状态;如果点赞或取消点赞出现异常，也可调用此接口更新状态")
     public Result<Boolean> isLiked(@PathVariable @Parameter(description = "文章ID") Long id) {
         if (BaseContext.getCurrentUserId() == null) {
             // 未登录
