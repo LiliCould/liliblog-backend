@@ -3,6 +3,7 @@ package cn.lilicould.liliblog.controller;
 import cn.lilicould.liliblog.common.constant.StatusConstant;
 import cn.lilicould.liliblog.common.context.BaseContext;
 import cn.lilicould.liliblog.common.enums.CodeEnum;
+import cn.lilicould.liliblog.common.enums.TargetType;
 import cn.lilicould.liliblog.common.exception.BusinessException;
 import cn.lilicould.liliblog.common.result.Result;
 import cn.lilicould.liliblog.pojo.dto.query.ArticleQuery;
@@ -104,7 +105,7 @@ public class ArticleController {
         LikeRecord likeRecord = new LikeRecord();
         likeRecord.setUserId(BaseContext.getCurrentUserId());
         likeRecord.setTargetId(id);
-        likeRecord.setTargetType(StatusConstant.TARGET_ARTICLE);
+        likeRecord.setTargetType(TargetType.ARTICLE.getCode());
 
         // 检查文章是否存在且状态符合
         if (!articleService.exists(new LambdaQueryWrapper<Article>().eq(Article::getId, id).eq(Article::getStatus, StatusConstant.ARTICLE_PUBLISHED))) {
@@ -112,7 +113,7 @@ public class ArticleController {
         }
 
         // 已经点赞
-        if (likeRecordService.exists(new LambdaQueryWrapper<LikeRecord>().eq(LikeRecord::getUserId, BaseContext.getCurrentUserId()).eq(LikeRecord::getTargetId, id).eq(LikeRecord::getTargetType, StatusConstant.TARGET_ARTICLE))) {
+        if (likeRecordService.exists(new LambdaQueryWrapper<LikeRecord>().eq(LikeRecord::getUserId, BaseContext.getCurrentUserId()).eq(LikeRecord::getTargetId, id).eq(LikeRecord::getTargetType, TargetType.ARTICLE.getCode()))) {
             throw new BusinessException(CodeEnum.REPEAT_OPERATION);
         }
         // 按理说逻辑上不存在重复点赞（因为上面处理了），只需要save就可以了，但是为了以防万一，这里还是用了saveOrUpdate
@@ -129,7 +130,7 @@ public class ArticleController {
                 new LambdaQueryWrapper<LikeRecord>()
                         .eq(LikeRecord::getUserId, BaseContext.getCurrentUserId())
                         .eq(LikeRecord::getTargetId, targetId)
-                        .eq(LikeRecord::getTargetType, StatusConstant.TARGET_ARTICLE));
+                        .eq(LikeRecord::getTargetType, TargetType.ARTICLE.getCode()));
         if (likeRecord == null) {
             log.error("未找到点赞记录");
             throw new BusinessException(CodeEnum.SYSTEM_ERROR);
@@ -147,13 +148,11 @@ public class ArticleController {
             return Result.success(false);
         }
 
-        long targetId = id;
-        int targetType = StatusConstant.TARGET_ARTICLE;
         LikeRecord likeRecord = likeRecordService.getOne(
                 new LambdaQueryWrapper<LikeRecord>()
                         .eq(LikeRecord::getUserId, BaseContext.getCurrentUserId())
-                        .eq(LikeRecord::getTargetId, targetId)
-                        .eq(LikeRecord::getTargetType, targetType));
+                        .eq(LikeRecord::getTargetId, id)
+                        .eq(LikeRecord::getTargetType, TargetType.ARTICLE.getCode()));
 
         return Result.success(likeRecord != null);
     }
