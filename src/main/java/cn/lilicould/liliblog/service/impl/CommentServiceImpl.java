@@ -222,12 +222,15 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
         if (comment.getParentId() != null && comment.getRootId() != null) {
             // 如果父评论和根评论都指定了，应该判断是不是非法评论
             // 比如父评论的根评论ID和当前评论的根评论ID不一致
-            Long parentRootId = commentMapper.selectOne(new LambdaQueryWrapper<Comment>()
-                    .select(Comment::getRootId)
-                    .eq(Comment::getId, comment.getParentId())
-            ).getRootId();
-            if (!Objects.equals(parentRootId, comment.getRootId())) {
-                throw new BusinessException(CodeEnum.COMMON_PARAM_ERROR);
+            if (comment.getParentId() != 0) { // parentId为0的话，后续会设置根评论为插入后的 ID
+                Long parentRootId = commentMapper.selectOne(new LambdaQueryWrapper<Comment>()
+                        .select(Comment::getRootId)
+                        .eq(Comment::getId, comment.getParentId())
+                ).getRootId();
+
+                if (!Objects.equals(parentRootId, comment.getRootId())) {
+                    throw new BusinessException(CodeEnum.COMMON_PARAM_ERROR);
+                }
             }
         }
 
