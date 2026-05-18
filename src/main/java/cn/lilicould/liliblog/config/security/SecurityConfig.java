@@ -1,11 +1,9 @@
 package cn.lilicould.liliblog.config.security;
 
-import cn.lilicould.liliblog.config.security.handler.SuccessHandler;
 import cn.lilicould.liliblog.filter.JwtAuthFilter;
 import cn.lilicould.liliblog.filter.WebLogFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -101,42 +99,42 @@ public class SecurityConfig {
         return http.build();
     }
 
-    /**
-     * Chain 1：OAuth2 登录链（有状态，需要 Session 临时保存授权码状态）
-     * 处理前端点击登录后的整个 OAuth2 流程
-     */
-    @Bean
-    @Order(1)
-    public SecurityFilterChain oauth2LoginChain(HttpSecurity http, SuccessHandler successHandler) throws Exception {
-        http
-                // 只匹配这些路径
-                .securityMatcher("/auth/login/**", "/login/**", "/oauth2/**")
-
-                // 关闭 CSRF（OAuth2 登录流程由 Spring Security 自动处理 state 参数防 CSRF）
-                .csrf(AbstractHttpConfigurer::disable)
-
-                // 需要 Session 来存 OAuth2 的 state 和 code（临时状态）
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                )
-
-                .oauth2Login(oauth2 -> oauth2
-                        // 自定义授权端点：前端访问 /auth/login/github 触发登录
-                        .authorizationEndpoint(endpoint ->
-                                endpoint.baseUri("/auth/login")
-                        )
-
-                        // 登录成功处理器
-                        .successHandler(successHandler)
-
-                        // 登录失败处理器
-                        .failureHandler((request, response, exception) -> {
-                            response.sendRedirect(  "http://localhost/login?error=" + exception.getMessage());
-                        })
-                );
-
-        return http.build();
-    }
+    ///**
+    // * Chain 1：OAuth2 登录链（有状态，需要 Session 临时保存授权码状态）
+    // * 处理前端点击登录后的整个 OAuth2 流程
+    // */
+    //@Bean
+    //@Order(2)
+    //public SecurityFilterChain oauth2LoginChain(HttpSecurity http, SuccessHandler successHandler) throws Exception {
+    //    http
+    //            // 只匹配这些路径
+    //            .securityMatcher("/auth/login/**", "/login/**", "/oauth2/**")
+    //
+    //            // 关闭 CSRF（OAuth2 登录流程由 Spring Security 自动处理 state 参数防 CSRF）
+    //            .csrf(AbstractHttpConfigurer::disable)
+    //
+    //            // 需要 Session 来存 OAuth2 的 state 和 code（临时状态）
+    //            .sessionManagement(session ->
+    //                    session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+    //            )
+    //
+    //            .oauth2Login(oauth2 -> oauth2
+    //                    // 自定义授权端点：前端访问 /auth/login/github 触发登录
+    //                    .authorizationEndpoint(endpoint ->
+    //                            endpoint.baseUri("/auth/login")
+    //                    )
+    //
+    //                    // 登录成功处理器
+    //                    .successHandler(successHandler)
+    //
+    //                    // 登录失败处理器
+    //                    .failureHandler((request, response, exception) -> {
+    //                        response.sendRedirect(  "http://localhost/login?error=" + exception.getMessage());
+    //                    })
+    //            );
+    //
+    //    return http.build();
+    //}
 
 
     /**

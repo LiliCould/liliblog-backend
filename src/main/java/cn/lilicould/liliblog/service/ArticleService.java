@@ -49,4 +49,11 @@ public interface ArticleService extends IService<Article> {
      * @param articleCreateRequest 文章参数
      */
     void update(Long id, ArticleUpdateRequest articleUpdateRequest);
+
+    /**
+     * 根据slug获取文章详情
+     * @param slug 文章slug
+     * @return 文章详情
+     */
+    ArticleDetailsVO getArticleBySlug(String slug);
 }

@@ -70,6 +70,19 @@ public class ArticleController {
         return Result.success(articleDetailsVO);
     }
 
+    @GetMapping("/slug/{slug}")
+    @Operation(summary = "根据指定slug获取文章")
+    public Result<ArticleDetailsVO> getArticleBySlug(@PathVariable @Parameter(description = "文章slug") String slug) {
+
+        ArticleDetailsVO articleDetailsVO = articleService.getArticleBySlug(slug);
+
+        if (articleDetailsVO == null) {
+            return Result.error(CodeEnum.ARTICLE_NOT_FOUND);
+        }
+
+        return Result.success(articleDetailsVO);
+    }
+
     @PostMapping
     @Operation(summary = "保存(写)文章")
     public Result<?> saveArticle(@RequestBody @Validated ArticleCreateRequest articleCreateRequest) {

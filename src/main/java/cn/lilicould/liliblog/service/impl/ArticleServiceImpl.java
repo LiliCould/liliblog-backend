@@ -247,6 +247,23 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     }
 
     /**
+     * 获取文章详情
+     * @param slug 别名
+     * @return 文章详情
+     */
+    @Override
+    public ArticleDetailsVO getArticleBySlug(String slug) {
+        // 查询文章基础信息
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Article::getSlug, slug);
+        Article article = articleMapper.selectOne(queryWrapper);
+        if (article == null) {
+            return null;
+        }
+        return getArticle( article.getId());
+    }
+
+    /**
      * 保存文章
      * @param articleCreateRequest 文章参数
      */

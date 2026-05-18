@@ -11,8 +11,10 @@
   <component name="ChangeListManager">
     <list default="true" id="965f20b2-ed81-4183-915b-1a9c81f71a67" name="更改" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/config/OpenAPIConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/config/OpenAPIConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/config/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/config/security/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/controller/ArticleController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/controller/ArticleController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/service/ArticleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/service/ArticleService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/service/impl/ArticleServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/service/impl/ArticleServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,7 +25,7 @@
     <option name="optimizeImportsOnTheFly" value="true" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="179" />
+    <option name="cachedIndexableFilesCount" value="160" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -449,7 +451,8 @@
       <workItem from="1778823535883" duration="24568000" />
       <workItem from="1778908010801" duration="12219000" />
       <workItem from="1778931742737" duration="12174000" />
-      <workItem from="1778983540291" duration="25208000" />
+      <workItem from="1778983540291" duration="37516000" />
+      <workItem from="1779062870310" duration="3509000" />
     </task>
     <task id="LOCAL-00001" summary="没改什么">
       <option name="closed" value="true" />
