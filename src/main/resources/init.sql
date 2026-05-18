@@ -151,19 +151,58 @@ INSERT INTO `category` (`id`, `name`, `slug`, `description`, `sort_order`, `stat
 (3, '学习笔记', 'study', '学习过程中的笔记总结', 3, 1);
 
 -- 标签数据
-INSERT INTO `tag` (`id`, `name`, `color`) VALUES 
-(1, 'Java', '#FF5733'),
-(2, 'SpringBoot', '#33FF57'),
-(3, 'MySQL', '#3357FF'),
-(4, 'Redis', '#F333FF'),
-(5, '前端', '#FF33A8'),
-(6, 'Vue', '#33FFF5');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (1, 'Java', '#FFA500', '2025-12-09 23:12:07');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (2, 'Spring Boot', '#6DB33F', '2025-12-09 23:12:07');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (3, '数据库', '#4479A1', '2025-12-09 23:12:07');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (4, '微服务', '#FF6B6B', '2025-12-09 23:12:07');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (5, '前端', '#ff0123', '2026-01-15 02:11:14');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (6, 'vue3', '#1dbf8b', '2026-03-30 23:07:18');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (7, 'MySQL', '#00758f', '2026-04-03 21:22:39');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (8, 'Redis', '#dc382d', '2026-04-03 21:24:42');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (9, 'Docker', '#2496ed', '2026-04-03 21:25:01');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (10, '算法', '#7e57c2', '2026-04-03 21:25:19');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (11, '计算机网络', '#26a69a', '2026-04-03 21:25:36');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (12, '操作系统', '#795548', '2026-04-03 21:25:47');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (13, '面试', '#ffb300', '2026-04-03 21:26:02');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (14, '项目实战', '#00acc1', '2026-04-03 21:26:18');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (15, '开源', '#607d8b', '2026-04-03 21:26:36');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (16, '架构', '#5c6bc0', '2026-04-03 21:26:51');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (17, 'AI', '#ec407a', '2026-04-03 21:27:04');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (18, 'Android', '#3ddc84', '2026-04-03 21:27:24');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (19, 'Linux', '#fcc624', '2026-04-03 21:27:36');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (20, 'Git', '#f05032', '2026-04-03 21:29:25');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (21, 'Nginx', '#009639', '2026-04-03 21:29:38');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (22, 'Elasticsearch', '#005571', '2026-04-03 21:29:48');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (23, 'Kafka', '#231f20', '2026-04-03 21:29:58');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (24, 'RabbitMQ', '#ff6600', '2026-04-03 21:30:08');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (25, '前端工程化', '#2196f3', '2026-04-03 21:30:22');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (26, 'TypeScript', '#3178c6', '2026-04-03 21:30:31');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (27, '分布式', '#8e24aa', '2026-04-03 21:30:46');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (28, '高并发', '#f44336', '2026-04-03 21:31:20');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (29, '学习笔记', '#9c27b0', '2026-04-03 21:31:36');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (30, '工具', '#ff9800', '2026-04-03 21:31:46');
+INSERT INTO `liliblog`.`tag` (`id`, `name`, `color`, `create_time`) VALUES (31, '生活', '#4caf50', '2026-04-03 21:32:07');
+
 
 -- 文章数据
-INSERT INTO `article` (`id`, `title`, `slug`, `summary`, `content`, `content_html`, `cover_image`, `status`, `view_count`, `category_id`, `create_by`) VALUES 
+INSERT INTO `article` (`id`, `title`, `slug`, `summary`, `content`, `content_html`, `cover_image`, `status`, `view_count`, `category_id`, `create_by`) VALUES
 (1, 'Spring Boot 入门教程', 'springboot-intro', '从零开始学习 Spring Boot 框架', '这是 Spring Boot 的入门内容...', '<p>这是 Spring Boot 的入门内容...</p>', NULL, 1, 100, 1, 1),
 (2, 'MySQL 性能优化技巧', 'mysql-optimize', '分享一些 MySQL 数据库优化的实用技巧', 'MySQL 优化有很多方面...', '<p>MySQL 优化有很多方面...</p>', NULL, 1, 85, 1, 1),
-(3, '周末爬山记', 'weekend-hiking', '记录周末去爬山的经历', '今天天气真好，去爬了附近的山...', '<p>今天天气真好，去爬了附近的山...</p>', NULL, 1, 50, 2, 2);
+(3, '周末爬山记', 'weekend-hiking', '记录周末去爬山的经历', '今天天气真好，去爬了附近的山...', '<p>今天天气真好，去爬了附近的山...</p>', NULL, 1, 50, 2, 2),
+(4, 'Redis 缓存实战指南', 'redis-cache-practice', '深入理解 Redis 缓存机制与应用场景', 'Redis 作为高性能缓存解决方案...', '<p>Redis 作为高性能缓存解决方案...</p>', NULL, 1, 120, 1, 1),
+(5, 'Docker 容器化部署最佳实践', 'docker-deployment', '如何使用 Docker 进行项目部署', 'Docker 容器化技术让部署更简单...', '<p>Docker 容器化技术让部署更简单...</p>', NULL, 1, 95, 1, 1),
+(6, 'Vue3 组合式 API 详解', 'vue3-composition-api', '全面掌握 Vue3 的组合式 API', 'Vue3 引入了组合式 API，让代码组织更灵活...', '<p>Vue3 引入了组合式 API...</p>', NULL, 1, 110, 1, 2),
+(7, 'Java 并发编程核心概念', 'java-concurrency', '深入理解 Java 多线程与并发编程', 'Java 并发编程是高级开发的必备技能...', '<p>Java 并发编程是高级开发的必备技能...</p>', NULL, 1, 130, 1, 1),
+(8, '微服务架构设计原则', 'microservice-design', '微服务架构的设计模式与最佳实践', '微服务架构将应用拆分为多个独立服务...', '<p>微服务架构将应用拆分为多个独立服务...</p>', NULL, 1, 88, 1, 1),
+(9, 'Git 常用命令速查表', 'git-commands', '开发者必备的 Git 命令大全', 'Git 是版本控制的核心工具...', '<p>Git 是版本控制的核心工具...</p>', NULL, 1, 150, 3, 1),
+(10, 'Linux 系统管理基础', 'linux-basics', 'Linux 常用命令与系统管理技巧', 'Linux 是服务器端的主流操作系统...', '<p>Linux 是服务器端的主流操作系统...</p>', NULL, 1, 75, 3, 1),
+(11, '算法复杂度分析入门', 'algorithm-complexity', '理解时间复杂度和空间复杂度', '算法复杂度是评估算法效率的关键指标...', '<p>算法复杂度是评估算法效率的关键指标...</p>', NULL, 1, 92, 3, 1),
+(12, 'Nginx 反向代理配置指南', 'nginx-proxy', 'Nginx 反向代理与负载均衡配置', 'Nginx 作为高性能 Web 服务器...', '<p>Nginx 作为高性能 Web 服务器...</p>', NULL, 1, 68, 1, 1),
+(13, 'Kafka 消息队列原理与实践', 'kafka-practice', '深入理解 Kafka 消息中间件', 'Kafka 是分布式流处理平台...', '<p>Kafka 是分布式流处理平台...</p>', NULL, 1, 105, 1, 1),
+(14, 'TypeScript 类型系统详解', 'typescript-types', 'TypeScript 高级类型特性解析', 'TypeScript 的类型系统非常强大...', '<p>TypeScript 的类型系统非常强大...</p>', NULL, 1, 78, 1, 2),
+(15, 'Elasticsearch 搜索引擎入门', 'elasticsearch-intro', 'Elasticsearch 基础概念与使用', 'Elasticsearch 是分布式搜索和分析引擎...', '<p>Elasticsearch 是分布式搜索和分析引擎...</p>', NULL, 1, 82, 1, 1),
+(16, 'RabbitMQ 消息队列实战', 'rabbitmq-practice', 'RabbitMQ 的安装与基本使用', 'RabbitMQ 是流行的消息队列中间件...', '<p>RabbitMQ 是流行的消息队列中间件...</p>', NULL, 1, 70, 1, 1),
+(17, '前端工程化体系建设', 'frontend-engineering', '构建现代化的前端工程化体系', '前端工程化包含模块化、组件化、自动化等...', '<p>前端工程化包含模块化、组件化...</p>', NULL, 1, 95, 1, 2);
 
 -- 文章标签关联
 INSERT INTO `article_tag` (`article_id`, `tag_id`, `create_by`) VALUES 
