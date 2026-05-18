@@ -1,11 +1,8 @@
 package cn.lilicould.liliblog.strategy.impl;
 
-import cn.lilicould.liliblog.common.cache.RedisHelper;
 import cn.lilicould.liliblog.common.constant.LoginStrategyConstant;
 import cn.lilicould.liliblog.common.enums.CodeEnum;
 import cn.lilicould.liliblog.common.exception.BusinessException;
-import cn.lilicould.liliblog.common.util.JwtUtil;
-import cn.lilicould.liliblog.config.properties.HttpOnlyCookiesProperties;
 import cn.lilicould.liliblog.domain.security.SecurityUser;
 import cn.lilicould.liliblog.pojo.dto.request.LoginRequest;
 import cn.lilicould.liliblog.pojo.dto.request.PwdLoginRequest;
@@ -14,6 +11,7 @@ import cn.lilicould.liliblog.service.UserService;
 import cn.lilicould.liliblog.service.impl.TokenService;
 import cn.lilicould.liliblog.strategy.LoginStrategy;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -23,22 +21,11 @@ import java.time.LocalDateTime;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class PwdLoginStrategy implements LoginStrategy {
-    private final RedisHelper redisHelper;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
-    private final HttpOnlyCookiesProperties httpOnlyCookiesProperties;
     private final TokenService tokenService;
-
-    public PwdLoginStrategy(RedisHelper redisHelper, UserService userService, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, HttpOnlyCookiesProperties httpOnlyCookiesProperties, TokenService tokenService) {
-        this.redisHelper = redisHelper;
-        this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtUtil = jwtUtil;
-        this.httpOnlyCookiesProperties = httpOnlyCookiesProperties;
-        this.tokenService = tokenService;
-    }
 
     @Override
     public LoginVO login(LoginRequest request, HttpServletResponse response) {
@@ -66,7 +53,6 @@ public class PwdLoginStrategy implements LoginStrategy {
         if (!user.isEnabled()) {
             throw  new BusinessException(CodeEnum.ACCOUNT_DISABLED);
         }
-
 
         // 生成token返回
         return tokenService.createLoginResponse(user.toUser(),response);
