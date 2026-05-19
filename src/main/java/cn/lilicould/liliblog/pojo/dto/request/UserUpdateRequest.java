@@ -1,7 +1,6 @@
 package cn.lilicould.liliblog.pojo.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -22,7 +21,6 @@ public class UserUpdateRequest implements Serializable {
     @Size(min = 6, max = 20, message = "密码长度必须在6-20位之间")
     private String confirmPassword;
 
-    @NotBlank(message = "昵称不能为空")
     @Size(max = 16, message = "昵称长度不能超过16位")
     @Schema(description = "昵称", example = "立里可",requiredMode = Schema.RequiredMode.REQUIRED)
     private String nickname;

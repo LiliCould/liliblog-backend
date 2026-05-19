@@ -11,7 +11,7 @@
   <component name="ChangeListManager">
     <list default="true" id="965f20b2-ed81-4183-915b-1a9c81f71a67" name="更改" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/strategy/impl/PwdLoginStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/strategy/impl/PwdLoginStrategy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/pojo/dto/request/UserUpdateRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/pojo/dto/request/UserUpdateRequest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -450,7 +450,8 @@
       <workItem from="1778931742737" duration="12174000" />
       <workItem from="1778983540291" duration="37516000" />
       <workItem from="1779062870310" duration="16480000" />
-      <workItem from="1779092480764" duration="8676000" />
+      <workItem from="1779092480764" duration="15366000" />
+      <workItem from="1779148822108" duration="389000" />
     </task>
     <task id="LOCAL-00001" summary="没改什么">
       <option name="closed" value="true" />
