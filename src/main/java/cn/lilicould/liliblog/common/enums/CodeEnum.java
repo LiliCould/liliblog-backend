@@ -31,6 +31,7 @@ public enum CodeEnum {
     NO_REFRESH_TOKEN(2012, "未找到刷新令牌"),
     OLD_PASSWORD_ERROR(2013, "旧密码错误"),
     PASSWORD_NOT_MATCH(2014, "密码不匹配"),
+    IP_IS_BANNER(2015, "IP被禁止访问"),
 
     // 资源操作错误 3xxx
     RESOURCE_NOT_FOUND(3000, "资源不存在"),

@@ -1,5 +1,6 @@
 package cn.lilicould.liliblog.config.security;
 
+import cn.lilicould.liliblog.filter.IpListFilter;
 import cn.lilicould.liliblog.filter.JwtAuthFilter;
 import cn.lilicould.liliblog.filter.WebLogFilter;
 import org.springframework.context.annotation.Bean;
@@ -53,8 +54,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
                                            JwtAuthFilter jwtAuthFilter,
-                                           WebLogFilter webLogFilter
-    ) {
+                                           WebLogFilter webLogFilter,
+                                           IpListFilter ipListFilter) {
         http
             // 禁用 CSRF 防护（前后端分离项目无需 CSRF Token）
             .csrf(AbstractHttpConfigurer::disable)
@@ -95,6 +96,8 @@ public class SecurityConfig {
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         http.addFilterBefore(webLogFilter, JwtAuthFilter.class); // 日志过滤器
+
+        http.addFilterBefore(ipListFilter, WebLogFilter.class); // ip名单过滤器
 
         return http.build();
     }

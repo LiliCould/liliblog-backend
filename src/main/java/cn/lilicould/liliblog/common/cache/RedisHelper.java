@@ -28,6 +28,15 @@ public class RedisHelper {
         return this.APP_PREFIX + key;
     }
 
+    // 原子操作增加1
+    public Long increment(String key) {
+        return redisTemplate.opsForValue().increment(buildKey(key));
+    }
+
+    public Boolean expire(String key, long timeout, TimeUnit unit) {
+        return redisTemplate.expire(buildKey(key), timeout, unit);
+    }
+
     // ==================== 基本 String 操作 ====================
 
     /**
