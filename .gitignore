@@ -37,10 +37,11 @@ build/
 ### Mac OS ###
 .DS_Store
 
-### logs ###
+### log files ###
 /logs/
 ./logs/
 ./logs/*
+*.log
 
 ### uploads ###
 ./uploads/
