@@ -133,7 +133,10 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
 
         // 构造查询条件
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Comment::getRootId, commentQuery.getId());
+        // rootId且排除根评论
+        queryWrapper.eq(Comment::getRootId, commentQuery.getId())
+                .ne(Comment::getId, rootId);
+
         if (!BaseContext.isAdmin()) {
             // 非管理员只能查询已发布的评论或自己的评论
             queryWrapper.and(wrapper -> wrapper
