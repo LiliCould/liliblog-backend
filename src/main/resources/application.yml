@@ -66,6 +66,7 @@ mybatis-plus:
 springdoc:
   api-docs:
     path: /v3/api-docs    # 自定义JSON文档路径
+    enabled: true # 生产环境设置为false
   swagger-ui:
     path: /swagger-ui.html # 自定义UI路径
     enabled: true
@@ -75,6 +76,7 @@ nextdoc4j:
 
 http-only-cookies:
   ssl: ${liliblog.http-only-cookies.ssl} # https验证，生产环境需设为true
+  domain: "lilicould.cn"
 
 jwt:
   # 密钥（secret）必须是经过Base64编码的32字节（或更长）的字符串

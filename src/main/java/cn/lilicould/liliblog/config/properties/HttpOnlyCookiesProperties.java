@@ -9,4 +9,5 @@ import org.springframework.stereotype.Component;
 @Data
 public class HttpOnlyCookiesProperties {
     private boolean ssl;
+    private String domain;
 }

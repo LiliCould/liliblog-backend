@@ -34,8 +34,9 @@ public class TokenService {
                 .httpOnly(true)
                 .secure(httpOnlyCookiesProperties.isSsl()) // 这个必须设为true, 否则前端无法获取到 Cookie,因为sameSite设为了 None
                 .sameSite("None") // 设置 SameSite,由于前后端分离，需要设置 SameSite为 None
-                .maxAge(accessExpiresIn)
+                .maxAge(accessExpiresIn / 1000) // 毫秒换算成秒
                 .path("/auth")
+                .domain(httpOnlyCookiesProperties.getDomain())
                 .build()
                 .toString();
         // 不使用 response.addCookie()，因为response.addHeader原生支持Cookie，且可以设置 SameSite

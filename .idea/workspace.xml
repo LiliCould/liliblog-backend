@@ -10,9 +10,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="965f20b2-ed81-4183-915b-1a9c81f71a67" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/resources/logback-spring.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/config/properties/HttpOnlyCookiesProperties.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/config/properties/HttpOnlyCookiesProperties.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/config/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/config/security/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/service/impl/TokenService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/service/impl/TokenService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,7 +25,7 @@
     <option name="optimizeImportsOnTheFly" value="true" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="161" />
+    <option name="cachedIndexableFilesCount" value="155" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -159,7 +161,7 @@
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
     &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;通义灵码&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;,
     &quot;应用程序.com.lilicould.blog.test.executor&quot;: &quot;Run&quot;,
@@ -459,7 +461,9 @@
       <workItem from="1779182698398" duration="9000" />
       <workItem from="1779188873881" duration="5758000" />
       <workItem from="1779235589838" duration="2048000" />
-      <workItem from="1779246685762" duration="899000" />
+      <workItem from="1779246685762" duration="1624000" />
+      <workItem from="1779251119158" duration="690000" />
+      <workItem from="1779251895162" duration="2618000" />
     </task>
     <task id="LOCAL-00001" summary="没改什么">
       <option name="closed" value="true" />

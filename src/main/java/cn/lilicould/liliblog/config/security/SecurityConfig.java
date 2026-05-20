@@ -33,7 +33,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("*")); // 生产环境建议改成具体域名
+        configuration.setAllowedOriginPatterns(List.of(
+                "https://lilicould.cn",           // 主域名
+                "https://*.lilicould.cn"          // 子域名
+        ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*")); // 必须包含 Authorization
         configuration.setAllowCredentials(true);
