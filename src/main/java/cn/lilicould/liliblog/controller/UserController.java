@@ -61,8 +61,10 @@ public class UserController {
             }
         }
 
-        // 验证两次密码是否匹配
-        if (!userUpdateRequest.getNewPassword().equals(userUpdateRequest.getConfirmPassword())) {
+        // 验证两次密码是否匹配，需要先判空
+        if (userUpdateRequest.getNewPassword() != null
+                && userUpdateRequest.getConfirmPassword() != null
+                && !userUpdateRequest.getNewPassword().equals(userUpdateRequest.getConfirmPassword())) {
             throw new BusinessException(CodeEnum.PASSWORD_NOT_MATCH);
         } else {
             user.setPassword(passwordEncoder.encode(userUpdateRequest.getNewPassword()));
