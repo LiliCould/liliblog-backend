@@ -10,11 +10,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="965f20b2-ed81-4183-915b-1a9c81f71a67" name="更改" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/resources/banner.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/config/properties/HttpOnlyCookiesProperties.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/config/properties/HttpOnlyCookiesProperties.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/config/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/config/security/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/service/impl/TokenService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/service/impl/TokenService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/LiliblogApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/LiliblogApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/service/impl/ArticleServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/service/impl/ArticleServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -463,7 +462,14 @@
       <workItem from="1779235589838" duration="2048000" />
       <workItem from="1779246685762" duration="1624000" />
       <workItem from="1779251119158" duration="690000" />
-      <workItem from="1779251895162" duration="2618000" />
+      <workItem from="1779251895162" duration="3861000" />
+      <workItem from="1779257464471" duration="385000" />
+      <workItem from="1779265429868" duration="1224000" />
+      <workItem from="1779271866973" duration="675000" />
+      <workItem from="1779333434184" duration="60000" />
+      <workItem from="1779349881028" duration="366000" />
+      <workItem from="1779350268115" duration="138000" />
+      <workItem from="1779350434931" duration="1419000" />
     </task>
     <task id="LOCAL-00001" summary="没改什么">
       <option name="closed" value="true" />

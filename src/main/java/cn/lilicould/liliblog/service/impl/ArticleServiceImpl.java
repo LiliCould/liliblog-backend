@@ -94,6 +94,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     public PageInfo<ArticleVO> getArticleList(ArticleQuery articleQuery) {
         // 初始化分页参数
         Page<Article> page = Page.of(articleQuery.getCurrent(), articleQuery.getSize());
+        page.addOrder(OrderItem.desc(OrderConstant.CREATE_TIME));
         page.addOrder(OrderItem.desc(OrderConstant.UPDATE_TIME)); // 排序
 
         // 查询条件
