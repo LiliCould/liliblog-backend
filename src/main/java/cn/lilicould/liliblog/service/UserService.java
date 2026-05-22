@@ -1,6 +1,8 @@
 package cn.lilicould.liliblog.service;
 
 import cn.lilicould.liliblog.pojo.dto.query.UserQuery;
+import cn.lilicould.liliblog.pojo.dto.request.AdminUserUpdateRequest;
+import cn.lilicould.liliblog.pojo.dto.request.UserCreateRequest;
 import cn.lilicould.liliblog.pojo.dto.response.PageInfo;
 import cn.lilicould.liliblog.pojo.dto.response.UserInfo;
 import cn.lilicould.liliblog.pojo.entity.User;
@@ -21,4 +23,17 @@ public interface UserService extends IService<User>, UserDetailsService {
      * @return 分页用户列表
      */
     PageInfo<UserInfo> list(UserQuery query);
+
+    /**
+     * 修改用户信息
+     * @param id 用户ID
+     * @param request 修改参数
+     */
+    void updateUserInfo(Long id, AdminUserUpdateRequest request);
+
+    /**
+     * 添加用户
+     * @param request 添加参数
+     */
+    void createUser(UserCreateRequest request);
 }

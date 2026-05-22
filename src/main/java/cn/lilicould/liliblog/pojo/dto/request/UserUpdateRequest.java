@@ -21,7 +21,7 @@ public class UserUpdateRequest implements Serializable {
     @Size(min = 6, max = 20, message = "密码长度必须在6-20位之间")
     private String confirmPassword;
 
-    @Size(max = 16, message = "昵称长度不能超过16位")
+    @Size(min = 2,max = 16, message = "昵称长度需要2-16位")
     @Schema(description = "昵称", example = "立里可",requiredMode = Schema.RequiredMode.REQUIRED)
     private String nickname;
 

@@ -1,9 +1,15 @@
 package cn.lilicould.liliblog.service.impl;
 
 import cn.lilicould.liliblog.common.constant.OrderConstant;
+import cn.lilicould.liliblog.common.constant.StatusConstant;
+import cn.lilicould.liliblog.common.enums.CodeEnum;
+import cn.lilicould.liliblog.common.enums.RoleType;
+import cn.lilicould.liliblog.common.exception.BusinessException;
 import cn.lilicould.liliblog.domain.security.SecurityUser;
 import cn.lilicould.liliblog.mapper.UserMapper;
 import cn.lilicould.liliblog.pojo.dto.query.UserQuery;
+import cn.lilicould.liliblog.pojo.dto.request.AdminUserUpdateRequest;
+import cn.lilicould.liliblog.pojo.dto.request.UserCreateRequest;
 import cn.lilicould.liliblog.pojo.dto.response.PageInfo;
 import cn.lilicould.liliblog.pojo.dto.response.UserInfo;
 import cn.lilicould.liliblog.pojo.entity.User;
@@ -18,7 +24,10 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullUnmarked;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -32,6 +41,8 @@ import java.util.List;
 @Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     implements UserService {
+
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @NullUnmarked
@@ -81,6 +92,101 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         Page<UserInfo> pageInfo = Page.of(userPage.getCurrent(), userPage.getSize(), userPage.getTotal());
         pageInfo.setRecords(records);
         return PageInfo.of(pageInfo);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class,isolation = Isolation.READ_COMMITTED)
+    public void updateUserInfo(Long id, AdminUserUpdateRequest request) {
+        User user = this.getById(id);
+        if (user == null) {
+            throw new BusinessException(CodeEnum.USER_NOT_FOUND);
+        }
+
+        // 修改信息
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setNickname(request.getNickname());
+        user.setAvatar(request.getAvatar());
+        user.setRole(request.getRole());
+        user.setStatus(request.getStatus());
+        // 校验邮箱是否有效
+        if (request.getEmail() != null) {
+            if (isEmailExists(request.getEmail(), id)) {
+                throw new BusinessException(CodeEnum.EMAIL_ALREADY_EXISTS);
+            }
+        }
+        user.setEmail(request.getEmail());
+        // 校验用户名是否已存在
+        if (request.getUsername() != null) {
+            if (isUsernameExists(request.getUsername(), id)) {
+                throw new BusinessException(CodeEnum.USERNAME_ALREADY_EXISTS);
+            }
+        }
+        user.setUsername(request.getUsername());
+
+        this.updateById(user);
+    }
+
+    /**
+     * 创建用户
+     * @param request 创建参数
+     */
+    @Override
+    public void createUser(UserCreateRequest request) {
+        // 验证密码
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
+            throw new BusinessException(CodeEnum.PASSWORD_MISMATCH);
+        }
+
+        // 校验邮箱是否已经存在
+        if (request.getEmail() != null && this.exists(new LambdaQueryWrapper<User>().eq(User::getEmail, request.getEmail()))) {
+            throw new BusinessException(CodeEnum.EMAIL_ALREADY_EXISTS);
+        }
+
+        // 校验用户名是否已经存在
+        if (request.getUsername() != null && this.exists(new LambdaQueryWrapper<User>().eq(User::getUsername, request.getUsername()))) {
+            throw new BusinessException(CodeEnum.USERNAME_ALREADY_EXISTS);
+        }
+
+        // 创建用户
+        User user = User.builder()
+                .username(request.getUsername())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .nickname(request.getNickname())
+                .avatar(null)
+                .role(RoleType.USER.getCode())
+                .status(StatusConstant.ENABLED)
+                .email(request.getEmail())
+                .build();
+
+        this.save(user);
+    }
+
+    /**
+     * 校验邮箱是否已存在
+     * @param email 邮箱
+     * @param id 用户ID
+     * @return 是否已存在
+     */
+    public boolean isEmailExists(String email, Long id) {
+        return this.exists(
+                new LambdaQueryWrapper<User>()
+                        .eq(User::getEmail, email)
+                        .ne(User::getId, id)
+        );
+    }
+
+    /**
+     * 校验用户名是否已存在
+     * @param username 用户名
+     * @param id 用户ID
+     * @return 是否已存在
+     */
+    public boolean isUsernameExists(String username, Long id) {
+        return this.exists(
+                new LambdaQueryWrapper<User>()
+                        .eq(User::getUsername, username)
+                        .ne(User::getId, id)
+        );
     }
 }
 
