@@ -1,4 +1,4 @@
-package cn.lilicould.liliblog.controller;
+package cn.lilicould.liliblog.controller.user;
 
 import cn.lilicould.liliblog.common.cache.RedisHelper;
 import cn.lilicould.liliblog.common.constant.LoginStrategyConstant;
