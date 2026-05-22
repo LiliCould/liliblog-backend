@@ -22,6 +22,8 @@ public class UserInfo implements Serializable {
     private String username;
     @Schema(description = "昵称")
     private String nickname;
+    @Schema(description = "邮箱")
+    private String email;
     @Schema(description = "头像URL")
     private String avatar;
     @Schema(description = "角色，0-管理员，1-普通用户")
@@ -36,6 +38,7 @@ public class UserInfo implements Serializable {
                 .id(user.getId())
                 .username(user.getUsername())
                 .nickname(user.getNickname())
+                .email(user.getEmail())
                 .avatar(user.getAvatar())
                 .role(user.getRole())
                 .status(user.getStatus())
