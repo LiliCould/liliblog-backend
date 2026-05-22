@@ -1,8 +1,11 @@
 package cn.lilicould.liliblog.config.security;
 
+import cn.lilicould.liliblog.config.properties.CorsProperties;
 import cn.lilicould.liliblog.filter.IpListFilter;
 import cn.lilicould.liliblog.filter.JwtAuthFilter;
 import cn.lilicould.liliblog.filter.WebLogFilter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -25,7 +28,11 @@ import java.util.List;
  */
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
+@Slf4j
 public class SecurityConfig {
+
+    private final CorsProperties corsProperties;
 
     /**
      * 配置跨域
@@ -33,12 +40,16 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of(
-                "https://lilicould.cn",           // 主域名
-                "https://*.lilicould.cn"          // 子域名
-        ));
+        configuration.setAllowedOriginPatterns(corsProperties.getAllowedOrigins());
+        log.info("CORS 配置: {}", corsProperties.getAllowedOrigins());
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*")); // 必须包含 Authorization
+        configuration.setAllowedHeaders(List.of(
+                "Authorization",
+                "Content-Type",
+                "Accept",
+                "X-Requested-With",
+                "Origin"
+        ));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
 

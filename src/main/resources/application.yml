@@ -50,6 +50,12 @@ logging:
   level:
     root: ${liliblog.logging.level.root}
 
+app:
+  cors:
+    allowed-origins:
+      - http://localhost:3000
+      - https://lilicloud.cn
+      - https://*.lilicloud.cn
 
 # MyBatis-plus配置
 mybatis-plus:
