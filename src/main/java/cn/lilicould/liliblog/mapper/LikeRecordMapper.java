@@ -11,6 +11,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface LikeRecordMapper extends BaseMapper<LikeRecord> {
 
+    /**
+     * 清理点赞记录
+     * @return 清理数量
+     */
+    Long clean();
 }
 
 

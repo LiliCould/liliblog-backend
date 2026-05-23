@@ -16,4 +16,16 @@
     <sql id="Base_Column_List">
         id,user_id,target_id,target_type,create_time,create_by
     </sql>
+
+    <delete id="clean">
+        DELETE FROM like_record
+        WHERE
+            (target_type = 0 AND target_id NOT IN (
+                SELECT id FROM article WHERE deleted = 0
+            ))
+           OR
+            (target_type = 1 AND target_id NOT IN (
+                SELECT id FROM comment WHERE deleted = 0
+            ))
+    </delete>
 </mapper>

@@ -93,6 +93,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
                 .id(comment.getId())
                 .content(comment.getContent())
                 .articleId(comment.getArticleId())
+                .status(comment.getStatus())
                 .childCount(getChildCount(comment.getId())) // 获取子评论数
                 .creator(buildUserInfo(comment.getCreateBy())) // 构建发布者信息
                 .likeCount(getLikeCount(comment.getId()))
@@ -153,6 +154,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
                 .id(comment.getId())
                 .content(comment.getContent())
                 .articleId(comment.getArticleId())
+                .status(comment.getStatus())
                 .childCount(0) // 获取子评论数(二级评论虽然会有回复,但是因为系统只做二级评论，所以子评论数量为0)
                 .creator(buildUserInfo(comment.getCreateBy())) // 构建发布者信息
                 .likeCount(getLikeCount(comment.getId()))
@@ -285,6 +287,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
                 .id(comment.getId())
                 .articleId(comment.getArticleId())
                 .content(comment.getContent())
+                .status(comment.getStatus())
                 .childCount(getChildCount(comment.getId()))
                 .creator(buildUserInfo(comment.getCreateBy())) // 构建发布者信息
                 .likeCount(getLikeCount(comment.getId()))

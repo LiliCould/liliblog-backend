@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -30,6 +31,9 @@ public class CommentVO implements Serializable {
     @Schema(description = "用户ip")
     private String ipAddress;
     @Schema(description = "状态,0-审核中,1-发布")
+    private Integer status;
+    @Schema(description = "创建时间",type = "string",format = "date-time",example = "2026-05-09 14:51:06")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
     @Schema(description = "发布者信息")
     private UserInfo creator;
