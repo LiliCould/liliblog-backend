@@ -41,4 +41,18 @@ public interface CommentService extends IService<Comment> {
      * @param request 请求
      */
     void createComment(CommentCreateRequest commentCreateRequest, HttpServletRequest request);
+
+    /**
+     * 获取所有评论列表
+     * @param commentQuery 评论查询参数
+     * @return 所有评论列表
+     */
+    PageInfo<CommentVO> getAllCommentList(CommentQuery commentQuery);
+
+    /**
+     * 审核评论
+     * @param id 评论id
+     * @param status 审核状态
+     */
+    void auditComment(Long id, Integer status);
 }

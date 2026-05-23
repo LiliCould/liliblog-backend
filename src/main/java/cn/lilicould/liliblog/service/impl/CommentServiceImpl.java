@@ -251,6 +251,77 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
         }
     }
 
+    /**
+     * 获取所有评论列表
+     * @param commentQuery 评论查询参数
+     * @return 所有评论列表
+     */
+    @Override
+    public PageInfo<CommentVO> getAllCommentList(CommentQuery commentQuery) {
+        // 初始化分页信息
+        Page<Comment> page = new Page<>(commentQuery.getCurrent(), commentQuery.getSize());
+        // 添加排序
+        page.setOrders(List.of(
+                OrderItem.asc(OrderConstant.ID),
+                OrderItem.desc(OrderConstant.CREATE_TIME)
+        ));
+
+        // 创建查询条件
+        LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper
+                .eq(commentQuery.getId() != null, Comment::getId, commentQuery.getId())
+                .eq(commentQuery.getArticleId() != null, Comment::getArticleId, commentQuery.getArticleId())
+                .eq(commentQuery.getParentId() != null, Comment::getParentId, commentQuery.getParentId())
+                .eq(commentQuery.getRootId() != null, Comment::getRootId, commentQuery.getRootId())
+                .eq(commentQuery.getStatus() != null, Comment::getStatus, commentQuery.getStatus())
+                .like(commentQuery.getContent() != null, Comment::getContent, commentQuery.getContent())
+                .ge(commentQuery.getStartTime() != null, Comment::getCreateTime, commentQuery.getStartTime())
+                .le(commentQuery.getEndTime() != null, Comment::getCreateTime, commentQuery.getEndTime());
+
+        // 查询
+        Page<Comment> commentPage = this.page(page, queryWrapper);
+        // 构建返回结果
+        List<CommentVO> records = commentPage.getRecords().stream().map(comment -> CommentVO.builder()
+                .id(comment.getId())
+                .articleId(comment.getArticleId())
+                .content(comment.getContent())
+                .childCount(getChildCount(comment.getId()))
+                .creator(buildUserInfo(comment.getCreateBy())) // 构建发布者信息
+                .likeCount(getLikeCount(comment.getId()))
+                .parentId(comment.getParentId())
+                .ipAddress(comment.getIpAddress())
+                .createTime(comment.getCreateTime())
+                .build()
+        ).toList();
+        Page<CommentVO> voPage = Page.of(commentQuery.getCurrent(), commentQuery.getSize(), commentPage.getTotal());
+        voPage.setRecords(records);
+
+        return PageInfo.of(voPage);
+    }
+
+    /**
+     * 审核评论
+     * @param id 评论ID
+     * @param status 审核状态
+     */
+    @Override
+    public void auditComment(Long id, Integer status) {
+        Comment comment = this.getById(id);
+        if (comment == null) {
+            throw new BusinessException(CodeEnum.COMMENT_NOT_FOUND);
+        }
+
+        // 如果是审核通过
+        if (StatusConstant.COMMENT_PUBLISHED.equals(status)) {
+            comment.setStatus(StatusConstant.COMMENT_PUBLISHED);
+            this.updateById(comment);
+            return;
+        }
+
+        // 未审核的评论理论上不会存在子评论，但是为了避免数据不一致，这里删除所有子评论
+        this.deleteAll(id);
+    }
+
 
     /**
      * 计算点赞数

@@ -55,9 +55,9 @@ public class AdminArticleController {
         return Result.success(articleDetailsVO);
     }
 
-    @GetMapping("/{id}/{status}")
+    @PutMapping("/{id}/{status}")
     @Operation(summary = "审核文章", description = "管理员后台，审核文章")
-    public Result<String> auditArticle(@PathVariable @Parameter(description = "文章ID") Long id,
+    public Result<?> auditArticle(@PathVariable @Parameter(description = "文章ID") Long id,
                                        @PathVariable @Parameter(description = "审核结果，1-审核通过（发布），2-审核失败（草稿）") Integer status,
                                        @RequestParam(required = false) @Parameter(description = "审核结果描述,不传则使用默认值,如果不通过，建议加原因,通过可加可不加")
                                            String reason) {
@@ -69,7 +69,7 @@ public class AdminArticleController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "删除文章", description = "管理员后台，删除文章")
-    public Result<String> deleteArticle(@PathVariable @Parameter(description = "文章ID") Long id) {
+    public Result<?> deleteArticle(@PathVariable @Parameter(description = "文章ID") Long id) {
 
         articleService.remove(id);
 
@@ -78,7 +78,7 @@ public class AdminArticleController {
 
     @DeleteMapping
     @Operation(summary = "批量删除文章", description = "管理员后台，批量删除文章")
-    public Result<String> deleteArticle(@RequestBody @Parameter(description = "文章ID列表")
+    public Result<?> deleteArticle(@RequestBody @Parameter(description = "文章ID列表")
                                         List<Long> ids) {
 
         articleService.removeByIds(ids);
