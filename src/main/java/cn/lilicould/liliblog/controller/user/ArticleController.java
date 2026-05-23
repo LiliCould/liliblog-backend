@@ -43,7 +43,6 @@ public class ArticleController {
     @GetMapping
     @Operation(summary = "获取文章列表")
     public Result<PageInfo<ArticleVO>> getArticleList(@ParameterObject @Validated ArticleQuery articleQuery){
-        log.error(articleQuery.toString());
         // 设置默认值
         if (articleQuery.getCurrent() == null) {
             articleQuery.setCurrent(1L);

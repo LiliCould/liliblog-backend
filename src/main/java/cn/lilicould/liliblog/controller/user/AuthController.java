@@ -13,6 +13,7 @@ import cn.lilicould.liliblog.pojo.dto.request.PwdLoginRequest;
 import cn.lilicould.liliblog.pojo.dto.request.RegisterRequest;
 import cn.lilicould.liliblog.pojo.dto.response.LoginVO;
 import cn.lilicould.liliblog.pojo.dto.response.UserInfo;
+import cn.lilicould.liliblog.pojo.entity.User;
 import cn.lilicould.liliblog.service.AuthService;
 import cn.lilicould.liliblog.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -103,23 +104,28 @@ public class AuthController {
         }
         // 刷新令牌已过期
         if (!jwtUtil.isTokenValid(refreshToken)) {
-            return Result.error(CodeEnum.TOKEN_EXPIRED);
+            throw new BusinessException(CodeEnum.TOKEN_EXPIRED);
         }
 
+        // 从redis中获取刷新令牌并验证
         String username = jwtUtil.extractUsername(refreshToken);
         String redisRefreshToken = redisHelper.get(RedisPrefixConstant.AUTH_REFRESH_TOKEN + username,String.class);
         if (!refreshToken.equals(redisRefreshToken)) {
-            return Result.error(CodeEnum.TOKEN_EXPIRED);
+            throw new BusinessException(CodeEnum.TOKEN_EXPIRED);
         }
 
         // 刷新令牌有效，更新访问令牌
-        String accessToken = jwtUtil.generateRefreshToken(username);
+        // 用户信息
+        SecurityUser securityUser = (SecurityUser) userService.loadUserByUsername(username);
+        User user = securityUser.toUser();
+
+        String accessToken = jwtUtil.generateRefreshToken(user.getUsername(), user);
         long expiresIn = jwtUtil.extractExpiresIn(accessToken);
 
-        // 用户信息
-        SecurityUser user = (SecurityUser) userService.loadUserByUsername(username);
-        UserInfo userInfo = UserInfo.from(user.toUser());
 
+
+        // 转换为用户视图返回
+        UserInfo userInfo = UserInfo.from(user);
         LoginVO loginVO = LoginVO.builder()
                 .accessToken(accessToken)
                 .expiresIn(expiresIn)

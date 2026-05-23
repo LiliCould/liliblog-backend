@@ -54,8 +54,8 @@ app:
   cors:
     allowed-origins:
       - http://localhost:3000
-      - https://lilicloud.cn
-      - https://*.lilicloud.cn
+      - https://lilicould.cn
+      - https://*.lilicould.cn
 
 # MyBatis-plus配置
 mybatis-plus:

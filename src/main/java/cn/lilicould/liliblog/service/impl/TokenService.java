@@ -25,9 +25,9 @@ public class TokenService {
 
     public LoginVO createLoginResponse(User user, HttpServletResponse response) {
         // 生成 Token
-        String accessToken = jwtUtil.generateRefreshToken(user.getUsername());
+        String accessToken = jwtUtil.generateRefreshToken(user.getUsername(),user);
         long accessExpiresIn = jwtUtil.extractExpiresIn(accessToken);
-        String refreshToken = jwtUtil.generateRefreshToken(user.getUsername());
+        String refreshToken = jwtUtil.generateRefreshToken(user.getUsername(),user);
 
         // 设置 Cookie
         String refreshCookie = ResponseCookie.from("refresh_token", refreshToken)

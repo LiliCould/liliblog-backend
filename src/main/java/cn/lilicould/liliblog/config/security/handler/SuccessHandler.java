@@ -4,6 +4,7 @@ import cn.lilicould.liliblog.common.cache.RedisHelper;
 import cn.lilicould.liliblog.common.constant.RedisPrefixConstant;
 import cn.lilicould.liliblog.common.util.JwtUtil;
 import cn.lilicould.liliblog.domain.security.OAuth2SecurityUser;
+import cn.lilicould.liliblog.pojo.entity.User;
 import cn.lilicould.liliblog.service.impl.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -41,10 +42,11 @@ public class SuccessHandler implements AuthenticationSuccessHandler {
         String refreshToken = null;
         long expireIn = 0;
         if (oauth2User != null) {
-            accessToken = jwtUtil.generateToken(oauth2User.getUsername());
-            refreshToken = jwtUtil.generateRefreshToken(oauth2User.getUsername());
+            User user = oauth2User.toUser();
+            accessToken = jwtUtil.generateToken(user.getUsername(), user);
+            refreshToken = jwtUtil.generateRefreshToken(user.getUsername(), user);
             expireIn = jwtUtil.extractExpiresIn(refreshToken);
-            redisHelper.set(RedisPrefixConstant.AUTH_REFRESH_TOKEN + oauth2User.getUsername(),refreshToken);
+            redisHelper.set(RedisPrefixConstant.AUTH_REFRESH_TOKEN + user.getUsername(),refreshToken);
         }
 
         // 重定向到前端回调页，URL 带上 token

@@ -4,6 +4,7 @@ import cn.lilicould.liliblog.common.enums.CodeEnum;
 import cn.lilicould.liliblog.common.result.Result;
 import cn.lilicould.liliblog.common.util.JwtUtil;
 import cn.lilicould.liliblog.domain.security.SecurityUser;
+import cn.lilicould.liliblog.pojo.entity.User;
 import cn.lilicould.liliblog.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -60,8 +61,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             // 如果当前 SecurityContext 没有认证信息，则进行认证
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                // todo 应该从token中解析而不是每次都从数据库中查
-                SecurityUser user = (SecurityUser) userService.loadUserByUsername(username);
+                User tokenUser = jwtUtil.extractUser(token);
+                SecurityUser user = new SecurityUser(tokenUser);
+                log.info("解析出的用户信息：用户id:{},用户名：{},用户身份/权限：{}", user.getId(), username, user.getAuthorities());
 
                 // 验证 Token 有效性并设置认证信息
                 if (jwtUtil.validateToken(token, username) && user.isEnabled()) {

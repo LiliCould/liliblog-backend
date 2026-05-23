@@ -81,7 +81,11 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         // 设置标签列表
         articleDetailsVO.setTags(buildTagVOList(id));
 
-        log.info(articleDetailsVO.toString());
+        // 阅读量加一
+        article.setViewCount(article.getViewCount() + 1);
+        articleMapper.updateById(article);
+
+        log.info("获取到文章id：{}",articleDetailsVO.getId());
         return articleDetailsVO;
     }
 

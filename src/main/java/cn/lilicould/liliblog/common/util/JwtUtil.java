@@ -1,6 +1,7 @@
 package cn.lilicould.liliblog.common.util;
 
 import cn.lilicould.liliblog.config.properties.JwtProperties;
+import cn.lilicould.liliblog.pojo.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -35,6 +36,21 @@ public class JwtUtil {
      */
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    /**
+     * 从JWT中提取用户
+     * @param token jwt令牌
+     * @return 用户信息
+     */
+    public User extractUser(String token) {
+        return extractClaim(token, claims -> {
+            return User.builder()
+                    .id(claims.get("userId", Long.class))
+                    .username(claims.get("userName", String.class))
+                    .role(claims.get("role", Integer.class))
+                    .build();
+        });
     }
 
     /**
@@ -90,8 +106,11 @@ public class JwtUtil {
      * @return 访问令牌
      * @author lilicould
      */
-    public String generateToken(String username) {
+    public String generateToken(String username, User user) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", user.getId());
+        claims.put("userName", user.getUsername());
+        claims.put("role", user.getRole());
         return createToken(claims, username, jwtProperties.getExpiration());
     }
 
@@ -102,8 +121,11 @@ public class JwtUtil {
      * @return 刷新令牌
      * @author lilicould
      */
-    public String generateRefreshToken(String username) {
+    public String generateRefreshToken(String username,User user) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", user.getId());
+        claims.put("userName", user.getUsername());
+        claims.put("role", user.getRole());
         return createToken(claims, username, jwtProperties.getRefreshExpiration());
     }
 
