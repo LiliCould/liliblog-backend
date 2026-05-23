@@ -1,5 +1,6 @@
 package cn.lilicould.liliblog.common.util;
 
+import cn.lilicould.liliblog.common.constant.StatusConstant;
 import cn.lilicould.liliblog.config.properties.JwtProperties;
 import cn.lilicould.liliblog.pojo.entity.User;
 import io.jsonwebtoken.Claims;
@@ -45,10 +46,18 @@ public class JwtUtil {
      */
     public User extractUser(String token) {
         return extractClaim(token, claims -> {
+            Long userId = claims.get("userId", Long.class);
+            String username = claims.get("userName", String.class);
+            Integer role = claims.get("role", Integer.class);
+
+            // status需要启用，否则会提示无权限操作
+            Integer status = StatusConstant.ENABLED;
+
             return User.builder()
-                    .id(claims.get("userId", Long.class))
-                    .username(claims.get("userName", String.class))
-                    .role(claims.get("role", Integer.class))
+                    .id(userId)
+                    .username(username)
+                    .role(role)
+                    .status(status)
                     .build();
         });
     }

@@ -14,6 +14,7 @@ import cn.lilicould.liliblog.pojo.dto.request.ArticleUpdateRequest;
 import cn.lilicould.liliblog.pojo.dto.response.*;
 import cn.lilicould.liliblog.pojo.entity.*;
 import cn.lilicould.liliblog.service.ArticleService;
+import cn.lilicould.liliblog.service.UserService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -46,6 +47,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     private final CategoryMapper categoryMapper;
     private final TagMapper tagMapper;
     private final ArticleTagMapper articleTagMapper;
+    private final UserService userService;
 
     /**
      * 根据id获取文章详情
@@ -80,10 +82,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
         // 设置标签列表
         articleDetailsVO.setTags(buildTagVOList(id));
-
-        // 阅读量加一
-        article.setViewCount(article.getViewCount() + 1);
-        articleMapper.updateById(article);
 
         log.info("获取到文章id：{}",articleDetailsVO.getId());
         return articleDetailsVO;
@@ -266,6 +264,40 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
             return null;
         }
         return getArticle( article.getId());
+    }
+
+    @Override
+    public void auditArticle(Long id, Integer status, String reason) {
+        // 根据审核结果更新文章状态
+        Article article = this.getById(id);
+
+        if (article == null) {
+            throw new BusinessException(CodeEnum.ARTICLE_NOT_FOUND);
+        }
+
+        // 查询文章的作者
+        Long authorId = article.getCreateBy();
+        if (authorId ==  null) {
+            // 理论上不会走到这里，因为文章的作者不能为空，但是怕有未知情况，所以这里加上
+            throw new BusinessException(CodeEnum.USER_NOT_FOUND);
+        }
+        User author = userService.getById(authorId);
+        String email = author.getEmail();
+
+        // 发送邮件给作者
+        // TODO: 根据邮件模板发送邮件
+        if (StatusConstant.ARTICLE_PUBLISHED.equals(status)) {
+            // 审核通过
+            if (reason ==  null) reason = "审核通过";
+        } else if (StatusConstant.ARTICLE_DRAFT.equals(status)) {
+            // 审核失败
+            if (reason ==  null) reason = "审核失败";
+        }
+
+
+        // 更新文章状态
+        article.setStatus(status);
+        this.updateById(article);
     }
 
     /**

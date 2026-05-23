@@ -56,4 +56,12 @@ public interface ArticleService extends IService<Article> {
      * @return 文章详情
      */
     ArticleDetailsVO getArticleBySlug(String slug);
+
+    /**
+     * 审核文章
+     * @param id 文章ID
+     * @param status 审核状态
+     * @param reason 审核失败原因
+     */
+    void auditArticle(Long id, Integer status, String reason);
 }
