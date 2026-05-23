@@ -81,7 +81,6 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
      * 修改分类
      * @param id 分类ID
      * @param categoryCreateRequest 修改参数
-     * @return 分类
      */
     @Override
     @Transactional(rollbackFor = Exception.class,isolation = Isolation.READ_COMMITTED)

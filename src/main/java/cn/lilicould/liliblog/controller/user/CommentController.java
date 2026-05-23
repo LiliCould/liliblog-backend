@@ -6,14 +6,12 @@ import cn.lilicould.liliblog.common.enums.CodeEnum;
 import cn.lilicould.liliblog.common.enums.TargetType;
 import cn.lilicould.liliblog.common.exception.BusinessException;
 import cn.lilicould.liliblog.common.result.Result;
-import cn.lilicould.liliblog.common.util.IpUtil;
 import cn.lilicould.liliblog.pojo.dto.query.CommentQuery;
 import cn.lilicould.liliblog.pojo.dto.request.CommentCreateRequest;
 import cn.lilicould.liliblog.pojo.dto.response.CommentVO;
 import cn.lilicould.liliblog.pojo.dto.response.PageInfo;
 import cn.lilicould.liliblog.pojo.entity.Comment;
 import cn.lilicould.liliblog.pojo.entity.LikeRecord;
-import cn.lilicould.liliblog.service.ArticleService;
 import cn.lilicould.liliblog.service.CommentService;
 import cn.lilicould.liliblog.service.LikeRecordService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -21,28 +19,21 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/comment")
 @Slf4j
 @Tag(name = "评论接口")
 public class CommentController {
 
     private final CommentService commentService;
-    private final IpUtil ipUtil;
-    private final ArticleService articleService;
     private final LikeRecordService likeRecordService;
-
-    public CommentController(CommentService commentService, IpUtil ipUtil, ArticleService articleService, LikeRecordService likeRecordService) {
-        this.commentService = commentService;
-        this.ipUtil = ipUtil;
-        this.articleService = articleService;
-        this.likeRecordService = likeRecordService;
-    }
 
     @GetMapping
     @Operation(summary = "分页获取评论列表(一级评论)")

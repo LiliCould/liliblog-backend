@@ -7,11 +7,9 @@
     <resultMap id="BaseResultMap" type="cn.lilicould.liliblog.pojo.entity.Comment">
             <id property="id" column="id" />
             <result property="content" column="content" />
-            <result property="authorId" column="author_id" />
             <result property="articleId" column="article_id" />
             <result property="parentId" column="parent_id" />
             <result property="status" column="status" />
-            <result property="likeCount" column="like_count" />
             <result property="ipAddress" column="ip_address" />
             <result property="userAgent" column="user_agent" />
             <result property="createTime" column="create_time" />

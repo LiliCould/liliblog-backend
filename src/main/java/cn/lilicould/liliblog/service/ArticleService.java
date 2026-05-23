@@ -46,7 +46,7 @@ public interface ArticleService extends IService<Article> {
     /**
      * 更新文章
      * @param id 文章ID
-     * @param articleCreateRequest 文章参数
+     * @param articleUpdateRequest 文章修改参数
      */
     void update(Long id, ArticleUpdateRequest articleUpdateRequest);
 

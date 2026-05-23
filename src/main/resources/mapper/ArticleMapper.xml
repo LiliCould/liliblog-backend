@@ -2,6 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress ALL, Annotator -->
 <mapper namespace="cn.lilicould.liliblog.mapper.ArticleMapper">
 
     <resultMap id="BaseResultMap" type="cn.lilicould.liliblog.pojo.entity.Article">
@@ -29,7 +30,6 @@
         <result property="slug" column="a_slug" />
         <result property="summary" column="summary" />
         <result property="coverImage" column="cover_image" />
-        <result property="status" column="a_status" />
         <result property="contentHtml" column="content_html" />
         <result property="viewCount" column="view_count" />
         <result property="likeCount" column="like_count" />
@@ -77,6 +77,7 @@
         </collection>
     </resultMap>
 
+    <!--suppress Annotator -->
     <sql id="Base_Column_List">
         id,title,slug,summary,content,content_html,
         cover_image,status,view_count,category_id,create_time,

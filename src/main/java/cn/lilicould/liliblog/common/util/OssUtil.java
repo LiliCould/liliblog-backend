@@ -42,7 +42,7 @@ public class OssUtil {
         String upToken = getAuthToken();
 
         // 生成新的文件名，type为目录，文件名为UUID
-        fileName = type + "/" + UUID.randomUUID().toString() + "_" + fileName;
+        fileName = type + "/" + UUID.randomUUID() + "_" + fileName;
 
 
         Response response = uploadManager.put(inputStream,fileName,upToken,null, null);

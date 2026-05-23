@@ -111,7 +111,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
                         articleQuery.getStartTime(),
                         articleQuery.getEndTime()
                 )
-                .select(Article::getId, Article::getTitle, Article::getSlug, Article::getSummary, Article::getCoverImage, Article::getViewCount, Article::getCategoryId, Article::getCreateBy, Article::getUpdateBy, Article::getCreateTime, Article::getUpdateTime);
+                .select(Article::getId, Article::getTitle, Article::getSlug,Article::getStatus,Article::getSummary, Article::getCoverImage, Article::getViewCount, Article::getCategoryId, Article::getCreateBy, Article::getUpdateBy, Article::getCreateTime, Article::getUpdateTime);
 
         // 权限控制：根据用户角色和登录状态过滤文章
         applyPermissionFilter(queryWrapper, articleQuery.getStatus());

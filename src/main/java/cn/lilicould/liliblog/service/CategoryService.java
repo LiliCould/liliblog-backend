@@ -25,7 +25,6 @@ public interface CategoryService extends IService<Category> {
      * 更新分类
      * @param id 分类ID
      * @param categoryCreateRequest 分类参数
-     * @return 分类
      */
     void update(Long id, CategoryUpdateRequest categoryCreateRequest);
 }

@@ -24,6 +24,8 @@ public class ArticleVO implements Serializable {
     private String slug;
     @Schema(description = "文章摘要")
     private String summary;
+    @Schema(description = "文章状态,0-审核中，1-发布，2-草稿")
+    private Integer status;
     @Schema(description = "封面图片URL")
     private String coverImage;
     @Schema(description = "阅读数")
