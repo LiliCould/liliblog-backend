@@ -23,6 +23,21 @@ public class BaseContext {
         return null;
     }
 
+    public static String getCurrentUserName() {
+        // 从SpringContext中获取当前登录用户名
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // 如果当前用户未认证，返回null
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof SecurityUser user) {
+            return user.getUsername();
+        }
+        return null;
+    }
+
     public static boolean isAdmin() {
         // 判断当前用户是否是管理员
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -71,6 +71,8 @@ app:
       - http://localhost:3000
       - https://lilicould.cn
       - https://*.lilicould.cn
+  info:
+    admin-email: "lilicould@qq.com" # 管理员邮箱
 
 # MyBatis-plus配置
 mybatis-plus:

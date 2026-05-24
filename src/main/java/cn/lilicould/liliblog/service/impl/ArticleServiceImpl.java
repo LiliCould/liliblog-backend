@@ -7,6 +7,7 @@ import cn.lilicould.liliblog.common.enums.CodeEnum;
 import cn.lilicould.liliblog.common.enums.TargetType;
 import cn.lilicould.liliblog.common.exception.BusinessException;
 import cn.lilicould.liliblog.common.util.MarkdownUtil;
+import cn.lilicould.liliblog.config.properties.InfoProperties;
 import cn.lilicould.liliblog.mapper.*;
 import cn.lilicould.liliblog.model.dto.query.ArticleQuery;
 import cn.lilicould.liliblog.model.dto.request.ArticleCreateRequest;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -49,6 +51,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     private final ArticleTagMapper articleTagMapper;
     private final UserService userService;
     private final EmailTemplateService emailTemplateService;
+    private final InfoProperties infoProperties;
 
     /**
      * 根据id获取文章详情
@@ -245,6 +248,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         // 更新文章
         articleMapper.updateById(article);
 
+        // 发送邮件通知管理员审核
+        emailTemplateService.sendArticleReviewNotify(infoProperties.getAdminEmail(), article.getTitle(),BaseContext.getCurrentUserName(),LocalDateTime.now().toString());
+
         // 批量插入文章标签关联
         saveArticleTags(article.getId(), articleUpdateRequest.getTags());
 
@@ -286,13 +292,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         String email = author.getEmail();
 
         // 发送邮件给作者
-        // TODO: 根据邮件模板发送邮件
         String articleTitle = article.getTitle();
         if (StatusConstant.ARTICLE_PUBLISHED.equals(status)) {
-            // 审核通过
+            // 审核通过，发送邮件给作者
             emailTemplateService.sendArticleReviewResult(email, articleTitle, true, reason);
         } else if (StatusConstant.ARTICLE_DRAFT.equals(status)) {
-            // 审核失败
+            // 审核不通过，发送邮件给作者
             emailTemplateService.sendArticleReviewResult(email, articleTitle, false, reason);
         }
 
@@ -344,6 +349,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         }
         // 存文章
         articleMapper.insert(article);
+
+        // 发送邮件通知站长审核
+        emailTemplateService.sendArticleReviewNotify(infoProperties.getAdminEmail(), article.getTitle(),BaseContext.getCurrentUserName(),LocalDateTime.now().toString());
 
         // 批量插入文章标签关联
         saveArticleTags(article.getId(), articleCreateRequest.getTags());

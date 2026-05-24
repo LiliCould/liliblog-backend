@@ -3,122 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>新文章待审核通知</title>
+    <title>新文章待审核通知 - 立里博客</title>
     <style>
         body {
-            font-family: 'Microsoft YaHei', Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 600px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+            'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            line-height: 1.7;
+            color: #1f2937;
+            max-width: 560px;
             margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
+            padding: 24px;
+            background-color: #f3f4f6;
         }
         .container {
             background-color: #ffffff;
-            border-radius: 8px;
-            padding: 30px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+            padding: 0;
         }
         .header {
-            text-align: center;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #e0e0e0;
+            padding: 28px 32px 24px;
+            border-bottom: 1px solid #e5e7eb;
         }
-        .header h1 {
-            margin: 0;
-            font-size: 24px;
-            color: #FF9800;
+        .brand {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0284c7;
+            letter-spacing: -0.5px;
+            margin: 0 0 4px;
+        }
+        .brand span {
+            color: #6b7280;
+            font-weight: 400;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #d97706;
+            background-color: #fffbeb;
+            border: 1px solid #fde68a;
+            margin-top: 12px;
         }
         .content {
-            padding: 20px 0;
+            padding: 24px 32px;
         }
         .content p {
-            margin: 10px 0;
+            margin: 8px 0;
+            font-size: 14px;
+            color: #374151;
         }
         .article-title {
-            background-color: #fff3e0;
-            padding: 15px;
-            border-left: 4px solid #FF9800;
-            margin: 15px 0;
-            font-weight: bold;
-            font-size: 16px;
+            background-color: #f8fafc;
+            padding: 14px 16px;
+            border-left: 3px solid #0284c7;
+            margin: 16px 0;
+            font-weight: 600;
+            font-size: 15px;
+            color: #1f2937;
         }
         .info-box {
-            background-color: #f9f9f9;
-            padding: 15px;
-            border-radius: 4px;
-            margin: 15px 0;
+            background-color: #f8fafc;
+            border: 1px solid #e5e7eb;
+            padding: 14px 16px;
+            margin: 16px 0;
         }
         .info-item {
-            margin: 8px 0;
+            margin: 6px 0;
+            font-size: 14px;
+            color: #374151;
         }
         .info-label {
-            font-weight: bold;
-            color: #666;
+            font-weight: 600;
+            color: #6b7280;
         }
-        .footer {
-            text-align: center;
-            padding-top: 20px;
-            border-top: 2px solid #e0e0e0;
-            color: #999;
-            font-size: 12px;
+        .urgent-tip {
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            padding: 10px 16px;
+            margin: 16px 0;
+            color: #dc2626;
+            font-size: 13px;
         }
         .button {
             display: inline-block;
-            padding: 12px 30px;
-            margin: 20px 0;
-            background-color: #FF9800;
+            padding: 10px 28px;
+            margin: 16px 0;
+            background-color: #0284c7;
             color: #ffffff;
             text-decoration: none;
-            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
             text-align: center;
         }
         .button:hover {
-            background-color: #F57C00;
+            background-color: #0369a1;
         }
-        .urgent-tip {
-            background-color: #ffebee;
-            border: 1px solid #f44336;
-            border-radius: 4px;
-            padding: 10px 15px;
-            margin: 15px 0;
-            color: #c62828;
+        .divider {
+            height: 1px;
+            background-color: #e5e7eb;
+            margin: 0;
+        }
+        .footer {
+            padding: 20px 32px;
+            color: #9ca3af;
+            font-size: 12px;
+            text-align: center;
+            line-height: 1.8;
+        }
+        .footer a {
+            color: #0284c7;
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>新文章待审核</h1>
+<div class="container">
+    <div class="header">
+        <p class="brand">Lili<span>Blog</span></p>
+        <span class="status-badge">待审核</span>
+    </div>
+    <div class="content">
+        <p>尊敬的站长，您好：</p>
+        <p>系统收到一篇新投稿文章，需要您进行审核：</p>
+
+        <div class="article-title">
+            《${articleTitle}》
         </div>
-        <div class="content">
-            <p>尊敬的站长：</p>
-            <p>系统收到一篇新投稿文章，需要您进行审核：</p>
 
-            <div class="article-title">
-                《${articleTitle}》
+        <div class="info-box">
+            <div class="info-item">
+                <span class="info-label">作者：</span>
+                <span>${authorName}</span>
             </div>
-
-            <div class="info-box">
-                <div class="info-item">
-                    <span class="info-label">作者：</span>
-                    <span>${authorName}</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">提交时间：</span>
-                    <span>${submitTime}</span>
-                </div>
-            </div>
-
-            <div class="urgent-tip">
-                请及时审核，避免用户等待过久
+            <div class="info-item">
+                <span class="info-label">提交时间：</span>
+                <span>${submitTime}</span>
             </div>
         </div>
-        <div class="footer">
-            <p>此邮件由立里博客自动发送</p>
-            <p>&copy; 2025-2026 立里博客. All rights reserved.</p>
+
+        <div class="urgent-tip">
+            请及时审核，避免用户等待过久
         </div>
     </div>
+    <div class="divider"></div>
+    <div class="footer">
+        <p>此邮件由立里博客自动发送，请勿回复</p>
+        <p>&copy; 2025-2026 <a href="https://lilicould.cn">lilicould.cn</a></p>
+    </div>
+</div>
 </body>
 </html>

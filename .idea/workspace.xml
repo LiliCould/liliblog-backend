@@ -10,18 +10,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="965f20b2-ed81-4183-915b-1a9c81f71a67" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/common/util/MailUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/model/dto/request/ArticleAuditRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/service/impl/EmailTemplateService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/article-review-notify.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/article-review-result.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/comment-review-notify.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/config/properties/InfoProperties.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/LiliblogApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/LiliblogApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/controller/admin/AdminArticleController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/controller/admin/AdminArticleController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/common/context/BaseContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/common/context/BaseContext.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/service/impl/ArticleServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/cn/lilicould/liliblog/service/impl/ArticleServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/article-review-notify.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/article-review-notify.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -134,6 +128,7 @@
     "JUnit.UserMapperTest.testSelectByEmail.executor": "Run",
     "JUnit.UserMapperTest.testSelectByUsername.executor": "Run",
     "JUnit.UserMapperTest.testUpdateLastLoginTime.executor": "Run",
+    "JavaScript 调试.article-review-notify.html.executor": "Run",
     "Maven.liliblog [clean].executor": "Run",
     "Maven.liliblog [compile].executor": "Run",
     "Maven.liliblog [install].executor": "Run",
@@ -216,7 +211,10 @@
       <recent name="cn.lilicould.liliblog.config.properties" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Spring Boot.LiliblogApplication">
+    <configuration name="article-review-notify.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/liliblog-backend/liliblog/templates/article-review-notify.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
     <configuration name="LiliblogApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
       <module name="liliblog" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="cn.lilicould.liliblog.LiliblogApplication" />
@@ -310,6 +308,7 @@
     <recent_temporary>
       <list>
         <item itemvalue="Spring Boot.LiliblogApplication" />
+        <item itemvalue="JavaScript 调试.article-review-notify.html" />
       </list>
     </recent_temporary>
   </component>
@@ -489,7 +488,7 @@
       <workItem from="1779513324250" duration="671000" />
       <workItem from="1779523782193" duration="6123000" />
       <workItem from="1779551178300" duration="1801000" />
-      <workItem from="1779587235437" duration="19793000" />
+      <workItem from="1779587235437" duration="20787000" />
     </task>
     <task id="LOCAL-00001" summary="没改什么">
       <option name="closed" value="true" />
