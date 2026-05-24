@@ -1,10 +1,10 @@
 package cn.lilicould.liliblog.service;
 
-import cn.lilicould.liliblog.pojo.dto.query.CommentQuery;
-import cn.lilicould.liliblog.pojo.dto.request.CommentCreateRequest;
-import cn.lilicould.liliblog.pojo.dto.response.CommentVO;
-import cn.lilicould.liliblog.pojo.dto.response.PageInfo;
-import cn.lilicould.liliblog.pojo.entity.Comment;
+import cn.lilicould.liliblog.model.dto.query.CommentQuery;
+import cn.lilicould.liliblog.model.dto.request.CommentCreateRequest;
+import cn.lilicould.liliblog.model.dto.response.CommentVO;
+import cn.lilicould.liliblog.model.dto.response.PageInfo;
+import cn.lilicould.liliblog.model.entity.Comment;
 import com.baomidou.mybatisplus.extension.service.IService;
 import jakarta.servlet.http.HttpServletRequest;
 

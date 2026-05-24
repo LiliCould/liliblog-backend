@@ -5,7 +5,7 @@
 <!--suppress ALL, Annotator -->
 <mapper namespace="cn.lilicould.liliblog.mapper.ArticleMapper">
 
-    <resultMap id="BaseResultMap" type="cn.lilicould.liliblog.pojo.entity.Article">
+    <resultMap id="BaseResultMap" type="cn.lilicould.liliblog.model.entity.Article">
         <id property="id" column="id" />
         <result property="title" column="title" />
         <result property="slug" column="slug" />
@@ -23,7 +23,7 @@
         <result property="deleted" column="deleted" />
     </resultMap>
 
-    <resultMap id="articleVOMap" type="cn.lilicould.liliblog.pojo.dto.response.ArticleDetailsVO">
+    <resultMap id="articleVOMap" type="cn.lilicould.liliblog.model.dto.response.ArticleDetailsVO">
         <!-- 根对象字段 -->
         <id property="id" column="a_id" />
         <result property="title" column="title" />
@@ -39,7 +39,7 @@
         <result property="createTime" column="create_time" />
 
         <!-- updater -->
-        <association property="updater" javaType="cn.lilicould.liliblog.pojo.dto.response.UserInfo">
+        <association property="updater" javaType="cn.lilicould.liliblog.model.dto.response.UserInfo">
             <id property="id" column="u_updater_id" />
             <result property="username" column="u_updater_username" />
             <result property="nickname" column="u_updater_nickname" />
@@ -50,7 +50,7 @@
         </association>
 
         <!-- creator -->
-        <association property="creator" javaType="cn.lilicould.liliblog.pojo.dto.response.UserInfo">
+        <association property="creator" javaType="cn.lilicould.liliblog.model.dto.response.UserInfo">
             <id property="id" column="u_creator_id" />
             <result property="username" column="u_creator_username" />
             <result property="nickname" column="u_creator_nickname" />
@@ -61,7 +61,7 @@
         </association>
 
         <!-- category -->
-        <association property="category" javaType="cn.lilicould.liliblog.pojo.dto.response.CategoryVO">
+        <association property="category" javaType="cn.lilicould.liliblog.model.dto.response.CategoryVO">
             <id property="id" column="c_id" />
             <result property="name" column="c_name" />
             <result property="slug" column="c_slug" />
@@ -70,7 +70,7 @@
         </association>
 
         <!-- tags -->
-        <collection property="tags" ofType="cn.lilicould.liliblog.pojo.dto.response.TagVO">
+        <collection property="tags" ofType="cn.lilicould.liliblog.model.dto.response.TagVO">
             <id property="id" column="t_id" />
             <result property="name" column="t_name" />
             <result property="color" column="t_color" />
@@ -84,7 +84,7 @@
         update_time,create_by,update_by,deleted
     </sql>
 
-    <select id="selectArticleVOById" resultType="cn.lilicould.liliblog.pojo.dto.response.ArticleDetailsVO">
+    <select id="selectArticleVOById" resultType="cn.lilicould.liliblog.model.dto.response.ArticleDetailsVO">
 
     </select>
 </mapper>

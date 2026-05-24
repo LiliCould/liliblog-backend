@@ -4,7 +4,7 @@ import cn.lilicould.liliblog.common.enums.CodeEnum;
 import cn.lilicould.liliblog.common.result.Result;
 import cn.lilicould.liliblog.common.util.JwtUtil;
 import cn.lilicould.liliblog.domain.security.SecurityUser;
-import cn.lilicould.liliblog.pojo.entity.User;
+import cn.lilicould.liliblog.model.entity.User;
 import cn.lilicould.liliblog.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

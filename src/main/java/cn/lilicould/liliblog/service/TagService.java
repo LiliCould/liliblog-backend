@@ -1,9 +1,9 @@
 package cn.lilicould.liliblog.service;
 
-import cn.lilicould.liliblog.pojo.dto.query.TagQuery;
-import cn.lilicould.liliblog.pojo.dto.response.PageInfo;
-import cn.lilicould.liliblog.pojo.dto.response.TagVO;
-import cn.lilicould.liliblog.pojo.entity.Tag;
+import cn.lilicould.liliblog.model.dto.query.TagQuery;
+import cn.lilicould.liliblog.model.dto.response.PageInfo;
+import cn.lilicould.liliblog.model.dto.response.TagVO;
+import cn.lilicould.liliblog.model.entity.Tag;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

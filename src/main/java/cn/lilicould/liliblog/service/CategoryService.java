@@ -1,10 +1,10 @@
 package cn.lilicould.liliblog.service;
 
-import cn.lilicould.liliblog.pojo.dto.query.CategoryQuery;
-import cn.lilicould.liliblog.pojo.dto.request.CategoryUpdateRequest;
-import cn.lilicould.liliblog.pojo.dto.response.CategoryVO;
-import cn.lilicould.liliblog.pojo.dto.response.PageInfo;
-import cn.lilicould.liliblog.pojo.entity.Category;
+import cn.lilicould.liliblog.model.dto.query.CategoryQuery;
+import cn.lilicould.liliblog.model.dto.request.CategoryUpdateRequest;
+import cn.lilicould.liliblog.model.dto.response.CategoryVO;
+import cn.lilicould.liliblog.model.dto.response.PageInfo;
+import cn.lilicould.liliblog.model.entity.Category;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

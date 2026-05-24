@@ -1,6 +1,6 @@
 package cn.lilicould.liliblog.mapper;
 
-import cn.lilicould.liliblog.pojo.entity.Category;
+import cn.lilicould.liliblog.model.entity.Category;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

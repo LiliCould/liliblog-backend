@@ -2,10 +2,10 @@ package cn.lilicould.liliblog.controller.admin;
 
 import cn.lilicould.liliblog.common.result.Result;
 import cn.lilicould.liliblog.common.util.PageUtil;
-import cn.lilicould.liliblog.pojo.dto.query.CommentQuery;
-import cn.lilicould.liliblog.pojo.dto.response.CommentVO;
-import cn.lilicould.liliblog.pojo.dto.response.PageInfo;
-import cn.lilicould.liliblog.pojo.entity.Comment;
+import cn.lilicould.liliblog.model.dto.query.CommentQuery;
+import cn.lilicould.liliblog.model.dto.response.CommentVO;
+import cn.lilicould.liliblog.model.dto.response.PageInfo;
+import cn.lilicould.liliblog.model.entity.Comment;
 import cn.lilicould.liliblog.service.CommentService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.v3.oas.annotations.Operation;

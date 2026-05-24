@@ -4,7 +4,7 @@ import cn.lilicould.liliblog.common.cache.RedisHelper;
 import cn.lilicould.liliblog.common.constant.RedisPrefixConstant;
 import cn.lilicould.liliblog.common.util.JwtUtil;
 import cn.lilicould.liliblog.domain.security.OAuth2SecurityUser;
-import cn.lilicould.liliblog.pojo.entity.User;
+import cn.lilicould.liliblog.model.entity.User;
 import cn.lilicould.liliblog.service.impl.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

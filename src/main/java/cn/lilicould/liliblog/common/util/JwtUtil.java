@@ -2,7 +2,7 @@ package cn.lilicould.liliblog.common.util;
 
 import cn.lilicould.liliblog.common.constant.StatusConstant;
 import cn.lilicould.liliblog.config.properties.JwtProperties;
-import cn.lilicould.liliblog.pojo.entity.User;
+import cn.lilicould.liliblog.model.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

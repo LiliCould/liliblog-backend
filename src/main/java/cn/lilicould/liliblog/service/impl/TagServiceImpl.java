@@ -2,10 +2,10 @@ package cn.lilicould.liliblog.service.impl;
 
 import cn.lilicould.liliblog.common.constant.OrderConstant;
 import cn.lilicould.liliblog.mapper.TagMapper;
-import cn.lilicould.liliblog.pojo.dto.query.TagQuery;
-import cn.lilicould.liliblog.pojo.dto.response.PageInfo;
-import cn.lilicould.liliblog.pojo.dto.response.TagVO;
-import cn.lilicould.liliblog.pojo.entity.Tag;
+import cn.lilicould.liliblog.model.dto.query.TagQuery;
+import cn.lilicould.liliblog.model.dto.response.PageInfo;
+import cn.lilicould.liliblog.model.dto.response.TagVO;
+import cn.lilicould.liliblog.model.entity.Tag;
 import cn.lilicould.liliblog.service.TagService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;

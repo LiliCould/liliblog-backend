@@ -2,8 +2,8 @@ package cn.lilicould.liliblog.strategy.impl;
 
 import cn.lilicould.liliblog.common.constant.LoginStrategyConstant;
 import cn.lilicould.liliblog.common.exception.BusinessException;
-import cn.lilicould.liliblog.pojo.dto.request.LoginRequest;
-import cn.lilicould.liliblog.pojo.dto.response.LoginVO;
+import cn.lilicould.liliblog.model.dto.request.LoginRequest;
+import cn.lilicould.liliblog.model.dto.response.LoginVO;
 import cn.lilicould.liliblog.strategy.LoginStrategy;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
