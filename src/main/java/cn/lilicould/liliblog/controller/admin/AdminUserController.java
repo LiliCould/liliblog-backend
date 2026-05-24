@@ -3,6 +3,7 @@ package cn.lilicould.liliblog.controller.admin;
 import cn.lilicould.liliblog.common.enums.CodeEnum;
 import cn.lilicould.liliblog.common.exception.BusinessException;
 import cn.lilicould.liliblog.common.result.Result;
+import cn.lilicould.liliblog.common.util.PageUtil;
 import cn.lilicould.liliblog.pojo.dto.query.UserQuery;
 import cn.lilicould.liliblog.pojo.dto.request.AdminUserUpdateRequest;
 import cn.lilicould.liliblog.pojo.dto.request.UserCreateRequest;
@@ -32,12 +33,7 @@ public class AdminUserController {
     @Operation(summary = "分页用户列表", description = "分页查询用户列表,所有用户")
     public Result<PageInfo<UserInfo>> list(@ParameterObject @Validated UserQuery query) {
         // 设置分页默认值
-        if (query.getCurrent() == null) {
-            query.setCurrent(1L);
-        }
-        if (query.getSize() == null) {
-            query.setSize(10L);
-        }
+        PageUtil.setDefault(query);
 
         PageInfo<UserInfo> pageInfo = userService.list(query);
 

@@ -2,6 +2,7 @@ package cn.lilicould.liliblog.controller.admin;
 
 import cn.lilicould.liliblog.common.enums.CodeEnum;
 import cn.lilicould.liliblog.common.result.Result;
+import cn.lilicould.liliblog.common.util.PageUtil;
 import cn.lilicould.liliblog.pojo.dto.query.ArticleQuery;
 import cn.lilicould.liliblog.pojo.dto.response.ArticleDetailsVO;
 import cn.lilicould.liliblog.pojo.dto.response.ArticleVO;
@@ -31,12 +32,7 @@ public class AdminArticleController {
     @Operation(summary = "获取文章列表", description = "管理员后台，获取文章列表(其实和用户端行为一致，但为了防止混淆，单独设置接口)")
     public Result<PageInfo<ArticleVO>> getArticleList(@ParameterObject @Validated ArticleQuery articleQuery){
         // 设置默认值
-        if (articleQuery.getSize() == null) {
-            articleQuery.setSize(10L);
-        }
-        if (articleQuery.getCurrent() == null) {
-            articleQuery.setCurrent(1L);
-        }
+        PageUtil.setDefault(articleQuery);
         PageInfo<ArticleVO> pageInfo = articleService.getArticleList(articleQuery);
 
         return Result.success(pageInfo);

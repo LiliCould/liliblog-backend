@@ -6,6 +6,7 @@ import cn.lilicould.liliblog.common.enums.CodeEnum;
 import cn.lilicould.liliblog.common.enums.TargetType;
 import cn.lilicould.liliblog.common.exception.BusinessException;
 import cn.lilicould.liliblog.common.result.Result;
+import cn.lilicould.liliblog.common.util.PageUtil;
 import cn.lilicould.liliblog.pojo.dto.query.CommentQuery;
 import cn.lilicould.liliblog.pojo.dto.request.CommentCreateRequest;
 import cn.lilicould.liliblog.pojo.dto.response.CommentVO;
@@ -39,12 +40,8 @@ public class CommentController {
     @Operation(summary = "分页获取评论列表(一级评论)")
     public Result<PageInfo<CommentVO>> list(@ParameterObject @Validated CommentQuery commentQuery) {
         // 设置分页默认值
-        if (commentQuery.getCurrent() == null) {
-            commentQuery.setCurrent(1L);
-        }
-        if (commentQuery.getSize() == null) {
-            commentQuery.setSize(10L);
-        }
+        PageUtil.setDefault(commentQuery);
+
         PageInfo<CommentVO> pageInfo = commentService.getCommentList(commentQuery);
 
         return Result.success(pageInfo);
@@ -55,12 +52,7 @@ public class CommentController {
     public Result<PageInfo<CommentVO>> childList(@ParameterObject @Validated CommentQuery commentQuery) {
 
         // 设置分页默认值
-        if (commentQuery.getCurrent() == null) {
-            commentQuery.setCurrent(1L);
-        }
-        if (commentQuery.getSize() == null) {
-            commentQuery.setSize(10L);
-        }
+        PageUtil.setDefault(commentQuery);
 
         // 获取对应评论的二级评论列表
         PageInfo<CommentVO> pageInfo = commentService.getChildCommentList(commentQuery);

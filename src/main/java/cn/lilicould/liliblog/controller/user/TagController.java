@@ -3,6 +3,7 @@ package cn.lilicould.liliblog.controller.user;
 import cn.lilicould.liliblog.common.enums.CodeEnum;
 import cn.lilicould.liliblog.common.exception.BusinessException;
 import cn.lilicould.liliblog.common.result.Result;
+import cn.lilicould.liliblog.common.util.PageUtil;
 import cn.lilicould.liliblog.pojo.dto.query.TagQuery;
 import cn.lilicould.liliblog.pojo.dto.request.TagCreateRequest;
 import cn.lilicould.liliblog.pojo.dto.request.TagUpdateRequest;
@@ -51,12 +52,7 @@ public class TagController {
     public Result<PageInfo<TagVO>> getList(@ParameterObject TagQuery tagQuery) {
 
         // 设置默认值
-        if (tagQuery.getCurrent() == null) {
-            tagQuery.setCurrent(1L);
-        }
-        if (tagQuery.getSize() == null) {
-            tagQuery.setSize(10L);
-        }
+        PageUtil.setDefault(tagQuery);
 
         PageInfo<TagVO> pageInfo = tagService.getTagList(tagQuery);
 

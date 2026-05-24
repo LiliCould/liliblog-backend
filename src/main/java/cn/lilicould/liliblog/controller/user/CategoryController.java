@@ -5,6 +5,7 @@ import cn.lilicould.liliblog.common.context.BaseContext;
 import cn.lilicould.liliblog.common.enums.CodeEnum;
 import cn.lilicould.liliblog.common.exception.BusinessException;
 import cn.lilicould.liliblog.common.result.Result;
+import cn.lilicould.liliblog.common.util.PageUtil;
 import cn.lilicould.liliblog.pojo.dto.query.CategoryQuery;
 import cn.lilicould.liliblog.pojo.dto.request.CategoryCreateRequest;
 import cn.lilicould.liliblog.pojo.dto.request.CategoryUpdateRequest;
@@ -57,12 +58,7 @@ public class CategoryController {
     @Operation(summary = "分页获取分类列表")
     public Result<PageInfo<CategoryVO>> getCategoryList(@ParameterObject CategoryQuery categoryQuery) {
         // 设置分页默认值
-        if (categoryQuery.getCurrent() == null) {
-            categoryQuery.setCurrent(1L);
-        }
-        if (categoryQuery.getSize() == null) {
-            categoryQuery.setSize(10L);
-        }
+        PageUtil.setDefault(categoryQuery);
 
         PageInfo<CategoryVO> pageInfo = categoryService.getCategoryList(categoryQuery);
 

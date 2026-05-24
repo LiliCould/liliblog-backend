@@ -1,6 +1,7 @@
 package cn.lilicould.liliblog.controller.admin;
 
 import cn.lilicould.liliblog.common.result.Result;
+import cn.lilicould.liliblog.common.util.PageUtil;
 import cn.lilicould.liliblog.pojo.dto.query.CommentQuery;
 import cn.lilicould.liliblog.pojo.dto.response.CommentVO;
 import cn.lilicould.liliblog.pojo.dto.response.PageInfo;
@@ -31,12 +32,7 @@ public class AdminCommentController {
     @Operation(summary = "获取评论列表", description = "管理员后台，获取评论列表")
     public Result<PageInfo<CommentVO>> list(@Validated @ParameterObject CommentQuery commentQuery) {
         // 设置分页默认值
-        if (commentQuery.getCurrent() == null) {
-            commentQuery.setCurrent(1L);
-        }
-        if (commentQuery.getSize() == null) {
-            commentQuery.setSize(10L);
-        }
+        PageUtil.setDefault(commentQuery);
 
         PageInfo<CommentVO> pageInfo = commentService.getAllCommentList(commentQuery);
 
