@@ -49,7 +49,10 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
         queryWrapper
                 .like(categoryQuery.getName() != null, Category::getName, categoryQuery.getName())
                 .eq(categoryQuery.getSlug() != null, Category::getSlug, categoryQuery.getSlug())
-                .like(categoryQuery.getDescription() != null, Category::getDescription, categoryQuery.getDescription());
+                .like(categoryQuery.getDescription() != null, Category::getDescription, categoryQuery.getDescription())
+                .eq(categoryQuery.getStatus() != null, Category::getStatus, categoryQuery.getStatus())
+                .le(categoryQuery.getStartTime() != null, Category::getCreateTime, categoryQuery.getStartTime())
+                .ge(categoryQuery.getEndTime() != null, Category::getCreateTime, categoryQuery.getEndTime());
         if (!BaseContext.isAdmin()) {
             queryWrapper.eq(Category::getStatus, StatusConstant.ENABLED); // 如果不是管理员只能查到启用的分类
         }
@@ -66,9 +69,11 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
             CategoryVO categoryVO = new CategoryVO();
             categoryVO.setId(category.getId());
             categoryVO.setName(category.getName());
+            categoryVO.setStatus(category.getStatus());
             categoryVO.setSlug(category.getSlug());
             categoryVO.setDescription(category.getDescription());
             categoryVO.setSortOrder(category.getSortOrder());
+            categoryVO.setCreateTime(category.getCreateTime());
             return categoryVO;
         }).toList();
 
