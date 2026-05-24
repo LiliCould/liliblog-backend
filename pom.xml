@@ -130,6 +130,12 @@
 			<version>${qiniu.version}</version>
 		</dependency>
 
+		<!-- spring mail -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+
 		<!-- flexmark-java 解析markdown (按需引入，不用 flexmark-all -->
 		<dependency>
 			<groupId>com.vladsch.flexmark</groupId>

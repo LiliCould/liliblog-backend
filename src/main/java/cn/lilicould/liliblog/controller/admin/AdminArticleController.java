@@ -4,6 +4,7 @@ import cn.lilicould.liliblog.common.enums.CodeEnum;
 import cn.lilicould.liliblog.common.result.Result;
 import cn.lilicould.liliblog.common.util.PageUtil;
 import cn.lilicould.liliblog.model.dto.query.ArticleQuery;
+import cn.lilicould.liliblog.model.dto.request.ArticleAuditRequest;
 import cn.lilicould.liliblog.model.dto.response.ArticleDetailsVO;
 import cn.lilicould.liliblog.model.dto.response.ArticleVO;
 import cn.lilicould.liliblog.model.dto.response.PageInfo;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -21,6 +23,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/api/admin/article")
 @Tag(name = "文章管理接口", description = "管理员后台，管理文章,不加更新和新增文章的接口，只由用户创建和修改")
 @PreAuthorize("hasRole('ADMIN')")
@@ -53,10 +56,15 @@ public class AdminArticleController {
 
     @PutMapping("/{id}/{status}")
     @Operation(summary = "审核文章", description = "管理员后台，审核文章")
-    public Result<?> auditArticle(@PathVariable @Parameter(description = "文章ID") Long id,
-                                       @PathVariable @Parameter(description = "审核结果，1-审核通过（发布），2-审核失败（草稿）") Integer status,
-                                       @RequestParam(required = false) @Parameter(description = "审核结果描述,不传则使用默认值,如果不通过，建议加原因,通过可加可不加")
-                                           String reason) {
+    public Result<?> auditArticle(
+            @PathVariable @Parameter(description = "文章ID") Long id,
+            @PathVariable @Parameter(description = "审核结果，1-审核通过（发布），2-审核失败（草稿）") Integer status,
+            @RequestBody ArticleAuditRequest articleAuditRequest) {
+
+        String reason = articleAuditRequest.getReason();
+
+        log.info("开始审核文章id：{}",id);
+        log.info("审核结果描述：{}",reason);
 
         articleService.auditArticle(id, status, reason);
 

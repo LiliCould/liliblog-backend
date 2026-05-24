@@ -3,11 +3,13 @@ package cn.lilicould.liliblog;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
 @SpringBootApplication
 @EnableScheduling
+@EnableAsync // 开启异步任务处理
 @EnableMethodSecurity
 @MapperScan("cn.lilicould.liliblog.mapper")
 public class LiliblogApplication {

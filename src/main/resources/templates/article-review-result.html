@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文章审核结果通知 - 立里博客</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+            'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            line-height: 1.7;
+            color: #1f2937;
+            max-width: 560px;
+            margin: 0 auto;
+            padding: 24px;
+            background-color: #f3f4f6;
+        }
+        .container {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            padding: 0;
+        }
+        .header {
+            padding: 28px 32px 24px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .brand {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0284c7;
+            letter-spacing: -0.5px;
+            margin: 0 0 4px;
+        }
+        .brand span {
+            color: #6b7280;
+            font-weight: 400;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 12px;
+        }
+        .status-pass {
+            color: #16a34a;
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+        }
+        .status-reject {
+            color: #dc2626;
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+        }
+        .content {
+            padding: 24px 32px;
+        }
+        .content p {
+            margin: 8px 0;
+            font-size: 14px;
+            color: #374151;
+        }
+        .article-title {
+            background-color: #f8fafc;
+            padding: 14px 16px;
+            border-left: 3px solid #0284c7;
+            margin: 16px 0;
+            font-weight: 600;
+            font-size: 15px;
+            color: #1f2937;
+        }
+        .reason-box {
+            background-color: #fffbeb;
+            border: 1px solid #fde68a;
+            padding: 14px 16px;
+            margin: 16px 0;
+        }
+        .reason-label {
+            font-weight: 600;
+            color: #92400e;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+        .reason-text {
+            color: #78350f;
+            font-size: 14px;
+            margin: 0;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 28px;
+            margin: 16px 0;
+            background-color: #0284c7;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+        }
+        .button:hover {
+            background-color: #0369a1;
+        }
+        .divider {
+            height: 1px;
+            background-color: #e5e7eb;
+            margin: 0;
+        }
+        .footer {
+            padding: 20px 32px;
+            color: #9ca3af;
+            font-size: 12px;
+            text-align: center;
+            line-height: 1.8;
+        }
+        .footer a {
+            color: #0284c7;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <p class="brand">Lili<span>Blog</span></p>
+        <span class="status-badge ${statusClass}">${statusText}</span>
+    </div>
+    <div class="content">
+        <p>尊敬的用户，您好：</p>
+        <p>您提交的文章审核结果如下：</p>
+
+        <div class="article-title">
+            《${articleTitle}》
+        </div>
+
+        ${reasonSection}
+
+        <p style="margin-top: 20px; color: #6b7280;">如有疑问，请联系管理员。</p>
+    </div>
+    <div class="divider"></div>
+    <div class="footer">
+        <p>此邮件由立里博客自动发送，请勿回复</p>
+        <p>&copy; 2025-2026 <a href="https://lilicould.cn">lilicould.cn</a></p>
+    </div>
+</div>
+</body>
+</html>

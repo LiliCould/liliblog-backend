@@ -48,6 +48,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     private final TagMapper tagMapper;
     private final ArticleTagMapper articleTagMapper;
     private final UserService userService;
+    private final EmailTemplateService emailTemplateService;
 
     /**
      * 根据id获取文章详情
@@ -286,12 +287,13 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
         // 发送邮件给作者
         // TODO: 根据邮件模板发送邮件
+        String articleTitle = article.getTitle();
         if (StatusConstant.ARTICLE_PUBLISHED.equals(status)) {
             // 审核通过
-            if (reason ==  null) reason = "审核通过";
+            emailTemplateService.sendArticleReviewResult(email, articleTitle, true, reason);
         } else if (StatusConstant.ARTICLE_DRAFT.equals(status)) {
             // 审核失败
-            if (reason ==  null) reason = "审核失败";
+            emailTemplateService.sendArticleReviewResult(email, articleTitle, false, reason);
         }
 
 
