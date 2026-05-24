@@ -248,23 +248,6 @@
 							<groupId>cn.hutool</groupId>
 							<artifactId>hutool-core</artifactId>
 						</exclude>
-						<!-- 排除旧的 Jackson 2.x (swagger 引入的传递依赖，与 tools.jackson 重复) -->
-						<exclude>
-							<groupId>com.fasterxml.jackson.core</groupId>
-							<artifactId>jackson-databind</artifactId>
-						</exclude>
-						<exclude>
-							<groupId>com.fasterxml.jackson.core</groupId>
-							<artifactId>jackson-core</artifactId>
-						</exclude>
-						<exclude>
-							<groupId>com.fasterxml.jackson.dataformat</groupId>
-							<artifactId>jackson-dataformat-yaml</artifactId>
-						</exclude>
-						<exclude>
-							<groupId>com.fasterxml.jackson.datatype</groupId>
-							<artifactId>jackson-datatype-jsr310</artifactId>
-						</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
