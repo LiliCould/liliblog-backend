@@ -32,6 +32,7 @@ public enum CodeEnum {
     OLD_PASSWORD_ERROR(2013, "旧密码错误"),
     PASSWORD_NOT_MATCH(2014, "密码不匹配"),
     IP_IS_BANNER(2015, "IP被禁止访问"),
+    CODE_ERROR(2016, "验证码错误"),
 
     // 资源操作错误 3xxx
     RESOURCE_NOT_FOUND(3000, "资源不存在"),

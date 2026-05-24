@@ -21,4 +21,11 @@ public interface AuthService {
      * @param request 注册参数
      */
     void register(@Valid RegisterRequest request);
+
+    /**
+     * 获取邮箱验证码服务接口
+     * @param email 邮箱
+     * @return 验证码
+     */
+    void getEmailCode(String email);
 }

@@ -17,6 +17,7 @@ import cn.lilicould.liliblog.model.entity.User;
 import cn.lilicould.liliblog.service.AuthService;
 import cn.lilicould.liliblog.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
@@ -60,6 +61,17 @@ public class AuthController {
         LoginVO loginVO = authService.login(request,response);
 
         return Result.success(loginVO);
+    }
+
+    @GetMapping("/login/email/code")
+    @Operation(summary = "邮箱获取验证码",description = "通过邮箱获取验证码")
+    @ApiResponse(responseCode = "200",description = "响应成功，获取验证码成功与否看响应状态码")
+    public Result<?> getEmailCode(@Parameter(description = "邮箱") @RequestParam() String email) {
+
+        // 生成验证码并存储redis
+        authService.getEmailCode(email);
+
+        return Result.success();
     }
 
     @PostMapping("/register")

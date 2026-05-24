@@ -1,5 +1,7 @@
 package cn.lilicould.liliblog.service.impl;
 
+import cn.lilicould.liliblog.common.cache.RedisHelper;
+import cn.lilicould.liliblog.common.constant.RedisPrefixConstant;
 import cn.lilicould.liliblog.common.constant.StatusConstant;
 import cn.lilicould.liliblog.common.enums.CodeEnum;
 import cn.lilicould.liliblog.common.enums.RoleType;
@@ -28,6 +30,8 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
     private final LoginStrategyFactory factory; // 登录策略工厂
+    private final RedisHelper redisHelper;
+    private final EmailTemplateService emailTemplateService;
 
 
     @Override
@@ -66,5 +70,27 @@ public class AuthServiceImpl implements AuthService {
         user.setStatus(StatusConstant.ENABLED);
 
         userService.save(user);
+    }
+
+    /**
+     * 获取邮箱验证码
+     * @param email 邮箱
+     * @return 验证码
+     * @author lilicould
+     */
+    @Override
+    public void getEmailCode(String email) {
+
+        // 检查redis中是否存在验证码
+        if (redisHelper.exists(RedisPrefixConstant.AUTH_EMAIL_CODE + email)) {
+            throw new BusinessException(CodeEnum.REPEAT_OPERATION);
+        }
+
+        // 生成6位验证码
+        String code = String.valueOf(Math.random()).substring(2, 8);
+        // 存储到redis中,分钟有效
+        redisHelper.set(RedisPrefixConstant.AUTH_EMAIL_CODE + email, code, 5 * 60 * 1000);
+        // 发送邮箱
+        emailTemplateService.sendVerificationCodeEmail(email, code);
     }
 }

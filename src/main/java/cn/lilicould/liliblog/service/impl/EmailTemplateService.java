@@ -69,18 +69,16 @@ public class EmailTemplateService {
     }
 
     /**
-     * 发送验证码邮件示例
+     * 发送验证码邮件
      */
     @Async
-    public void sendVerificationCodeEmail(String to, String username, String code) {
+    public void sendVerificationCodeEmail(String to, String code) {
         Map<String, String> variables = Map.of(
-            "title", "验证码",
-            "username", username,
-            "content", "您的验证码是：<span class='highlight'>" + code + "</span><br>验证码有效期为5分钟，请尽快使用。",
-            "buttonSection", ""
+                "content", "您正在使用验证码登录立里博客。",
+                "code", code
         );
 
-        sendTemplateMail(to, "验证码", "templates/verification-code-email.html", variables);
+        sendTemplateMail(to, "立里博客登录验证码", "templates/verification-code-email.html", variables);
     }
 
     /**
