@@ -58,7 +58,7 @@ public class MarkdownUtil {
                 StrikethroughExtension.create(),    // 删除线 ~~text~~
                 AutolinkExtension.create(),         // 自动链接（裸URL变成超链接）
                 TaskListExtension.create(),         // 任务列表 - [ ] / - [x]
-                TocExtension.create()               // 目录生成 [TOC]（可选）
+                TocExtension.create()               // 目录生成 [TOC]
         ));
 
         // ========== 2. 安全设置（重要） ==========

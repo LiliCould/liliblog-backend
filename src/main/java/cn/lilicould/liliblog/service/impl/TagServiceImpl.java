@@ -37,7 +37,10 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag>
 
         // 构建查询条件
         LambdaQueryWrapper<Tag> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like( tagQuery.getName() != null, Tag::getName, tagQuery.getName());
+        queryWrapper
+                .like( tagQuery.getName() != null, Tag::getName, tagQuery.getName())
+                .ge( tagQuery.getStartTime() != null, Tag::getCreateTime, tagQuery.getStartTime())
+                .le( tagQuery.getEndTime() != null, Tag::getCreateTime, tagQuery.getEndTime());
 
         // 查询
         Page<Tag> tagPage = page(page, queryWrapper);
@@ -47,6 +50,8 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag>
                 .id(tag.getId())
                 .name(tag.getName())
                 .color(tag.getColor())
+                .createTime(tag.getCreateTime())
+                .updateTime(tag.getUpdateTime())
                 .build()).toList();
 
         // 转换为PageInfo对象返回
