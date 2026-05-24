@@ -10,6 +10,7 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springdoc.core.customizers.GlobalOpenApiCustomizer;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,6 +18,46 @@ import java.util.Arrays;
 
 @Configuration
 public class OpenAPIConfig {
+
+    // 管理员模块：只匹配 /api/admin/**
+    @Bean
+    public GroupedOpenApi adminApi() {
+        return GroupedOpenApi.builder()
+                .group("管理员模块")
+                .displayName("管理员模块")
+                .pathsToMatch("/api/admin/**")
+                .build();
+    }
+
+    // 用户模块：匹配 /api/**，但排除 /api/admin/**
+    @Bean
+    public GroupedOpenApi userApi() {
+        return GroupedOpenApi.builder()
+                .group("用户模块")
+                .displayName("用户模块")
+                .pathsToMatch("/api/**")
+                .pathsToExclude("/api/admin/**")
+                .build();
+    }
+
+    // 认证模块
+    @Bean
+    public GroupedOpenApi authApi() {
+        return GroupedOpenApi.builder()
+                .group("认证模块")
+                .displayName("认证模块")
+                .pathsToMatch("/auth/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi fileApi() {
+        return GroupedOpenApi.builder()
+                .group("文件模块")
+                .displayName("文件模块")
+                .pathsToMatch("/file/**")
+                .build();
+    }
 
     @Bean
     public OpenAPI liliBlogOpenAPI() {

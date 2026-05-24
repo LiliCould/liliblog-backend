@@ -42,6 +42,8 @@
 		<jjwt.version>0.13.0</jjwt.version>
 		<nextdoc4j.version>1.3.1</nextdoc4j.version>
 		<flexmark.version>0.64.8</flexmark.version>
+		<qiniu.version>7.19.0</qiniu.version>
+		<skipTests>true</skipTests>
 	</properties>
 	<dependencies>
 		<!-- web依赖 -->
@@ -86,6 +88,7 @@
 		<dependency>
 			<groupId>top.nextdoc4j</groupId>
 			<artifactId>nextdoc4j-springboot4-starter</artifactId>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- jjwt -->
@@ -97,12 +100,6 @@
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-impl</artifactId>
-			<version>${jjwt.version}</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.jsonwebtoken</groupId>
-			<artifactId>jjwt-jackson</artifactId>
 			<version>${jjwt.version}</version>
 			<scope>runtime</scope>
 		</dependency>
@@ -124,13 +121,38 @@
 		<dependency>
 			<groupId>com.qiniu</groupId>
 			<artifactId>qiniu-java-sdk</artifactId>
-			<version>[7.19.0, 7.19.99]</version>
+			<version>${qiniu.version}</version>
 		</dependency>
 
-		<!-- flexmark-java 解析markdown -->
+		<!-- flexmark-java 解析markdown (按需引入，不用 flexmark-all -->
 		<dependency>
 			<groupId>com.vladsch.flexmark</groupId>
-			<artifactId>flexmark-all</artifactId>
+			<artifactId>flexmark</artifactId>
+			<version>${flexmark.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.vladsch.flexmark</groupId>
+			<artifactId>flexmark-ext-tables</artifactId>
+			<version>${flexmark.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.vladsch.flexmark</groupId>
+			<artifactId>flexmark-ext-gfm-strikethrough</artifactId>
+			<version>${flexmark.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.vladsch.flexmark</groupId>
+			<artifactId>flexmark-ext-autolink</artifactId>
+			<version>${flexmark.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.vladsch.flexmark</groupId>
+			<artifactId>flexmark-ext-gfm-tasklist</artifactId>
+			<version>${flexmark.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.vladsch.flexmark</groupId>
+			<artifactId>flexmark-ext-toc</artifactId>
 			<version>${flexmark.version}</version>
 		</dependency>
 
@@ -171,6 +193,74 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<!-- 排除不需要的依赖 -->
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+						<!-- 排除 nextdoc4j UI 及 openapi UI 前端（生产不需要） -->
+						<exclude>
+							<groupId>top.nextdoc4j</groupId>
+							<artifactId>nextdoc4j-ui</artifactId>
+						</exclude>
+						<exclude>
+							<groupId>top.nextdoc4j</groupId>
+							<artifactId>nextdoc4j-springboot4-starter</artifactId>
+						</exclude>
+						<exclude>
+							<groupId>top.nextdoc4j</groupId>
+							<artifactId>nextdoc4j-common-springboot4</artifactId>
+						</exclude>
+						<exclude>
+							<groupId>top.nextdoc4j</groupId>
+							<artifactId>nextdoc4j-core</artifactId>
+						</exclude>
+						<!-- swagger-ui 前端页面，生产不需要 -->
+						<exclude>
+							<groupId>org.webjars</groupId>
+							<artifactId>swagger-ui</artifactId>
+						</exclude>
+						<exclude>
+							<groupId>org.webjars</groupId>
+							<artifactId>webjars-locator-lite</artifactId>
+						</exclude>
+						<!-- springdoc webmvc-ui 入口，生产不需要 -->
+						<exclude>
+							<groupId>org.springdoc</groupId>
+							<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+						</exclude>
+						<!-- 排除 hutool-core (nextdoc4j 传递依赖，未直接使用) -->
+						<exclude>
+							<groupId>cn.hutool</groupId>
+							<artifactId>hutool-core</artifactId>
+						</exclude>
+						<!-- 排除旧的 Jackson 2.x (swagger 引入的传递依赖，与 tools.jackson 重复) -->
+						<exclude>
+							<groupId>com.fasterxml.jackson.core</groupId>
+							<artifactId>jackson-databind</artifactId>
+						</exclude>
+						<exclude>
+							<groupId>com.fasterxml.jackson.core</groupId>
+							<artifactId>jackson-core</artifactId>
+						</exclude>
+						<exclude>
+							<groupId>com.fasterxml.jackson.dataformat</groupId>
+							<artifactId>jackson-dataformat-yaml</artifactId>
+						</exclude>
+						<exclude>
+							<groupId>com.fasterxml.jackson.datatype</groupId>
+							<artifactId>jackson-datatype-jsr310</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<!-- Maven 依赖插件 - 分析未使用的依赖 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.6.1</version>
 			</plugin>
 		</plugins>
 	</build>

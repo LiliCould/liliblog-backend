@@ -65,7 +65,7 @@ public class IpListFilter extends OncePerRequestFilter {
         redisHelper.expire(ipCountKey, 3, TimeUnit.SECONDS);
 
         // 4. 判断是否达到阈值
-        if (count >= 60) {
+        if (count >= 100) {
             log.warn("ip：{}，访问频繁被封禁", ipAddr);
             redisHelper.set(ipListBannerKey, true,1000*60*60); // 1小时
             redisHelper.delete(ipCountKey);  // 清理计数
