@@ -42,8 +42,11 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
         // 创建分页对象
         Page<Category> page = Page.of(categoryQuery.getCurrent(), categoryQuery.getSize());
         // 设置排序字段
-        page.setOrders(OrderItem.descs(OrderConstant.SORT_ORDER, OrderConstant.UPDATE_TIME, OrderConstant.CREATE_TIME));
-
+        page.setOrders(List.of(
+                OrderItem.asc(OrderConstant.SORT_ORDER),
+                OrderItem.desc(OrderConstant.CREATE_TIME),
+                OrderItem.desc(OrderConstant.UPDATE_TIME)
+        ));
         // 创建查询条件
         LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper
@@ -51,8 +54,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
                 .eq(categoryQuery.getSlug() != null, Category::getSlug, categoryQuery.getSlug())
                 .like(categoryQuery.getDescription() != null, Category::getDescription, categoryQuery.getDescription())
                 .eq(categoryQuery.getStatus() != null, Category::getStatus, categoryQuery.getStatus())
-                .le(categoryQuery.getStartTime() != null, Category::getCreateTime, categoryQuery.getStartTime())
-                .ge(categoryQuery.getEndTime() != null, Category::getCreateTime, categoryQuery.getEndTime());
+                .ge(categoryQuery.getStartTime() != null, Category::getCreateTime, categoryQuery.getStartTime())
+                .le(categoryQuery.getEndTime() != null, Category::getCreateTime, categoryQuery.getEndTime());
         if (!BaseContext.isAdmin()) {
             queryWrapper.eq(Category::getStatus, StatusConstant.ENABLED); // 如果不是管理员只能查到启用的分类
         }
