@@ -84,8 +84,7 @@ public class AdminArticleController {
     @Operation(summary = "批量删除文章", description = "管理员后台，批量删除文章")
     public Result<?> deleteArticle(@RequestBody @Parameter(description = "文章ID列表")
                                         List<Long> ids) {
-
-        articleService.removeByIds(ids);
+        articleService.removeBatch(ids);
 
         return Result.success();
     }

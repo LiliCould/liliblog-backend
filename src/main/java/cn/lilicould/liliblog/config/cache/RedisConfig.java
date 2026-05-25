@@ -1,6 +1,7 @@
-package cn.lilicould.liliblog.config;
+package cn.lilicould.liliblog.config.cache;
 
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,10 @@ import java.time.Duration;
 @Configuration
 @EnableCaching
 public class RedisConfig {
+
+    // 全局 key 前缀
+    @Value("${spring.application.name:liliblog}:")
+    private String APP_PREFIX;
 
     /**
      * 创建专用于 Redis 的 ObjectMapper，不注册为 Spring Bean
@@ -78,7 +83,7 @@ public class RedisConfig {
                 // 禁止缓存 null 值；如果方法返回 null，不会向 Redis 中存储占位符,但是会缓存击穿
                 .disableCachingNullValues();
 
-        // 3. 创建并返回 RedisCacheManager 实例
+        // 创建并返回 RedisCacheManager 实例
         return RedisCacheManager.builder(connectionFactory)
                 // 应用上面定义的默认配置
                 .cacheDefaults(config)

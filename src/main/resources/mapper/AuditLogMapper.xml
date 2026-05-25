@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.lilicould.liliblog.mapper.AuditLogMapper">
+
+    <resultMap id="BaseResultMap" type="cn.lilicould.liliblog.model.entity.AuditLog">
+            <id property="id" column="id" />
+            <result property="username" column="username" />
+            <result property="module" column="module" />
+            <result property="operation" column="operation" />
+            <result property="targetId" column="target_id" />
+            <result property="targetType" column="target_type" />
+            <result property="description" column="description" />
+            <result property="requestMethod" column="request_method" />
+            <result property="requestUri" column="request_uri" />
+            <result property="ipAddress" column="ip_address" />
+            <result property="userAgent" column="user_agent" />
+            <result property="executionTime" column="execution_time" />
+            <result property="status" column="status" />
+            <result property="errorMessage" column="error_message" />
+            <result property="createTime" column="create_time" />
+            <result property="createBy" column="create_by" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,username,module,operation,target_id,target_type,
+        description,request_method,request_uri,ip_address,user_agent,
+        execution_time,status,error_message,create_time,create_by
+    </sql>
+</mapper>

@@ -9,6 +9,8 @@ import cn.lilicould.liliblog.model.dto.response.PageInfo;
 import cn.lilicould.liliblog.model.entity.Article;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
 * @author Lili_Could
 * @description 针对表【article(文章表)】的数据库操作Service
@@ -64,4 +66,10 @@ public interface ArticleService extends IService<Article> {
      * @param reason 审核失败原因
      */
     void auditArticle(Long id, Integer status, String reason);
+
+    /**
+     * 批量删除文章
+     * @param ids 文章ID列表
+     */
+    void removeBatch(List<Long> ids);
 }

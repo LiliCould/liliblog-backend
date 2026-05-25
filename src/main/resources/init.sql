@@ -120,6 +120,30 @@ CREATE TABLE `like_record` (
    INDEX `idx_target` (`target_id`, `target_type`)
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='点赞记录表';
 
+CREATE TABLE `audit_log` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+    `username` VARCHAR(50) DEFAULT NULL COMMENT '操作用户名',
+    `module` VARCHAR(50) NOT NULL COMMENT '模块名称(article/comment/user/category/tag)',
+    `operation` VARCHAR(50) NOT NULL COMMENT '操作类型(CREATE/UPDATE/DELETE/AUDIT)',
+    `target` VARCHAR(50) DEFAULT NULL COMMENT '目标资源ID/IDS,例如批量删除操作',
+    `target_type` VARCHAR(50) DEFAULT NULL COMMENT '目标资源类型',
+    `description` VARCHAR(500) DEFAULT NULL COMMENT '操作描述',
+    `request_method` VARCHAR(10) DEFAULT NULL COMMENT 'HTTP方法',
+    `request_uri` VARCHAR(200) DEFAULT NULL COMMENT '请求URI',
+    `ip_address` VARCHAR(50) DEFAULT NULL COMMENT 'IP地址',
+    `user_agent` VARCHAR(500) DEFAULT NULL COMMENT '用户代理',
+    `execution_time` INT DEFAULT NULL COMMENT '执行时间(ms)',
+    `status` TINYINT DEFAULT 1 COMMENT '操作状态(1成功/0失败)',
+    `error_message` TEXT DEFAULT NULL COMMENT '错误信息',
+    `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_by` BIGINT DEFAULT NULL COMMENT '创建者ID',
+
+    PRIMARY KEY (`id`),
+    INDEX `idx_user_id` (`create_time`),
+    INDEX `idx_module_operation` (`module`, `operation`),
+    INDEX `idx_create_time` (`create_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='操作审计日志表';
+
 use liliblog;
 
 INSERT INTO `liliblog`.`user` (`id`, `github_id`, `username`, `email`, `password`, `nickname`, `avatar`, `role`, `status`, `last_login_time`, `create_time`, `update_time`, `create_by`, `update_by`, `deleted`) VALUES (1, NULL, 'admin', '3364724213@qq.com', '$2a$10$JWxbk4k5UU73AjUk7j6Efeur/y5pjwi/b8J4axJhxwQXQg0B3hpQa', '管理员', NULL, 1, 1, '2026-05-09 16:40:24', '2026-05-09 00:12:16', '2026-05-19 10:25:33', 0, 0, 0);

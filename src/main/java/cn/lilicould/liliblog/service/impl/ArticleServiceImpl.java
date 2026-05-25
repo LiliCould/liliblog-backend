@@ -1,5 +1,6 @@
 package cn.lilicould.liliblog.service.impl;
 
+import cn.lilicould.liliblog.common.annotation.Audit;
 import cn.lilicould.liliblog.common.constant.OrderConstant;
 import cn.lilicould.liliblog.common.constant.StatusConstant;
 import cn.lilicould.liliblog.common.context.BaseContext;
@@ -151,6 +152,13 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
      */
     @Override
     @Transactional(rollbackFor = Exception.class,isolation = Isolation.READ_COMMITTED)
+    @Audit(
+            module = "article",
+            operation = "DELETE",
+            description = "'删除文章:' + #id",
+            targetType = "ARTICLE",
+            target = "#id"
+    )
     public void remove(Long id) {
         // 校验文章是否存在
         if (!this.exists(id)) {
@@ -190,6 +198,13 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
      */
     @Override
     @Transactional(rollbackFor = Exception.class,isolation = Isolation.READ_COMMITTED)
+    @Audit(
+            module = "article",
+            operation = "UPDATE",
+            description = "'更新文章:' + #id",
+            targetType = "ARTICLE",
+            target = "#id"
+    )
     public void update(Long id, ArticleUpdateRequest articleUpdateRequest) {
         if (id == null) {
             throw new BusinessException(CodeEnum.PARAM_MISSING);
@@ -273,7 +288,21 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         return getArticle( article.getId());
     }
 
+    /**
+     * 审核文章
+     *
+     * @param id 文章ID
+     * @param status 0:待审核 1:审核通过 2:审核未通过
+     * @param reason 原因
+     */
     @Override
+    @Audit(
+            module = "article",
+            operation = "AUDIT",
+            description = "'审核文章:' + #id",
+            targetType = "ARTICLE",
+            target = "#id"
+    )
     public void auditArticle(Long id, Integer status, String reason) {
         // 根据审核结果更新文章状态
         Article article = this.getById(id);
@@ -308,11 +337,34 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     }
 
     /**
+     * 批量删除文章
+     * @param ids 文章ID列表
+     */
+    @Override
+    @Audit(
+            module = "article",
+            operation = "BATCH_DELETE",
+            description = "'批量删除文章，数量:' + #ids.size()",
+            targetType = "ARTICLE",
+            target = "#ids"  // 取第一个ID作为代表
+    )
+    public void removeBatch(List<Long> ids) {
+        this.removeByIds(ids);
+    }
+
+    /**
      * 保存文章
      * @param articleCreateRequest 文章参数
      */
     @Override
     @Transactional(rollbackFor = Exception.class,isolation = Isolation.READ_COMMITTED)
+    @Audit(
+            module = "article",
+            operation = "CREATE",
+            description = "'创建文章: ' + #articleCreateRequest.title",
+            targetType = "ARTICLE",
+            target = "#articleCreateRequest.title"
+    )
     public void save(ArticleCreateRequest articleCreateRequest) {
 
         // 拷贝数据

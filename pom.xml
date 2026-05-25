@@ -52,6 +52,12 @@
 			<artifactId>spring-boot-starter-webmvc</artifactId>
 		</dependency>
 
+		<!-- aop(springboot4将sop更名为aspectj) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aspectj</artifactId>
+		</dependency>
+
 		<!-- mybatis-plus(自动引入mybatis) -->
 		<dependency>
 			<groupId>com.baomidou</groupId>
