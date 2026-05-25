@@ -1,5 +1,8 @@
 package cn.lilicould.liliblog.service;
 
+import cn.lilicould.liliblog.model.dto.query.AuditQuery;
+import cn.lilicould.liliblog.model.dto.response.AuditLogVO;
+import cn.lilicould.liliblog.model.dto.response.PageInfo;
 import cn.lilicould.liliblog.model.entity.AuditLog;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -10,4 +13,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface AuditLogService extends IService<AuditLog> {
 
+
+    /**
+     * 获取操作审计日志
+     * @param auditQuery 查询参数
+     * @return 操作审计日志
+     */
+    PageInfo<AuditLogVO> getAuditLogs(AuditQuery auditQuery);
 }
