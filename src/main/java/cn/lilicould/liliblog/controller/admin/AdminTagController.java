@@ -11,7 +11,6 @@ import cn.lilicould.liliblog.model.dto.response.PageInfo;
 import cn.lilicould.liliblog.model.dto.response.TagVO;
 import cn.lilicould.liliblog.model.entity.Tag;
 import cn.lilicould.liliblog.service.TagService;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -65,16 +64,10 @@ public class AdminTagController {
 
     @PostMapping
     @Operation(summary = "新增标签")
-    public Result<?> save(@RequestBody @Validated TagCreateRequest tagUpdateRequest) {
+    public Result<?> save(@RequestBody @Validated TagCreateRequest tagCreateRequest) {
 
-        // 检查名称是否已存在
-        if (tagService.exists(new LambdaQueryWrapper<Tag>().eq(Tag::getName, tagUpdateRequest.getName()))) {
-            throw new BusinessException(CodeEnum.TAG_ALREADY_EXISTS);
-        }
+        tagService.save(tagCreateRequest);
 
-        Tag tag = new Tag();
-        BeanUtils.copyProperties(tagUpdateRequest, tag);
-        tagService.save(tag);
         return Result.success();
     }
 
@@ -82,23 +75,8 @@ public class AdminTagController {
     @Operation(summary = "更新标签")
     public Result<?> update(@Parameter(description = "标签ID", required = true) @PathVariable Long id,
                             @RequestBody @Validated TagUpdateRequest tagUpdateRequest) {
-        // 如果标签不存在
-        if (!tagService.exists(new LambdaQueryWrapper<Tag>().eq(Tag::getId, id))) {
-            throw new BusinessException(CodeEnum.TAG_NOT_FOUND);
-        }
 
-        // 要修改的名称未被其他标签使用
-        if (tagService.exists(new LambdaQueryWrapper<Tag>()
-                .eq(Tag::getName, tagUpdateRequest.getName())
-                .ne(Tag::getId, id))
-        ) {
-            throw new BusinessException(CodeEnum.TAG_ALREADY_EXISTS);
-        }
-        // 更新
-        Tag tag = new Tag();
-        BeanUtils.copyProperties(tagUpdateRequest, tag);
-        tag.setId(id);
-        tagService.updateById(tag);
+        tagService.update(id, tagUpdateRequest);
 
         return Result.success();
     }
@@ -106,12 +84,8 @@ public class AdminTagController {
     @DeleteMapping("/{id}")
     @Operation(summary = "删除标签", description = "根据ID删除标签，也可使用批量删除接口")
     public Result<?> deleteTag(@Parameter(description = "标签ID") @PathVariable Long id) {
-        // 判断标签是否存在，保持代码健壮性
-        if (!tagService.exists(new LambdaQueryWrapper<Tag>().eq(Tag::getId, id))) {
-            throw new BusinessException(CodeEnum.TAG_NOT_FOUND);
-        }
 
-        tagService.removeById(id);
+        tagService.delete(id);
 
         return Result.success();
     }
@@ -121,7 +95,7 @@ public class AdminTagController {
     public Result<?> deleteTags(@RequestBody @Validated List<Long> ids) {
 
         // 批量删除
-        tagService.removeByIds(ids);
+        tagService.delete(ids);
 
         return Result.success();
     }

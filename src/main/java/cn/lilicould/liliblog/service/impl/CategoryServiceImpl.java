@@ -1,5 +1,6 @@
 package cn.lilicould.liliblog.service.impl;
 
+import cn.lilicould.liliblog.common.annotation.Audit;
 import cn.lilicould.liliblog.common.constant.OrderConstant;
 import cn.lilicould.liliblog.common.constant.StatusConstant;
 import cn.lilicould.liliblog.common.context.BaseContext;
@@ -7,6 +8,7 @@ import cn.lilicould.liliblog.common.enums.CodeEnum;
 import cn.lilicould.liliblog.common.exception.BusinessException;
 import cn.lilicould.liliblog.mapper.CategoryMapper;
 import cn.lilicould.liliblog.model.dto.query.CategoryQuery;
+import cn.lilicould.liliblog.model.dto.request.CategoryCreateRequest;
 import cn.lilicould.liliblog.model.dto.request.CategoryUpdateRequest;
 import cn.lilicould.liliblog.model.dto.response.CategoryVO;
 import cn.lilicould.liliblog.model.dto.response.PageInfo;
@@ -92,6 +94,13 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
      */
     @Override
     @Transactional(rollbackFor = Exception.class,isolation = Isolation.READ_COMMITTED)
+    @Audit(
+            module = "category",
+            operation = "UPDATE",
+            description = "'更新分类:' + #id",
+            targetType = "CATEGORY",
+            target = "#id"
+    )
     public void update(Long id, CategoryUpdateRequest categoryCreateRequest) {
         Category category = new Category();
         BeanUtils.copyProperties(categoryCreateRequest, category);
@@ -108,6 +117,74 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
 
         // 更新分类，空值不更新
         this.update(category, new LambdaQueryWrapper<Category>().eq(Category::getId, id));
+    }
+
+    /**
+     * 更新分类
+     * @param categoryCreateRequest 分类参数
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class,isolation = Isolation.READ_COMMITTED)
+    @Audit(
+            module = "category",
+            operation = "UPDATE",
+            description = "'新增分类:' + #categoryCreateRequest.getName()",
+            targetType = "CATEGORY",
+            target = "#categoryCreateRequest.getName()"
+    )
+    public void save(CategoryCreateRequest categoryCreateRequest) {
+        Category category = new Category();
+        BeanUtils.copyProperties(categoryCreateRequest, category);
+        category.setStatus(StatusConstant.ENABLED);
+
+        // 检查别名和分类名是否已存在
+        if (this.exists(new LambdaQueryWrapper<Category>().eq(Category::getSlug, category.getSlug()))
+                || this.exists(new LambdaQueryWrapper<Category>().eq(Category::getName, category.getName())) ) {
+            throw new BusinessException(CodeEnum.CATEGORY_ALREADY_EXISTS);
+        }
+
+        this.save(category);
+    }
+
+    /**
+     * 删除分类
+     * @param id 分类ID
+     */
+    @Override
+    @Audit(
+            module = "category",
+            operation = "DELETE",
+            description = "'删除分类:' + #id",
+            targetType = "CATEGORY",
+            target = "#id"
+    )
+    public void remove(Long id) {
+        Category category = this.getById(id);
+
+        if (category == null) {
+            throw new BusinessException(CodeEnum.CATEGORY_NOT_FOUND);
+        }
+        this.removeById(id);
+    }
+
+    /**
+     * 批量删除分类
+     * @param ids 分类ID列表
+     */
+    @Override
+    @Audit(
+            module = "category",
+            operation = "DELETE",
+            description = "'删除分类:' + #ids.size()",
+            targetType = "CATEGORY",
+            target = "#ids"
+    )
+    public void remove(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            throw new BusinessException(CodeEnum.PARAM_MISSING);
+        }
+
+        this.removeByIds(ids);
     }
 }
 

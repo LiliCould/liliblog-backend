@@ -1,5 +1,6 @@
 package cn.lilicould.liliblog.service.impl;
 
+import cn.lilicould.liliblog.common.annotation.Audit;
 import cn.lilicould.liliblog.common.constant.OrderConstant;
 import cn.lilicould.liliblog.common.constant.StatusConstant;
 import cn.lilicould.liliblog.common.enums.CodeEnum;
@@ -94,8 +95,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return PageInfo.of(pageInfo);
     }
 
+    /**
+     * 更新用户信息
+     *
+     * @param id 用户ID
+     * @param request 更新信息
+     */
     @Override
     @Transactional(rollbackFor = Exception.class,isolation = Isolation.READ_COMMITTED)
+    @Audit(
+            module = "user",
+            operation = "UPDATE",
+            description = "'更新用户:' + #id",
+            targetType = "USER",
+            target = "#id"
+    )
     public void updateUserInfo(Long id, AdminUserUpdateRequest request) {
         User user = this.getById(id);
         if (user == null) {
@@ -131,6 +145,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      * @param request 创建参数
      */
     @Override
+    @Audit(
+            module = "user",
+            operation = "CREATE",
+            description = "'新增用户:' + #request.getUsername()",
+            targetType = "USER",
+            target = "#request.getUsername()"
+    )
     public void createUser(UserCreateRequest request) {
         // 验证密码
         if (!request.getPassword().equals(request.getConfirmPassword())) {
@@ -159,6 +180,50 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                 .build();
 
         this.save(user);
+    }
+
+    /**
+     * 删除用户
+     * @param id 用户ID
+     */
+    @Override
+    @Audit(
+            module = "user",
+            operation = "DELETE",
+            description = "'删除用户:' + #id",
+            targetType = "USER",
+            target = "#id"
+    )
+    public void remove(Long id) {
+        // 删除前先判断，保证代码健壮性
+        User user = this.getById(id);
+        if (user == null) {
+            throw new BusinessException(CodeEnum.USER_NOT_FOUND);
+        }
+        this.removeById(id);
+    }
+
+    /**
+     * 修改用户状态
+     * @param id 用户ID
+     */
+    @Override
+    @Audit(
+            module = "user",
+            operation = "UPDATE",
+            description = "'切换用户状态:' + #id",
+            targetType = "USER",
+            target = "#id"
+    )
+    public void changeStatus(Long id) {
+        User user = this.getById(id);
+        if (user == null) {
+            throw new BusinessException(CodeEnum.USER_NOT_FOUND);
+        }
+        // 切换状态
+        Integer status = user.getStatus() == 1 ? 0 : 1;
+        user.setStatus(status);
+        this.updateById(user);
     }
 
     /**

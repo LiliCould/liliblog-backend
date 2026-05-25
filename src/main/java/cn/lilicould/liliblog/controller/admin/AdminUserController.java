@@ -62,12 +62,8 @@ public class AdminUserController {
     @DeleteMapping("/id")
     @Operation(summary = "删除用户", description = "根据用户ID删除用户")
     public Result<?> delete(@Parameter(description = "用户ID", example = "1") Long id) {
-        // 删除前先判断，保证代码健壮性
-        User user = userService.getById(id);
-        if (user == null) {
-            throw new BusinessException(CodeEnum.USER_NOT_FOUND);
-        }
-        userService.removeById(id);
+
+        userService.remove(id);
         return Result.success();
     }
 
@@ -84,14 +80,8 @@ public class AdminUserController {
     @Operation(summary = "切换用户状态", description = "切换用户状态，当然也可使用更新接口，但此接口专门用来切换状态")
     public Result<?> toggleStatus(@Parameter(description = "用户ID", example = "1") @PathVariable Long id){
 
-        User user = userService.getById(id);
-        if (user == null) {
-            throw new BusinessException(CodeEnum.USER_NOT_FOUND);
-        }
-        // 切换状态
-        Integer status = user.getStatus() == 1 ? 0 : 1;
-        user.setStatus(status);
-        userService.updateById(user);
+        userService.changeStatus(id);
+
         return Result.success();
     }
 }

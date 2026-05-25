@@ -3,6 +3,7 @@ package cn.lilicould.liliblog.model.dto.query;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -31,9 +32,11 @@ public class AuditQuery extends BaseQuery implements Serializable {
     private Integer status;
 
     @Schema(description = "开始时间", type = "string", format = "date-time", example = "2026-05-20 00:00:00")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startTime;
 
     @Schema(description = "结束时间", type = "string", format = "date-time", example = "2026-05-25 23:59:59")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime endTime;
 
     @Schema(description = "IP地址", example = "192.168.1.1")

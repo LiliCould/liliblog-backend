@@ -36,4 +36,16 @@ public interface UserService extends IService<User>, UserDetailsService {
      * @param request 添加参数
      */
     void createUser(UserCreateRequest request);
+
+    /**
+     * 删除用户
+     * @param id 用户ID
+     */
+    void remove(Long id);
+
+    /**
+     * 切换用户状态
+     * @param id 用户ID
+     */
+    void changeStatus(Long id);
 }
