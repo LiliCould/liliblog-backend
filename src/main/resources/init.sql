@@ -135,7 +135,7 @@ CREATE TABLE `audit_log` (
     `execution_time` INT DEFAULT NULL COMMENT '执行时间(ms)',
     `status` TINYINT DEFAULT 1 COMMENT '操作状态(1成功/0失败)',
     `error_message` TEXT DEFAULT NULL COMMENT '错误信息',
-    `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `create_time` DATETIME NOT NULL COMMENT '创建时间',
     `create_by` BIGINT DEFAULT NULL COMMENT '创建者ID',
 
     PRIMARY KEY (`id`),

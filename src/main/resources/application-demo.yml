@@ -2,8 +2,8 @@ liliblog:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/liliblog?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
-    username: root
-    password: demo-password
+    username: username
+    password: password
     hikari:
       minimum-idle: 5  # 启动时就创建5个空闲连接
       connection-test-query: SELECT 1
@@ -11,7 +11,7 @@ liliblog:
   data:
     redis:
       host: localhost
-      password: 123456
+      password: password
       port: 6379
       database: 0
       timeout: 5s
@@ -22,11 +22,11 @@ liliblog:
           min-idle: 2
           max-wait: 5s
   http-only-cookies:
-    ssl: true # 由于是前后端分离，所以这里设置为true
+    ssl: true # 对于前后端分离，必须为启用
   jwt:
     # 密钥（secret）必须是经过Base64编码的32字节（或更长）的字符串
-    secret: "d29aaGlsaWxpa2Vhc2RhaG5ramRoYWtqc2ZoamFrc2ZobGFrc2hmbGthc2hmbGFqc2ZrbGFoZnNhc2Zhc2Zhc2Y="
-    expiration: 10000000 # 访问令牌有效期，单位毫秒
+    secret: "secret"
+    expiration: 1800000 # 访问令牌有效期，单位毫秒,1800000毫秒为半小时
     refresh-expiration: 604800000 # 刷新令牌有效期，单位毫秒，这里设为了7天
   oss:
     access-key: "your-key"
@@ -34,13 +34,18 @@ liliblog:
     bucket: your-bucket
   github:
     client-id: "your-client-id"
-    client-secret: "your-secret"
-    redirect-uri: your-redirect-uri
+    client-secret: "your-client-secret"
+    redirect-uri: "http://localhost:8080/login/oauth2/code/github"
   logging:
     level:
       root: info
+  mail:
+    username: your-email
+    password: "your-secret-code"
 
 ip-trust:
   trusted-proxies:
     - 127.0.0.1
     - 192.168.1.1
+    - ...
+
