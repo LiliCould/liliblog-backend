@@ -8,6 +8,7 @@ import cn.lilicould.liliblog.common.exception.BusinessException;
 import cn.lilicould.liliblog.common.result.Result;
 import cn.lilicould.liliblog.common.util.PageUtil;
 import cn.lilicould.liliblog.model.dto.query.ArticleQuery;
+import cn.lilicould.liliblog.model.dto.query.ArticleSearchQuery;
 import cn.lilicould.liliblog.model.dto.request.ArticleCreateRequest;
 import cn.lilicould.liliblog.model.dto.request.ArticleUpdateRequest;
 import cn.lilicould.liliblog.model.dto.response.ArticleDetailsVO;
@@ -169,6 +170,16 @@ public class ArticleController {
                         .eq(LikeRecord::getTargetType, TargetType.ARTICLE.getCode()));
 
         return Result.success(likeRecord != null);
+    }
+
+    @GetMapping("/search")
+    @Operation(summary = "文章搜索")
+    public Result<PageInfo<ArticleVO>> search(@ParameterObject @Validated ArticleSearchQuery searchQuery) {
+        PageUtil.setDefault(searchQuery);
+
+        PageInfo<ArticleVO> pageInfo = articleService.search(searchQuery);
+
+        return Result.success(pageInfo);
     }
 
 }

@@ -134,8 +134,6 @@ public class AuthController {
         String accessToken = jwtUtil.generateToken(user.getUsername(), user);
         long expiresIn = jwtUtil.extractExpiresIn(accessToken);
 
-
-
         // 转换为用户视图返回
         UserInfo userInfo = UserInfo.from(user);
         LoginVO loginVO = LoginVO.builder()

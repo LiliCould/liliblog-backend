@@ -11,6 +11,7 @@ import cn.lilicould.liliblog.common.util.MarkdownUtil;
 import cn.lilicould.liliblog.config.properties.InfoProperties;
 import cn.lilicould.liliblog.mapper.*;
 import cn.lilicould.liliblog.model.dto.query.ArticleQuery;
+import cn.lilicould.liliblog.model.dto.query.ArticleSearchQuery;
 import cn.lilicould.liliblog.model.dto.request.ArticleCreateRequest;
 import cn.lilicould.liliblog.model.dto.request.ArticleUpdateRequest;
 import cn.lilicould.liliblog.model.dto.response.*;
@@ -124,26 +125,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         // 查询
         Page<Article> articlePage = articleMapper.selectPage(page, queryWrapper);
 
-        if (articlePage.getTotal() == 0)
-            return PageInfo.empty(articleQuery.getCurrent(), articleQuery.getSize());
-
-        // 填充信息并返回
-        // todo 有N+1问题，需要优化
-        List<ArticleVO> records = articlePage.getRecords().stream().map(article -> {
-            ArticleVO articleVO = new ArticleVO();
-            BeanUtils.copyProperties(article, articleVO);
-            articleVO.setCreator(buildUserInfo(article.getCreateBy())); // 设置作者信息
-            articleVO.setUpdater(buildUserInfo(article.getUpdateBy())); // 设置新者信息
-            articleVO.setLikeCount(getLikeCount(article.getId())); // 填充点赞数和评论数
-            articleVO.setCommentCount(getCommentCount(article.getId())); // 填充点赞数和评论数
-            articleVO.setCategory(buildCategoryVO(article.getCategoryId())); // 填充分类信息
-            articleVO.setTags(buildTagVOList(article.getId())); // 填充标签列表
-            return articleVO;
-        }).toList();
-
-        Page<ArticleVO> voPage = new Page<>(articlePage.getCurrent(), articlePage.getSize(), articlePage.getTotal()); // 会自动计算其他信息
-        voPage.setRecords(records);
-        return PageInfo.of(voPage);
+        // 转换为VO返回
+        return convertToVO(articlePage, articleQuery.getCurrent(), articleQuery.getSize());
     }
 
     /**
@@ -353,6 +336,32 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     }
 
     /**
+     * 搜索文章
+     * @param keyword 关键词
+     * @return 文章列表
+     */
+    @Override
+    public PageInfo<ArticleVO> search(ArticleSearchQuery searchQuery) {
+        Page<Article> page = Page.of(searchQuery.getCurrent(), searchQuery.getSize());
+        String keyword = searchQuery.getKeyword();
+        // 排序
+        page.addOrder(OrderItem.descs(OrderConstant.ID, OrderConstant.CREATE_TIME, OrderConstant.UPDATE_TIME));
+
+        // 构造查询条件
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.like(Article::getTitle, keyword).or()
+                .like(Article::getSummary, keyword).or()
+                .like(Article::getContent, keyword)
+                .eq(Article::getStatus, StatusConstant.ARTICLE_PUBLISHED); // 状态为已发布
+
+        // 查询
+        Page<Article> articlePage = articleMapper.selectPage(page, queryWrapper);
+
+        // 转换为返回
+        return convertToVO(articlePage, searchQuery.getCurrent(), searchQuery.getSize());
+    }
+
+    /**
      * 保存文章
      * @param articleCreateRequest 文章参数
      */
@@ -407,6 +416,30 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
         // 批量插入文章标签关联
         saveArticleTags(article.getId(), articleCreateRequest.getTags());
+    }
+
+    private PageInfo<ArticleVO> convertToVO(Page<Article> articlePage,long current, long size) {
+        if (articlePage.getTotal() == 0)
+            return PageInfo.empty(current, size);
+
+        // 填充信息并返回
+        // todo 有N+1问题，需要优化
+        List<ArticleVO> records = articlePage.getRecords().stream().map(article -> {
+            ArticleVO articleVO = new ArticleVO();
+            BeanUtils.copyProperties(article, articleVO);
+            articleVO.setCreator(buildUserInfo(article.getCreateBy())); // 设置作者信息
+            articleVO.setUpdater(buildUserInfo(article.getUpdateBy())); // 设置新者信息
+            articleVO.setLikeCount(getLikeCount(article.getId())); // 填充点赞数和评论数
+            articleVO.setCommentCount(getCommentCount(article.getId())); // 填充点赞数和评论数
+            articleVO.setCategory(buildCategoryVO(article.getCategoryId())); // 填充分类信息
+            articleVO.setTags(buildTagVOList(article.getId())); // 填充标签列表
+            return articleVO;
+        }).toList();
+
+        Page<ArticleVO> voPage = new Page<>(articlePage.getCurrent(), articlePage.getSize(), articlePage.getTotal()); // 会自动计算其他信息
+        voPage.setRecords(records);
+
+        return PageInfo.of(voPage);
     }
 
     /**

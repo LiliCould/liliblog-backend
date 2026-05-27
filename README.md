@@ -237,7 +237,7 @@ mvn spring-boot:run
 
 # 方式2: 打包后运行
 mvn clean package -DskipTests
-java -jar target/liliblog-2.0.1-SNAPSHOT.jar
+java -jar target/liliblog-2.0.1.jar
 
 # 方式3: IDE 中直接运行 LiliblogApplication.java
 ```

@@ -1,6 +1,7 @@
 package cn.lilicould.liliblog.service;
 
 import cn.lilicould.liliblog.model.dto.query.ArticleQuery;
+import cn.lilicould.liliblog.model.dto.query.ArticleSearchQuery;
 import cn.lilicould.liliblog.model.dto.request.ArticleCreateRequest;
 import cn.lilicould.liliblog.model.dto.request.ArticleUpdateRequest;
 import cn.lilicould.liliblog.model.dto.response.ArticleDetailsVO;
@@ -72,4 +73,11 @@ public interface ArticleService extends IService<Article> {
      * @param ids 文章ID列表
      */
     void removeBatch(List<Long> ids);
+
+    /**
+     * 文章搜索
+     * @param searchQuery 搜索参数
+     * @return 搜索结果
+     */
+    PageInfo<ArticleVO> search(ArticleSearchQuery searchQuery);
 }

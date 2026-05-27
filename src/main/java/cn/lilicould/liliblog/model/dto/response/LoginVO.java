@@ -17,7 +17,7 @@ public class LoginVO implements Serializable {
     @Schema(description = "访问令牌")
     private String accessToken;    // JWT 访问令牌
 
-    @Schema(description = "过期时间")
+    @Schema(description = "过期时间,单位秒")
     private Long expiresIn;
     @Schema(description = "用户信息")
     private UserInfo userInfo;   // 用户基本信息

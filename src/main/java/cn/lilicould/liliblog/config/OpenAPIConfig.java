@@ -86,7 +86,7 @@ public class OpenAPIConfig {
                 .info(new Info()
                         .title("立里博客 LiliBlog API 文档")
                         .description("这是立里博客的后端接口文档，严格遵循 RESTful 规范设计。欢迎访问线上体验地址。")
-                        .version("2.0.1")
+                        .version("2.0.2")
                         .termsOfService("https://lilicould.cn/") // 服务条款 URL,暂无
                         .contact(new Contact()
                                 .name("立里可")

@@ -181,8 +181,24 @@ public class JwtUtil {
         return !isTokenExpired(token);
     }
 
-    // 解析剩余时间
+
+    /**
+     * 获取令牌剩余有效时间（秒）
+     *
+     * @param token jwt令牌
+     * @return 剩余有效时间（秒）
+     * @author lilicould
+     */
     public Long extractExpiresIn(String token) {
-        return extractExpiration(token).getTime() - new Date().getTime();
+        Date expiration = extractExpiration(token);
+        long remainingMs = expiration.getTime() - System.currentTimeMillis();
+
+        // 如果已过期，返回 0
+        if (remainingMs <= 0) {
+            return 0L;
+        }
+
+        // 转换为秒并向上取整，确保剩余时间不为 0 时至少还有 1 秒
+        return (long) Math.ceil(remainingMs / 1000.0);
     }
 }

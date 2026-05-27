@@ -26,15 +26,16 @@ public class TokenService {
     public LoginVO createLoginResponse(User user, HttpServletResponse response) {
         // 生成 Token
         String accessToken = jwtUtil.generateToken(user.getUsername(),user);
-        long accessExpiresIn = jwtUtil.extractExpiresIn(accessToken);
+        long accessExpiresIn = jwtUtil.extractExpiresIn(accessToken); // 单位秒
         String refreshToken = jwtUtil.generateRefreshToken(user.getUsername(),user);
+        long refreshExpiresIn = jwtUtil.extractExpiresIn(refreshToken);
 
         // 设置 Cookie
         String refreshCookie = ResponseCookie.from("refresh_token", refreshToken)
                 .httpOnly(true)
                 .secure(httpOnlyCookiesProperties.isSsl()) // 这个必须设为true, 否则前端无法获取到 Cookie,因为sameSite设为了 None
                 .sameSite("None") // 设置 SameSite,由于前后端分离，需要设置 SameSite为 None
-                .maxAge(accessExpiresIn / 1000) // 毫秒换算成秒
+                .maxAge(refreshExpiresIn)
                 .path("/auth")
                 .domain(httpOnlyCookiesProperties.getDomain())
                 .build()
@@ -45,7 +46,7 @@ public class TokenService {
 
         // 存储 Redis
         redisHelper.set(RedisPrefixConstant.AUTH_REFRESH_TOKEN + user.getUsername(),
-                refreshToken, jwtUtil.extractExpiresIn(refreshToken));
+                refreshToken, jwtUtil.extractExpiresIn(refreshToken)*1000);
 
         // 更新登录时间
         user.setLastLoginTime(LocalDateTime.now());
