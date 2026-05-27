@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoResourceFoundException.class)
     public Result<?> handleNoResourceFoundException(NoResourceFoundException e) {
         log.error("资源不存在 -> {}", e.getMessage());
-        return Result.error(CodeEnum.RESOURCE_NOT_FOUND.getCode(),CodeEnum.RESOURCE_NOT_FOUND + "->" + e.getMessage());
+        return Result.error(CodeEnum.RESOURCE_NOT_FOUND);
     }
 
     @ExceptionHandler(NoSuchMethodError.class)
@@ -62,7 +62,7 @@ public class GlobalExceptionHandler {
                 .orElse("参数验证失败");
 
         log.error("参数验证失败 -> {}", message);
-        return Result.error(CodeEnum.COMMON_PARAM_ERROR);
+        return Result.error(CodeEnum.COMMON_PARAM_ERROR.getCode(), message);
     }
 
     /**

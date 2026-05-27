@@ -131,7 +131,7 @@ public class AuthController {
         SecurityUser securityUser = (SecurityUser) userService.loadUserByUsername(username);
         User user = securityUser.toUser();
 
-        String accessToken = jwtUtil.generateRefreshToken(user.getUsername(), user);
+        String accessToken = jwtUtil.generateToken(user.getUsername(), user);
         long expiresIn = jwtUtil.extractExpiresIn(accessToken);
 
 

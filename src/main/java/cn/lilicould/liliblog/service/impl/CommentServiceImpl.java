@@ -183,10 +183,17 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
     @Override
     public void deleteAll(Long id) {
 
+        Comment comment = this.getById(id);
+
+        // 评论不存在
+        if (comment == null) {
+            throw new BusinessException(CodeEnum.COMMENT_NOT_FOUND);
+        }
+
         // 校验权限
         if (!BaseContext.isAdmin()) {
             // 不是管理员，必须是发布者
-            if (!Objects.equals(id, BaseContext.getCurrentUserId())) {
+            if (!Objects.equals(comment.getCreateBy(), BaseContext.getCurrentUserId())) {
                 throw new BusinessException(CodeEnum.NO_PERMISSION);
             }
         }

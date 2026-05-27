@@ -25,7 +25,7 @@ public class TokenService {
 
     public LoginVO createLoginResponse(User user, HttpServletResponse response) {
         // 生成 Token
-        String accessToken = jwtUtil.generateRefreshToken(user.getUsername(),user);
+        String accessToken = jwtUtil.generateToken(user.getUsername(),user);
         long accessExpiresIn = jwtUtil.extractExpiresIn(accessToken);
         String refreshToken = jwtUtil.generateRefreshToken(user.getUsername(),user);
 

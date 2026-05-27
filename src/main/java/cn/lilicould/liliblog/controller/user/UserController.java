@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -46,7 +47,7 @@ public class UserController {
 
     @PutMapping
     @Operation(summary = "更新用户信息(/修改密码)",description = "无需管理员权限，需要登录,若为修改密码，成功后前端自主调用登出接口，修改其他内容也要调用/api/user/me接口更新一下信息")
-    public Result<?> updateUserInfo(@RequestBody UserUpdateRequest userUpdateRequest) {
+    public Result<?> updateUserInfo(@RequestBody @Validated UserUpdateRequest userUpdateRequest) {
 
         User user = userService.getById(BaseContext.getCurrentUserId());
 

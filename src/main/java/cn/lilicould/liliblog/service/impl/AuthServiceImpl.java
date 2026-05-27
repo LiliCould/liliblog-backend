@@ -22,6 +22,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
+import java.text.DecimalFormat;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -86,8 +89,11 @@ public class AuthServiceImpl implements AuthService {
             throw new BusinessException(CodeEnum.REPEAT_OPERATION);
         }
 
-        // 生成6位验证码
-        String code = String.valueOf(Math.random()).substring(2, 8);
+        // 使用secureRandom生成6位验证码
+        int num = new SecureRandom().nextInt(1000000); // 0-999999
+        DecimalFormat df = new DecimalFormat("000000"); // 限制为6位
+        String code = df.format(num);
+
         // 存储到redis中,分钟有效
         redisHelper.set(RedisPrefixConstant.AUTH_EMAIL_CODE + email, code, 5 * 60 * 1000);
         // 发送邮箱

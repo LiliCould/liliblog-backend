@@ -40,9 +40,9 @@ public class AdminUserController {
         return Result.success(pageInfo);
     }
 
-    @GetMapping("/id")
+    @GetMapping("/{id}")
     @Operation(summary = "根据id获取用户详情", description = "根据用户ID查询用户详情")
-    public Result<UserInfo> detail(@Parameter(description = "用户ID", example = "1") Long id) {
+    public Result<UserInfo> detail(@Parameter(description = "用户ID", example = "1") @PathVariable Long id) {
         User user = userService.getById(id);
         if (user == null) {
             throw new BusinessException(CodeEnum.USER_NOT_FOUND);

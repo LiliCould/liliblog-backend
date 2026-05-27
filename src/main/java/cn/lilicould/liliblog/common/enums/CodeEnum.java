@@ -46,6 +46,7 @@ public enum CodeEnum {
     SLUG_NOT_FOUND(3008, "别名不存在"),
     REPEAT_OPERATION(3009,"请勿重复操作"),
     COMMENT_NOT_FOUND(3010, "评论不存在"),
+    NOT_SUPPORTED_FILE_TYPE(3011, "不支持的文件类型"),
 
     // 系统错误 5xxx
     SYSTEM_ERROR(5000, "系统异常，请稍后重试"),

@@ -34,6 +34,10 @@ public class OssUtil {
 
     public String uploadFile(InputStream inputStream, String fileName,String type) throws QiniuException {
 
+        if (!isValidFileName(fileName)) {
+            throw new BusinessException(CodeEnum.NOT_SUPPORTED_FILE_TYPE);
+        }
+
         Configuration cfg = Configuration.create(Region.createWithRegionId("z0")); // 配置华东地区
         cfg.resumableUploadAPIVersion = Configuration.ResumableUploadAPIVersion.V2;// 指定分片上传版本
         UploadManager uploadManager = new UploadManager(cfg);
@@ -53,5 +57,16 @@ public class OssUtil {
 
         // 返回文件的URL
         return "https://oss.lilicould.cn" + "/" + fileName;
+    }
+
+    private boolean isValidFileName(String fileName) {
+
+        // 提取文件后缀
+        String[] fileNameParts = fileName.split("\\.");
+        String fileExtension = fileNameParts[fileNameParts.length - 1];
+
+        // 只支持图片、视频、音频、文档
+        // svg有xss风险，但是我个人需要，所以这里不进行过滤，一般需要排除
+        return fileExtension.matches("(jpg|jpeg|png|gif|mp4|avi|svg|wmv|mp3|doc|docx|pdf|xls|xlsx|ppt|pptx)");
     }
 }
