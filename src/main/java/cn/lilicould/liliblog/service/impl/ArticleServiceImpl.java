@@ -246,8 +246,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         // 更新文章
         articleMapper.updateById(article);
 
-        // 发送邮件通知管理员审核
-        emailTemplateService.sendArticleReviewNotify(infoProperties.getAdminEmail(), article.getTitle(),BaseContext.getCurrentUserName(),LocalDateTime.now().toString());
+        // 如果是待审核,发送邮件通知管理员审核
+        if (StatusConstant.ARTICLE_PENDING.equals(article.getStatus())) {
+            emailTemplateService.sendArticleReviewNotify(infoProperties.getAdminEmail(), article.getTitle(),BaseContext.getCurrentUserName(),LocalDateTime.now().toString());
+        }
 
         // 批量插入文章标签关联
         saveArticleTags(article.getId(), articleUpdateRequest.getTags());
@@ -349,13 +351,17 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
         // 构造查询条件
         LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(Article::getTitle, keyword).or()
-                .like(Article::getSummary, keyword).or()
-                .like(Article::getContent, keyword)
-                .eq(Article::getStatus, StatusConstant.ARTICLE_PUBLISHED); // 状态为已发布
+        queryWrapper.and(wrapper -> wrapper
+                        .like(Article::getTitle, keyword)
+                        .or()
+                        .like(Article::getSummary, keyword)
+                        .or()
+                        .like(Article::getContent, keyword))
+                .eq(Article::getStatus, StatusConstant.ARTICLE_PUBLISHED);
+
 
         // 查询
-        Page<Article> articlePage = articleMapper.selectPage(page, queryWrapper);
+        Page<Article> articlePage = this.page(page, queryWrapper);
 
         // 转换为返回
         return convertToVO(articlePage, searchQuery.getCurrent(), searchQuery.getSize());
@@ -411,8 +417,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         // 存文章
         articleMapper.insert(article);
 
-        // 发送邮件通知站长审核
-        emailTemplateService.sendArticleReviewNotify(infoProperties.getAdminEmail(), article.getTitle(),BaseContext.getCurrentUserName(),LocalDateTime.now().toString());
+        // 如果提交状态为待审核,发送邮件通知站长审核
+        if (StatusConstant.ARTICLE_PENDING.equals(articleCreateRequest.getStatus())) {
+            emailTemplateService.sendArticleReviewNotify(infoProperties.getAdminEmail(), article.getTitle(),BaseContext.getCurrentUserName(),LocalDateTime.now().toString());
+        }
 
         // 批量插入文章标签关联
         saveArticleTags(article.getId(), articleCreateRequest.getTags());

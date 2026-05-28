@@ -199,7 +199,7 @@ liliblog-backend
 
 ## 数据库
 
-- **数据库类型**: MySQL 9.x
+- **数据库类型**: MySQL 8.x
 - **初始化脚本**: `src/main/resources/init.sql`
 - **包含表**: user, article, category, tag, article_tag, comment, like_record, chat_message, audit_log
 - **种子数据**: 管理员用户、3个分类、31个标签、约20篇文章
@@ -222,7 +222,7 @@ liliblog-backend
 cp src/main/resources/application-demo.yml src/main/resources/application-dev.yml
 ```
 
-2. **修改 `application-dev.yml`**，填入数据库、Redis、JWT、七牛云、邮箱、GitHub OAuth 等配置
+2. **修改 `application-dev.yml`**，填入数据库、Redis、JWT、七牛云、邮箱等配置
 
 3. **初始化数据库**
 ```bash
