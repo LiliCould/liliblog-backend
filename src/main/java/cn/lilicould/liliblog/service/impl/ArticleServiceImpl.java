@@ -339,7 +339,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
     /**
      * 搜索文章
-     * @param keyword 关键词
+     * @param searchQuery 搜索条件
      * @return 文章列表
      */
     @Override
