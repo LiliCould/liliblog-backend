@@ -59,16 +59,6 @@ public class ArticleController {
 
         ArticleDetailsVO articleDetailsVO = articleService.getArticle(id);
 
-        if (articleDetailsVO == null) {
-            return Result.error(CodeEnum.ARTICLE_NOT_FOUND);
-        }
-
-        // 阅读量加1
-        Article article = new Article();
-        article.setId(id);
-        article.setViewCount(articleDetailsVO.getViewCount() + 1);
-        articleService.updateById(article);
-
         return Result.success(articleDetailsVO);
     }
 

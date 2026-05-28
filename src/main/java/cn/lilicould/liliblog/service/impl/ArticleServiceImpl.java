@@ -65,7 +65,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         // 查询文章基础信息
         Article article = articleMapper.selectById(id);
         if (article == null) {
-            return null;
+            throw new BusinessException(CodeEnum.ARTICLE_NOT_FOUND);
         }
 
         if (!hasReadAuthority(article)) {
@@ -88,6 +88,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
         // 设置标签列表
         articleDetailsVO.setTags(buildTagVOList(id));
+
+        // 阅读量加1
+        article.setViewCount(article.getViewCount() + 1);
+        this.updateById(article);
 
         log.info("获取到文章id：{}",articleDetailsVO.getId());
         return articleDetailsVO;
