@@ -30,6 +30,8 @@ public class CommentVO implements Serializable {
     private Long parentId;
     @Schema(description = "用户ip")
     private String ipAddress;
+    @Schema(description = "用户ip地址")
+    private String ipAddressLocation;
     @Schema(description = "状态,0-审核中,1-发布")
     private Integer status;
     @Schema(description = "创建时间",type = "string",format = "date-time",example = "2026-05-09 14:51:06")

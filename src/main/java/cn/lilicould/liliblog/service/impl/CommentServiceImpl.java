@@ -6,6 +6,7 @@ import cn.lilicould.liliblog.common.context.BaseContext;
 import cn.lilicould.liliblog.common.enums.CodeEnum;
 import cn.lilicould.liliblog.common.enums.TargetType;
 import cn.lilicould.liliblog.common.exception.BusinessException;
+import cn.lilicould.liliblog.common.util.Ip2RegionUtil;
 import cn.lilicould.liliblog.common.util.IpUtil;
 import cn.lilicould.liliblog.mapper.CommentMapper;
 import cn.lilicould.liliblog.mapper.LikeRecordMapper;
@@ -99,6 +100,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
                 .likeCount(getLikeCount(comment.getId()))
                 .parentId(comment.getParentId())
                 .ipAddress(comment.getIpAddress())
+                .ipAddressLocation(Ip2RegionUtil.getFormattedLocation(comment.getIpAddress()))
                 .createTime(comment.getCreateTime())
                 .build()
         ).toList();
@@ -160,6 +162,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
                 .likeCount(getLikeCount(comment.getId()))
                 .parentId(comment.getParentId())
                 .ipAddress(comment.getIpAddress())
+                .ipAddressLocation(Ip2RegionUtil.getFormattedLocation(comment.getIpAddress()))
                 .createTime(comment.getCreateTime())
                 .build()
         ).toList();
@@ -300,6 +303,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
                 .likeCount(getLikeCount(comment.getId()))
                 .parentId(comment.getParentId())
                 .ipAddress(comment.getIpAddress())
+                .ipAddressLocation(Ip2RegionUtil.getFormattedLocation(comment.getIpAddress()))
                 .createTime(comment.getCreateTime())
                 .build()
         ).toList();

@@ -144,6 +144,12 @@ CREATE TABLE `audit_log` (
     INDEX `idx_create_time` (`create_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='操作审计日志表';
 
+CREATE TABLE `ip_address_location`(
+    `id` BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主键ID',
+    `ip_address` VARCHAR(45) NOT NULL COMMENT 'IP地址',
+    `location` VARCHAR(100) DEFAULT NULL COMMENT '地理位置'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='IP地址地理位置表';
+
 use liliblog;
 
 INSERT INTO `liliblog`.`user` (`id`, `github_id`, `username`, `email`, `password`, `nickname`, `avatar`, `role`, `status`, `last_login_time`, `create_time`, `update_time`, `create_by`, `update_by`, `deleted`) VALUES (1, NULL, 'admin', '3364724213@qq.com', '$2a$10$JWxbk4k5UU73AjUk7j6Efeur/y5pjwi/b8J4axJhxwQXQg0B3hpQa', '管理员', NULL, 1, 1, '2026-05-09 16:40:24', '2026-05-09 00:12:16', '2026-05-19 10:25:33', 0, 0, 0);
