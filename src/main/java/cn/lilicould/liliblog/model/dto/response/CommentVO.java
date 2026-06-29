@@ -41,12 +41,4 @@ public class CommentVO implements Serializable {
     private UserInfo creator;
     @Schema(description = "评论层级,0-一级评论,1-二级评论")
     private Integer level;
-
-    public Integer getLevel() {
-        if (parentId == null || parentId == 0) {
-            return 0;
-        } else {
-            return 1;
-        }
-    }
 }

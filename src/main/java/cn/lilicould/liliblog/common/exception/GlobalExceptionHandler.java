@@ -5,6 +5,7 @@ import cn.lilicould.liliblog.common.result.Result;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -73,6 +74,16 @@ public class GlobalExceptionHandler {
     public Result<?> handleAuthorizationDenied(AuthorizationDeniedException e) {
         log.error("用户权限不足 -> {}",e.getMessage());
         return Result.error(CodeEnum.NO_PERMISSION);
+    }
+
+    /**
+     * 处理用户不存在异常
+     * @param e 用户不存在异常
+     */
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public Result<?> handleUsernameNotFound(UsernameNotFoundException e) {
+        log.error("用户不存在 -> {}",e.getMessage());
+        return Result.error(CodeEnum.USER_NOT_FOUND);
     }
 
     /**
