@@ -371,8 +371,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
      */
     private int getChildCount(Long commentId) {
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Comment::getParentId, commentId);
-        if (!BaseContext.isAdmin()) {
+        queryWrapper.eq(Comment::getRootId, commentId);
+        if (!BaseContext.isAdmin()) { // 非管理员，排除未审核的评论
             queryWrapper.and(wrapper -> wrapper
                     .eq(Comment::getStatus, StatusConstant.ENABLED)
                     .or()
