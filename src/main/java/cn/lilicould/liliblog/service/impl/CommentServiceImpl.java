@@ -60,7 +60,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
     }
 
     /**
-     * 获取评论列表（level为0的）
+     * 获取评论列表
      * @param commentQuery 查询参数
      * @return 评论列表
      */
@@ -92,6 +92,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
         // 构建返回结果
         List<CommentVO> records = commentPage.getRecords().stream().map(comment -> CommentVO.builder()
                 .id(comment.getId())
+                .rootId(comment.getRootId())
                 .content(comment.getContent())
                 .articleId(comment.getArticleId())
                 .status(comment.getStatus())
@@ -161,6 +162,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
                 .creator(buildUserInfo(comment.getCreateBy())) // 构建发布者信息
                 .likeCount(getLikeCount(comment.getId()))
                 .parentId(comment.getParentId())
+                .rootId(rootId)
                 .ipAddress(comment.getIpAddress())
                 .ipAddressLocation(Ip2RegionUtil.getFormattedLocation(comment.getIpAddress()))
                 .createTime(comment.getCreateTime())
@@ -231,13 +233,13 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
         // 设置默认值
         comment.setStatus(StatusConstant.COMMENT_PENDING);
         if (comment.getParentId() == null) {
-            comment.setParentId(0L);
+            comment.setParentId(0L); // 如果父评论ID为空，则设置为0，表示是一级评论
         }
 
         if (comment.getParentId() != null && comment.getRootId() != null) {
             // 如果父评论和根评论都指定了，应该判断是不是非法评论
             // 比如父评论的根评论ID和当前评论的根评论ID不一致
-            if (comment.getParentId() != 0) { // parentId为0的话，后续会设置根评论为插入后的 ID
+            if (comment.getParentId() != 0) { // parentId为0的话，代表一级评论，后续会设置根评论为插入后的 ID
                 Long parentRootId = commentMapper.selectOne(new LambdaQueryWrapper<Comment>()
                         .select(Comment::getRootId)
                         .eq(Comment::getId, comment.getParentId())
@@ -274,8 +276,8 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
         Page<Comment> page = new Page<>(commentQuery.getCurrent(), commentQuery.getSize());
         // 添加排序
         page.setOrders(List.of(
-                OrderItem.asc(OrderConstant.ID),
-                OrderItem.desc(OrderConstant.CREATE_TIME)
+                OrderItem.desc(OrderConstant.CREATE_TIME),
+                OrderItem.asc(OrderConstant.ID)
         ));
 
         // 创建查询条件
