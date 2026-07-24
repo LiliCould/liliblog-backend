@@ -1,6 +1,6 @@
 package cn.lilicould.liliblog.service;
 
-import cn.lilicould.entity.LikeRecord;
+import cn.lilicould.liliblog.entity.LikeRecord;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

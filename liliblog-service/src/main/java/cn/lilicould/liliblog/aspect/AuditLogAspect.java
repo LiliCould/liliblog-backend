@@ -1,10 +1,10 @@
 package cn.lilicould.liliblog.aspect;
 
-import cn.lilicould.annotation.Audit;
+import cn.lilicould.liliblog.annotation.Audit;
 import cn.lilicould.liliblog.context.BaseContext;
 import cn.lilicould.liliblog.util.IpUtil;
 import cn.lilicould.liliblog.mapper.AuditLogMapper;
-import cn.lilicould.entity.AuditLog;
+import cn.lilicould.liliblog.entity.AuditLog;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

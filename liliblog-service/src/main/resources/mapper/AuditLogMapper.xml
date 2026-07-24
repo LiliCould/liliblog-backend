@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.lilicould.liliblog.mapper.AuditLogMapper">
 
-    <resultMap id="BaseResultMap" type="cn.lilicould.entity.AuditLog">
+    <resultMap id="BaseResultMap" type="cn.lilicould.liliblog.entity.AuditLog">
             <id property="id" column="id" />
             <result property="username" column="username" />
             <result property="module" column="module" />

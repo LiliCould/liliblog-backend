@@ -1,7 +1,7 @@
 package cn.lilicould.liliblog.strategy;
 
-import cn.lilicould.enums.CodeEnum;
-import cn.lilicould.exception.BusinessException;
+import cn.lilicould.liliblog.enums.CodeEnum;
+import cn.lilicould.liliblog.exception.BusinessException;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 

@@ -1,7 +1,7 @@
 package cn.lilicould.liliblog.util;
 
 
-import cn.lilicould.query.BaseQuery;
+import cn.lilicould.liliblog.query.BaseQuery;
 
 public class PageUtil {
     public static <T extends BaseQuery> T setDefault(T query) {

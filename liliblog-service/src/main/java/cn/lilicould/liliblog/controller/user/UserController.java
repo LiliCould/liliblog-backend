@@ -1,13 +1,13 @@
 package cn.lilicould.liliblog.controller.user;
 
-import cn.lilicould.constant.StatusConstant;
+import cn.lilicould.liliblog.constant.StatusConstant;
 import cn.lilicould.liliblog.context.BaseContext;
-import cn.lilicould.enums.CodeEnum;
-import cn.lilicould.exception.BusinessException;
-import cn.lilicould.result.Result;
-import cn.lilicould.request.UserUpdateRequest;
-import cn.lilicould.response.UserInfo;
-import cn.lilicould.entity.User;
+import cn.lilicould.liliblog.enums.CodeEnum;
+import cn.lilicould.liliblog.exception.BusinessException;
+import cn.lilicould.liliblog.result.Result;
+import cn.lilicould.liliblog.request.UserUpdateRequest;
+import cn.lilicould.liliblog.response.UserInfo;
+import cn.lilicould.liliblog.entity.User;
 import cn.lilicould.liliblog.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

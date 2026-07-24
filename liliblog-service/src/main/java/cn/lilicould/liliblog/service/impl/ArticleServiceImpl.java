@@ -1,23 +1,23 @@
 package cn.lilicould.liliblog.service.impl;
 
-import cn.lilicould.annotation.Audit;
-import cn.lilicould.constant.OrderConstant;
-import cn.lilicould.constant.StatusConstant;
+import cn.lilicould.liliblog.annotation.Audit;
+import cn.lilicould.liliblog.constant.OrderConstant;
+import cn.lilicould.liliblog.constant.StatusConstant;
 import cn.lilicould.liliblog.context.BaseContext;
-import cn.lilicould.enums.CodeEnum;
-import cn.lilicould.enums.TargetType;
-import cn.lilicould.exception.BusinessException;
+import cn.lilicould.liliblog.entity.*;
+import cn.lilicould.liliblog.enums.CodeEnum;
+import cn.lilicould.liliblog.enums.TargetType;
+import cn.lilicould.liliblog.exception.BusinessException;
+import cn.lilicould.liliblog.response.*;
 import cn.lilicould.liliblog.util.MarkdownUtil;
 import cn.lilicould.liliblog.config.properties.InfoProperties;
 import cn.lilicould.liliblog.mapper.*;
-import cn.lilicould.query.ArticleQuery;
-import cn.lilicould.query.ArticleSearchQuery;
-import cn.lilicould.request.ArticleCreateRequest;
-import cn.lilicould.request.ArticleUpdateRequest;
+import cn.lilicould.liliblog.query.ArticleQuery;
+import cn.lilicould.liliblog.query.ArticleSearchQuery;
+import cn.lilicould.liliblog.request.ArticleCreateRequest;
+import cn.lilicould.liliblog.request.ArticleUpdateRequest;
 import cn.lilicould.liliblog.service.ArticleService;
 import cn.lilicould.liliblog.service.UserService;
-import cn.lilicould.response.CategoryVO;
-import cn.lilicould.response.TagVO;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -41,7 +41,7 @@ import java.util.Objects;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, cn.lilicould.entity.Article>
+public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     implements ArticleService{
 
     private final ArticleMapper articleMapper;
@@ -61,9 +61,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, cn.lilicould.
      * @return 文章详情
      */
     @Override
-    public cn.lilicould.response.ArticleDetailsVO getArticle(Long id) {
+    public ArticleDetailsVO getArticle(Long id) {
         // 查询文章基础信息
-        cn.lilicould.entity.Article article = articleMapper.selectById(id);
+        Article article = articleMapper.selectById(id);
         if (article == null) {
             throw new BusinessException(CodeEnum.ARTICLE_NOT_FOUND);
         }
@@ -72,7 +72,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, cn.lilicould.
             throw new BusinessException(CodeEnum.NO_PERMISSION);
         }
 
-        cn.lilicould.response.ArticleDetailsVO articleDetailsVO = new cn.lilicould.response.ArticleDetailsVO();
+        ArticleDetailsVO articleDetailsVO = new ArticleDetailsVO();
         BeanUtils.copyProperties(article, articleDetailsVO);
 
         // 设置作者和更新者信息
@@ -103,31 +103,31 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, cn.lilicould.
      * @return 文章列表
      */
     @Override
-    public cn.lilicould.response.PageInfo<cn.lilicould.response.ArticleVO> getArticleList(ArticleQuery articleQuery) {
+    public PageInfo<ArticleVO> getArticleList(ArticleQuery articleQuery) {
         // 初始化分页参数
-        Page<cn.lilicould.entity.Article> page = Page.of(articleQuery.getCurrent(), articleQuery.getSize());
+        Page<Article> page = Page.of(articleQuery.getCurrent(), articleQuery.getSize());
         page.addOrder(OrderItem.desc(OrderConstant.CREATE_TIME));
         page.addOrder(OrderItem.desc(OrderConstant.UPDATE_TIME)); // 排序
 
         // 查询条件
-        LambdaQueryWrapper<cn.lilicould.entity.Article> queryWrapper = new LambdaQueryWrapper<>();
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
         // 基础条件：标题模糊查询
-        queryWrapper.like(articleQuery.getTitle() != null, cn.lilicould.entity.Article::getTitle, articleQuery.getTitle())
-                .eq(articleQuery.getCreateBy() != null, cn.lilicould.entity.Article::getCreateBy, articleQuery.getCreateBy())
-                .eq(articleQuery.getCategoryId() != null, cn.lilicould.entity.Article::getCategoryId, articleQuery.getCategoryId())
+        queryWrapper.like(articleQuery.getTitle() != null, Article::getTitle, articleQuery.getTitle())
+                .eq(articleQuery.getCreateBy() != null, Article::getCreateBy, articleQuery.getCreateBy())
+                .eq(articleQuery.getCategoryId() != null, Article::getCategoryId, articleQuery.getCategoryId())
                 .between(
                         articleQuery.getStartTime() != null && articleQuery.getEndTime() != null,
-                        cn.lilicould.entity.Article::getCreateTime,
+                        Article::getCreateTime,
                         articleQuery.getStartTime(),
                         articleQuery.getEndTime()
                 )
-                .select(cn.lilicould.entity.Article::getId, cn.lilicould.entity.Article::getTitle, cn.lilicould.entity.Article::getSlug, cn.lilicould.entity.Article::getStatus, cn.lilicould.entity.Article::getSummary, cn.lilicould.entity.Article::getCoverImage, cn.lilicould.entity.Article::getViewCount, cn.lilicould.entity.Article::getCategoryId, cn.lilicould.entity.Article::getCreateBy, cn.lilicould.entity.Article::getUpdateBy, cn.lilicould.entity.Article::getCreateTime, cn.lilicould.entity.Article::getUpdateTime);
+                .select(Article::getId, Article::getTitle, Article::getSlug, Article::getStatus, Article::getSummary, Article::getCoverImage, Article::getViewCount, Article::getCategoryId, Article::getCreateBy, Article::getUpdateBy, Article::getCreateTime, Article::getUpdateTime);
 
         // 权限控制：根据用户角色和登录状态过滤文章
         applyPermissionFilter(queryWrapper, articleQuery.getStatus());
 
         // 查询
-        Page<cn.lilicould.entity.Article> articlePage = articleMapper.selectPage(page, queryWrapper);
+        Page<Article> articlePage = articleMapper.selectPage(page, queryWrapper);
 
         // 转换为VO返回
         return convertToVO(articlePage, articleQuery.getCurrent(), articleQuery.getSize());
@@ -161,19 +161,19 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, cn.lilicould.
         this.removeById(id);
 
         // 删除点赞记录
-        LambdaQueryWrapper<cn.lilicould.entity.LikeRecord> likeQueryWrapper = new LambdaQueryWrapper<>();
-        likeQueryWrapper.eq(cn.lilicould.entity.LikeRecord::getTargetId, id)
-                .eq(cn.lilicould.entity.LikeRecord::getTargetType, TargetType.ARTICLE.getCode());
+        LambdaQueryWrapper<LikeRecord> likeQueryWrapper = new LambdaQueryWrapper<>();
+        likeQueryWrapper.eq(LikeRecord::getTargetId, id)
+                .eq(LikeRecord::getTargetType, TargetType.ARTICLE.getCode());
         likeRecordMapper.delete(likeQueryWrapper);
 
         // 删除对应的article_tag记录
-        LambdaQueryWrapper<cn.lilicould.entity.ArticleTag> articleTagQueryWrapper = new LambdaQueryWrapper<>();
-        articleTagQueryWrapper.eq(cn.lilicould.entity.ArticleTag::getArticleId, id);
+        LambdaQueryWrapper<ArticleTag> articleTagQueryWrapper = new LambdaQueryWrapper<>();
+        articleTagQueryWrapper.eq(ArticleTag::getArticleId, id);
         articleTagMapper.delete(articleTagQueryWrapper);
 
         // 删除对应的所有评论
-        LambdaQueryWrapper<cn.lilicould.entity.Comment> commentQueryWrapper = new LambdaQueryWrapper<>();
-        commentQueryWrapper.eq(cn.lilicould.entity.Comment::getArticleId, id);
+        LambdaQueryWrapper<Comment> commentQueryWrapper = new LambdaQueryWrapper<>();
+        commentQueryWrapper.eq(Comment::getArticleId, id);
         commentMapper.delete(commentQueryWrapper);
     }
 
@@ -208,7 +208,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, cn.lilicould.
         }
 
         // 拷贝数据
-        cn.lilicould.entity.Article article = new cn.lilicould.entity.Article();
+        Article article = new Article();
         BeanUtils.copyProperties(articleUpdateRequest, article);
         article.setId(id);
 
@@ -220,31 +220,31 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, cn.lilicould.
         article.setStatus(calculateStatus(article.getStatus()));
 
         // 如果要修改别名，则检查别名是否已存在（排除自己）
-        if (articleUpdateRequest.getSlug() != null && articleMapper.exists(new LambdaQueryWrapper<cn.lilicould.entity.Article>().eq(cn.lilicould.entity.Article::getSlug, articleUpdateRequest.getSlug()).ne(cn.lilicould.entity.Article::getId, id))) {
+        if (articleUpdateRequest.getSlug() != null && articleMapper.exists(new LambdaQueryWrapper<Article>().eq(Article::getSlug, articleUpdateRequest.getSlug()).ne(Article::getId, id))) {
             throw new BusinessException(CodeEnum.SLUG_ALREADY_EXISTS);
         }
 
         // 检查分类是否存在且被启用
         if (articleUpdateRequest.getCategoryId() != null
                 &&
-                !categoryMapper.exists(new LambdaQueryWrapper<cn.lilicould.entity.Category>()
-                        .eq(cn.lilicould.entity.Category::getId, articleUpdateRequest.getCategoryId())
-                        .eq(cn.lilicould.entity.Category::getStatus,StatusConstant.ENABLED)
+                !categoryMapper.exists(new LambdaQueryWrapper<Category>()
+                        .eq(Category::getId, articleUpdateRequest.getCategoryId())
+                        .eq(Category::getStatus,StatusConstant.ENABLED)
                 )) {
             throw new BusinessException(CodeEnum.CATEGORY_NOT_FOUND);
         }
 
         // 检查标签列表是否存在
         for (Long tagId : articleUpdateRequest.getTags()) {
-            cn.lilicould.entity.Tag tag = tagMapper.selectById(tagId);
+            Tag tag = tagMapper.selectById(tagId);
             if (tag == null) {
                 throw new BusinessException(CodeEnum.TAG_NOT_FOUND);
             }
         }
 
         // 删除原来标签
-        LambdaQueryWrapper<cn.lilicould.entity.ArticleTag> articleTagQueryWrapper = new LambdaQueryWrapper<>();
-        articleTagQueryWrapper.eq(cn.lilicould.entity.ArticleTag::getArticleId, id);
+        LambdaQueryWrapper<ArticleTag> articleTagQueryWrapper = new LambdaQueryWrapper<>();
+        articleTagQueryWrapper.eq(ArticleTag::getArticleId, id);
         articleTagMapper.delete(articleTagQueryWrapper);
 
         // 更新文章
@@ -266,11 +266,11 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, cn.lilicould.
      * @return 文章详情
      */
     @Override
-    public cn.lilicould.response.ArticleDetailsVO getArticleBySlug(String slug) {
+    public ArticleDetailsVO getArticleBySlug(String slug) {
         // 查询文章基础信息
-        LambdaQueryWrapper<cn.lilicould.entity.Article> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(cn.lilicould.entity.Article::getSlug, slug);
-        cn.lilicould.entity.Article article = articleMapper.selectOne(queryWrapper);
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Article::getSlug, slug);
+        Article article = articleMapper.selectOne(queryWrapper);
         if (article == null) {
             return null;
         }
@@ -294,7 +294,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, cn.lilicould.
     )
     public void auditArticle(Long id, Integer status, String reason) {
         // 根据审核结果更新文章状态
-        cn.lilicould.entity.Article article = this.getById(id);
+        Article article = this.getById(id);
 
         if (article == null) {
             throw new BusinessException(CodeEnum.ARTICLE_NOT_FOUND);
@@ -306,7 +306,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, cn.lilicould.
             // 理论上不会走到这里，因为文章的作者不能为空，但是怕有未知情况，所以这里加上
             throw new BusinessException(CodeEnum.USER_NOT_FOUND);
         }
-        cn.lilicould.entity.User author = userService.getById(authorId);
+        User author = userService.getById(authorId);
         String email = author.getEmail();
 
         // 发送邮件给作者
@@ -347,25 +347,25 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, cn.lilicould.
      * @return 文章列表
      */
     @Override
-    public cn.lilicould.response.PageInfo<cn.lilicould.response.ArticleVO> search(ArticleSearchQuery searchQuery) {
-        Page<cn.lilicould.entity.Article> page = Page.of(searchQuery.getCurrent(), searchQuery.getSize());
+    public PageInfo<ArticleVO> search(ArticleSearchQuery searchQuery) {
+        Page<Article> page = Page.of(searchQuery.getCurrent(), searchQuery.getSize());
         String keyword = searchQuery.getKeyword();
         // 排序
         page.addOrder(OrderItem.descs(OrderConstant.ID, OrderConstant.CREATE_TIME, OrderConstant.UPDATE_TIME));
 
         // 构造查询条件
-        LambdaQueryWrapper<cn.lilicould.entity.Article> queryWrapper = new LambdaQueryWrapper<>();
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.and(wrapper -> wrapper
-                        .like(cn.lilicould.entity.Article::getTitle, keyword)
+                        .like(Article::getTitle, keyword)
                         .or()
-                        .like(cn.lilicould.entity.Article::getSummary, keyword)
+                        .like(Article::getSummary, keyword)
                         .or()
-                        .like(cn.lilicould.entity.Article::getContent, keyword))
-                .eq(cn.lilicould.entity.Article::getStatus, StatusConstant.ARTICLE_PUBLISHED);
+                        .like(Article::getContent, keyword))
+                .eq(Article::getStatus, StatusConstant.ARTICLE_PUBLISHED);
 
 
         // 查询
-        Page<cn.lilicould.entity.Article> articlePage = this.page(page, queryWrapper);
+        Page<Article> articlePage = this.page(page, queryWrapper);
 
         // 转换为返回
         return convertToVO(articlePage, searchQuery.getCurrent(), searchQuery.getSize());
@@ -387,7 +387,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, cn.lilicould.
     public void save(ArticleCreateRequest articleCreateRequest) {
 
         // 拷贝数据
-        cn.lilicould.entity.Article article = new cn.lilicould.entity.Article();
+        Article article = new Article();
         BeanUtils.copyProperties(articleCreateRequest, article);
 
         // 将markdown内容转为HTML
@@ -399,21 +399,21 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, cn.lilicould.
         article.setViewCount(0); // 阅读量默认0
 
         // 检查别名是否存在
-        if (articleMapper.exists(new LambdaQueryWrapper<cn.lilicould.entity.Article>().eq(cn.lilicould.entity.Article::getSlug, article.getSlug()))) {
+        if (articleMapper.exists(new LambdaQueryWrapper<Article>().eq(Article::getSlug, article.getSlug()))) {
             throw new BusinessException(CodeEnum.SLUG_ALREADY_EXISTS);
         }
 
         // 检查分类是否存在且启用
-        if (!categoryMapper.exists(new LambdaQueryWrapper<cn.lilicould.entity.Category>()
-                .eq(cn.lilicould.entity.Category::getId, article.getCategoryId())
-                .eq(article.getStatus() != null, cn.lilicould.entity.Category::getStatus, StatusConstant.ENABLED)
+        if (!categoryMapper.exists(new LambdaQueryWrapper<Category>()
+                .eq(Category::getId, article.getCategoryId())
+                .eq(article.getStatus() != null, Category::getStatus, StatusConstant.ENABLED)
         )) {
             throw new BusinessException(CodeEnum.CATEGORY_NOT_FOUND);
         }
 
         // 检查标签列表是否存在
         for (Long tagId : articleCreateRequest.getTags()) {
-            cn.lilicould.entity.Tag tag = tagMapper.selectById(tagId);
+            Tag tag = tagMapper.selectById(tagId);
             if (tag == null) {
                 throw new BusinessException(CodeEnum.TAG_NOT_FOUND);
             }
@@ -430,14 +430,14 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, cn.lilicould.
         saveArticleTags(article.getId(), articleCreateRequest.getTags());
     }
 
-    private cn.lilicould.response.PageInfo<cn.lilicould.response.ArticleVO> convertToVO(Page<cn.lilicould.entity.Article> articlePage, long current, long size) {
+    private PageInfo<ArticleVO> convertToVO(Page<Article> articlePage, long current, long size) {
         if (articlePage.getTotal() == 0)
-            return cn.lilicould.response.PageInfo.empty(current, size);
+            return PageInfo.empty(current, size);
 
         // 填充信息并返回
         // todo 有N+1问题，需要优化
-        List<cn.lilicould.response.ArticleVO> records = articlePage.getRecords().stream().map(article -> {
-            cn.lilicould.response.ArticleVO articleVO = new cn.lilicould.response.ArticleVO();
+        List<ArticleVO> records = articlePage.getRecords().stream().map(article -> {
+            ArticleVO articleVO = new ArticleVO();
             BeanUtils.copyProperties(article, articleVO);
             articleVO.setCreator(buildUserInfo(article.getCreateBy())); // 设置作者信息
             articleVO.setUpdater(buildUserInfo(article.getUpdateBy())); // 设置新者信息
@@ -448,16 +448,16 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, cn.lilicould.
             return articleVO;
         }).toList();
 
-        Page<cn.lilicould.response.ArticleVO> voPage = new Page<>(articlePage.getCurrent(), articlePage.getSize(), articlePage.getTotal()); // 会自动计算其他信息
+        Page<ArticleVO> voPage = new Page<>(articlePage.getCurrent(), articlePage.getSize(), articlePage.getTotal()); // 会自动计算其他信息
         voPage.setRecords(records);
 
-        return cn.lilicould.response.PageInfo.of(voPage);
+        return PageInfo.of(voPage);
     }
 
     /**
      * 判断当前用户是否有权限访问文章
      */
-    private boolean hasReadAuthority(cn.lilicould.entity.Article article) {
+    private boolean hasReadAuthority(Article article) {
         if (BaseContext.isAdmin()) { // 管理员
             return true;
         }
@@ -480,9 +480,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, cn.lilicould.
             return true;  // 管理员
         }
 
-        LambdaQueryWrapper<cn.lilicould.entity.Article> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(cn.lilicould.entity.Article::getId, articleId)
-                .select(cn.lilicould.entity.Article::getCreateBy);
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Article::getId, articleId)
+                .select(Article::getCreateBy);
         Long createBy = articleMapper.selectOne(queryWrapper).getCreateBy(); // 获取作者ID
 
         if (createBy == null) {
@@ -499,26 +499,26 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, cn.lilicould.
         if (articleId == null) {
             return false;
         }
-        return articleMapper.exists(new LambdaQueryWrapper<cn.lilicould.entity.Article>().eq(cn.lilicould.entity.Article::getId, articleId));
+        return articleMapper.exists(new LambdaQueryWrapper<Article>().eq(Article::getId, articleId));
     }
     /**
      * 构建用户信息
      */
-    private cn.lilicould.response.UserInfo buildUserInfo(Long userId) {
+    private UserInfo buildUserInfo(Long userId) {
         if (userId == null) {
             return null;
         }
-        cn.lilicould.entity.User user = userMapper.selectById(userId);
-        return user != null ? cn.lilicould.response.UserInfo.from(user) : null;
+        User user = userMapper.selectById(userId);
+        return user != null ? UserInfo.from(user) : null;
     }
 
     /**
      * 获取文章点赞数
      */
     private int getLikeCount(Long articleId) {
-        LambdaQueryWrapper<cn.lilicould.entity.LikeRecord> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(cn.lilicould.entity.LikeRecord::getTargetId, articleId)
-                .eq(cn.lilicould.entity.LikeRecord::getTargetType, TargetType.ARTICLE.getCode());
+        LambdaQueryWrapper<LikeRecord> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(LikeRecord::getTargetId, articleId)
+                .eq(LikeRecord::getTargetType, TargetType.ARTICLE.getCode());
         return likeRecordMapper.selectCount(queryWrapper).intValue();
     }
 
@@ -526,9 +526,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, cn.lilicould.
      * 获取文章评论数
      */
     private int getCommentCount(Long articleId) {
-        LambdaQueryWrapper<cn.lilicould.entity.Comment> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(cn.lilicould.entity.Comment::getArticleId, articleId)
-                .eq(cn.lilicould.entity.Comment::getStatus, StatusConstant.COMMENT_PUBLISHED);
+        LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Comment::getArticleId, articleId)
+                .eq(Comment::getStatus, StatusConstant.COMMENT_PUBLISHED);
         return commentMapper.selectCount(queryWrapper).intValue();
     }
 
@@ -539,7 +539,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, cn.lilicould.
         if (categoryId == null) {
             return null;
         }
-        cn.lilicould.entity.Category category = categoryMapper.selectById(categoryId);
+        Category category = categoryMapper.selectById(categoryId);
         if (category == null) {
             return null;
         }
@@ -555,7 +555,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, cn.lilicould.
      * 构建标签列表
      */
     private List<TagVO> buildTagVOList(Long articleId) {
-        List<cn.lilicould.entity.Tag> tags = tagMapper.selectTagsByArticleId(articleId);
+        List<Tag> tags = tagMapper.selectTagsByArticleId(articleId);
         log.debug("标签列表：{}", tags);
         if (tags == null || tags.isEmpty()) {
             return List.of();
@@ -600,19 +600,19 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, cn.lilicould.
      * @param queryWrapper 查询包装器
      * @param status 查询的状态（可能为null）
      */
-    private void applyPermissionFilter(LambdaQueryWrapper<cn.lilicould.entity.Article> queryWrapper, Integer status) {
+    private void applyPermissionFilter(LambdaQueryWrapper<Article> queryWrapper, Integer status) {
         Long currentUserId = BaseContext.getCurrentUserId();
         boolean isAdmin = BaseContext.isAdmin();
 
         // 情况1：管理员 - 可以查所有状态，如果指定了status则按status查
         if (isAdmin) {
-            queryWrapper.eq(status != null, cn.lilicould.entity.Article::getStatus, status);
+            queryWrapper.eq(status != null, Article::getStatus, status);
             return;
         }
 
         // 情况2：未登录用户 - 只能查已发布文章
         if (currentUserId == null) {
-            queryWrapper.eq(cn.lilicould.entity.Article::getStatus, StatusConstant.ARTICLE_PUBLISHED);
+            queryWrapper.eq(Article::getStatus, StatusConstant.ARTICLE_PUBLISHED);
             return;
         }
 
@@ -620,19 +620,19 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, cn.lilicould.
         if (status != null) {
             // 如果指定了已发布状态，可以查所有人的已发布文章
             if (StatusConstant.ARTICLE_PUBLISHED.equals(status)) {
-                queryWrapper.eq(cn.lilicould.entity.Article::getStatus, status);
+                queryWrapper.eq(Article::getStatus, status);
             }
             // 如果指定了非已发布状态（待审核/草稿），只能查自己的
             else {
-                queryWrapper.eq(cn.lilicould.entity.Article::getStatus, status)
-                        .eq(cn.lilicould.entity.Article::getCreateBy, currentUserId);
+                queryWrapper.eq(Article::getStatus, status)
+                        .eq(Article::getCreateBy, currentUserId);
             }
         } else {
             // 如果未指定status，可以查：别人的已发布文章 + 自己的所有文章
             queryWrapper.and(wrapper ->
-                    wrapper.eq(cn.lilicould.entity.Article::getStatus, StatusConstant.ARTICLE_PUBLISHED)  // 已发布的文章
+                    wrapper.eq(Article::getStatus, StatusConstant.ARTICLE_PUBLISHED)  // 已发布的文章
                             .or()  // 或者
-                            .eq(cn.lilicould.entity.Article::getCreateBy, currentUserId)  // 自己创建的文章（所有状态）
+                            .eq(Article::getCreateBy, currentUserId)  // 自己创建的文章（所有状态）
             );
         }
     }
@@ -647,9 +647,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, cn.lilicould.
             return;
         }
 
-        List<cn.lilicould.entity.ArticleTag> articleTags = tagIds.stream()
+        List<ArticleTag> articleTags = tagIds.stream()
                 .map(tagId -> {
-                    cn.lilicould.entity.ArticleTag articleTag = new cn.lilicould.entity.ArticleTag();
+                    ArticleTag articleTag = new ArticleTag();
                     articleTag.setArticleId(articleId);
                     articleTag.setTagId(tagId);
                     return articleTag;

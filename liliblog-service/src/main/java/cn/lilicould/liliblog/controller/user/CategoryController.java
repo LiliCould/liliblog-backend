@@ -1,17 +1,17 @@
 package cn.lilicould.liliblog.controller.user;
 
-import cn.lilicould.constant.StatusConstant;
+import cn.lilicould.liliblog.constant.StatusConstant;
 import cn.lilicould.liliblog.context.BaseContext;
-import cn.lilicould.enums.CodeEnum;
-import cn.lilicould.exception.BusinessException;
-import cn.lilicould.result.Result;
+import cn.lilicould.liliblog.enums.CodeEnum;
+import cn.lilicould.liliblog.exception.BusinessException;
+import cn.lilicould.liliblog.result.Result;
 import cn.lilicould.liliblog.util.PageUtil;
-import cn.lilicould.query.CategoryQuery;
-import cn.lilicould.request.CategoryCreateRequest;
-import cn.lilicould.request.CategoryUpdateRequest;
-import cn.lilicould.response.CategoryVO;
-import cn.lilicould.response.PageInfo;
-import cn.lilicould.entity.Category;
+import cn.lilicould.liliblog.query.CategoryQuery;
+import cn.lilicould.liliblog.request.CategoryCreateRequest;
+import cn.lilicould.liliblog.request.CategoryUpdateRequest;
+import cn.lilicould.liliblog.response.CategoryVO;
+import cn.lilicould.liliblog.response.PageInfo;
+import cn.lilicould.liliblog.entity.Category;
 import cn.lilicould.liliblog.service.CategoryService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.v3.oas.annotations.Operation;

@@ -1,6 +1,6 @@
 package cn.lilicould.liliblog.config.mybatis;
 
-import cn.lilicould.constant.StatusConstant;
+import cn.lilicould.liliblog.constant.StatusConstant;
 import cn.lilicould.liliblog.context.BaseContext;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import org.apache.ibatis.reflection.MetaObject;

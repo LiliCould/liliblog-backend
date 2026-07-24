@@ -1,8 +1,8 @@
 package cn.lilicould.liliblog.service;
 
-import cn.lilicould.request.LoginRequest;
-import cn.lilicould.request.RegisterRequest;
-import cn.lilicould.response.LoginVO;
+import cn.lilicould.liliblog.request.LoginRequest;
+import cn.lilicould.liliblog.request.RegisterRequest;
+import cn.lilicould.liliblog.response.LoginVO;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 

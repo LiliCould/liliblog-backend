@@ -1,8 +1,8 @@
 package cn.lilicould.liliblog.util;
 
-import cn.lilicould.constant.StatusConstant;
+import cn.lilicould.liliblog.constant.StatusConstant;
 import cn.lilicould.liliblog.config.properties.JwtProperties;
-import cn.lilicould.entity.User;
+import cn.lilicould.liliblog.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

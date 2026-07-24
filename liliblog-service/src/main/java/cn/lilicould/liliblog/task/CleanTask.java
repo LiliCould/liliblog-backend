@@ -1,13 +1,13 @@
 package cn.lilicould.liliblog.task;
 
-import cn.lilicould.constant.StatusConstant;
+import cn.lilicould.liliblog.constant.StatusConstant;
 import cn.lilicould.liliblog.config.properties.InfoProperties;
 import cn.lilicould.liliblog.mapper.ArticleTagMapper;
 import cn.lilicould.liliblog.mapper.AuditLogMapper;
 import cn.lilicould.liliblog.mapper.CommentMapper;
 import cn.lilicould.liliblog.mapper.LikeRecordMapper;
-import cn.lilicould.entity.AuditLog;
-import cn.lilicould.entity.Comment;
+import cn.lilicould.liliblog.entity.AuditLog;
+import cn.lilicould.liliblog.entity.Comment;
 import cn.lilicould.liliblog.service.impl.EmailTemplateService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;

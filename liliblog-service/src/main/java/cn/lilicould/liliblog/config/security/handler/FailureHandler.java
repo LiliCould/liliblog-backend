@@ -1,7 +1,7 @@
 package cn.lilicould.liliblog.config.security.handler;
 
-import cn.lilicould.enums.CodeEnum;
-import cn.lilicould.result.Result;
+import cn.lilicould.liliblog.enums.CodeEnum;
+import cn.lilicould.liliblog.result.Result;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

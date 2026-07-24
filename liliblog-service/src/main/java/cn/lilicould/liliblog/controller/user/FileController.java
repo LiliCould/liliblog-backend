@@ -1,6 +1,6 @@
 package cn.lilicould.liliblog.controller.user;
 
-import cn.lilicould.result.Result;
+import cn.lilicould.liliblog.result.Result;
 import cn.lilicould.liliblog.util.OssUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

@@ -1,13 +1,13 @@
 package cn.lilicould.liliblog.service;
 
-import cn.lilicould.query.ArticleQuery;
-import cn.lilicould.query.ArticleSearchQuery;
-import cn.lilicould.request.ArticleCreateRequest;
-import cn.lilicould.request.ArticleUpdateRequest;
-import cn.lilicould.response.ArticleDetailsVO;
-import cn.lilicould.response.ArticleVO;
-import cn.lilicould.response.PageInfo;
-import cn.lilicould.entity.Article;
+import cn.lilicould.liliblog.query.ArticleQuery;
+import cn.lilicould.liliblog.query.ArticleSearchQuery;
+import cn.lilicould.liliblog.request.ArticleCreateRequest;
+import cn.lilicould.liliblog.request.ArticleUpdateRequest;
+import cn.lilicould.liliblog.response.ArticleDetailsVO;
+import cn.lilicould.liliblog.response.ArticleVO;
+import cn.lilicould.liliblog.response.PageInfo;
+import cn.lilicould.liliblog.entity.Article;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;

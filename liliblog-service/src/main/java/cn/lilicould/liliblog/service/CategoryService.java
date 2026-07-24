@@ -1,11 +1,11 @@
 package cn.lilicould.liliblog.service;
 
-import cn.lilicould.query.CategoryQuery;
-import cn.lilicould.request.CategoryCreateRequest;
-import cn.lilicould.request.CategoryUpdateRequest;
-import cn.lilicould.response.CategoryVO;
-import cn.lilicould.response.PageInfo;
-import cn.lilicould.entity.Category;
+import cn.lilicould.liliblog.query.CategoryQuery;
+import cn.lilicould.liliblog.request.CategoryCreateRequest;
+import cn.lilicould.liliblog.request.CategoryUpdateRequest;
+import cn.lilicould.liliblog.response.CategoryVO;
+import cn.lilicould.liliblog.response.PageInfo;
+import cn.lilicould.liliblog.entity.Category;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;

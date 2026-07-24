@@ -1,7 +1,7 @@
 package cn.lilicould.liliblog.util;
 
-import cn.lilicould.enums.CodeEnum;
-import cn.lilicould.exception.BusinessException;
+import cn.lilicould.liliblog.enums.CodeEnum;
+import cn.lilicould.liliblog.exception.BusinessException;
 import cn.lilicould.liliblog.config.properties.OssProperties;
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;

@@ -1,11 +1,11 @@
 package cn.lilicould.liliblog.service;
 
-import cn.lilicould.query.TagQuery;
-import cn.lilicould.request.TagCreateRequest;
-import cn.lilicould.request.TagUpdateRequest;
-import cn.lilicould.response.PageInfo;
-import cn.lilicould.response.TagVO;
-import cn.lilicould.entity.Tag;
+import cn.lilicould.liliblog.query.TagQuery;
+import cn.lilicould.liliblog.request.TagCreateRequest;
+import cn.lilicould.liliblog.request.TagUpdateRequest;
+import cn.lilicould.liliblog.response.PageInfo;
+import cn.lilicould.liliblog.response.TagVO;
+import cn.lilicould.liliblog.entity.Tag;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;

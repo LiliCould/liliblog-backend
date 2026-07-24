@@ -1,6 +1,6 @@
 package cn.lilicould.liliblog.mapper;
 
-import cn.lilicould.entity.AuditLog;
+import cn.lilicould.liliblog.entity.AuditLog;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

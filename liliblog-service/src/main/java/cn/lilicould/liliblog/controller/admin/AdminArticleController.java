@@ -1,13 +1,13 @@
 package cn.lilicould.liliblog.controller.admin;
 
-import cn.lilicould.enums.CodeEnum;
-import cn.lilicould.result.Result;
+import cn.lilicould.liliblog.enums.CodeEnum;
+import cn.lilicould.liliblog.result.Result;
 import cn.lilicould.liliblog.util.PageUtil;
-import cn.lilicould.query.ArticleQuery;
-import cn.lilicould.request.ArticleAuditRequest;
-import cn.lilicould.response.ArticleDetailsVO;
-import cn.lilicould.response.ArticleVO;
-import cn.lilicould.response.PageInfo;
+import cn.lilicould.liliblog.query.ArticleQuery;
+import cn.lilicould.liliblog.request.ArticleAuditRequest;
+import cn.lilicould.liliblog.response.ArticleDetailsVO;
+import cn.lilicould.liliblog.response.ArticleVO;
+import cn.lilicould.liliblog.response.PageInfo;
 import cn.lilicould.liliblog.service.ArticleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

@@ -1,9 +1,9 @@
 package cn.lilicould.liliblog.service;
 
-import cn.lilicould.query.AuditQuery;
-import cn.lilicould.response.AuditLogVO;
-import cn.lilicould.response.PageInfo;
-import cn.lilicould.entity.AuditLog;
+import cn.lilicould.liliblog.query.AuditQuery;
+import cn.lilicould.liliblog.response.AuditLogVO;
+import cn.lilicould.liliblog.response.PageInfo;
+import cn.lilicould.liliblog.entity.AuditLog;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

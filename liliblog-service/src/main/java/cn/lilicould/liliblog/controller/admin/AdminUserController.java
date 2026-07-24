@@ -1,15 +1,15 @@
 package cn.lilicould.liliblog.controller.admin;
 
-import cn.lilicould.enums.CodeEnum;
-import cn.lilicould.exception.BusinessException;
-import cn.lilicould.result.Result;
+import cn.lilicould.liliblog.enums.CodeEnum;
+import cn.lilicould.liliblog.exception.BusinessException;
+import cn.lilicould.liliblog.result.Result;
 import cn.lilicould.liliblog.util.PageUtil;
-import cn.lilicould.query.UserQuery;
-import cn.lilicould.request.AdminUserUpdateRequest;
-import cn.lilicould.request.UserCreateRequest;
-import cn.lilicould.response.PageInfo;
-import cn.lilicould.response.UserInfo;
-import cn.lilicould.entity.User;
+import cn.lilicould.liliblog.query.UserQuery;
+import cn.lilicould.liliblog.request.AdminUserUpdateRequest;
+import cn.lilicould.liliblog.request.UserCreateRequest;
+import cn.lilicould.liliblog.response.PageInfo;
+import cn.lilicould.liliblog.response.UserInfo;
+import cn.lilicould.liliblog.entity.User;
 import cn.lilicould.liliblog.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

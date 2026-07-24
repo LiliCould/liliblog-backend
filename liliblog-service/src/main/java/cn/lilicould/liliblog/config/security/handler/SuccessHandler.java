@@ -1,10 +1,10 @@
 package cn.lilicould.liliblog.config.security.handler;
 
-import cn.lilicould.cache.RedisHelper;
-import cn.lilicould.constant.RedisPrefixConstant;
+import cn.lilicould.liliblog.cache.RedisHelper;
+import cn.lilicould.liliblog.constant.RedisPrefixConstant;
 import cn.lilicould.liliblog.util.JwtUtil;
 import cn.lilicould.liliblog.domain.security.OAuth2SecurityUser;
-import cn.lilicould.entity.User;
+import cn.lilicould.liliblog.entity.User;
 import cn.lilicould.liliblog.service.impl.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

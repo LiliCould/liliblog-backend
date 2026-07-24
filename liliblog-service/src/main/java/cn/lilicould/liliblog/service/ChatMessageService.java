@@ -1,6 +1,6 @@
 package cn.lilicould.liliblog.service;
 
-import cn.lilicould.entity.ChatMessage;
+import cn.lilicould.liliblog.entity.ChatMessage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

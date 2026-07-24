@@ -1,6 +1,6 @@
 package cn.lilicould.liliblog.mapper;
 
-import cn.lilicould.entity.ArticleTag;
+import cn.lilicould.liliblog.entity.ArticleTag;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Delete;
 

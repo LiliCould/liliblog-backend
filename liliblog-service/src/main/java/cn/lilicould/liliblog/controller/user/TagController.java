@@ -1,13 +1,13 @@
 package cn.lilicould.liliblog.controller.user;
 
-import cn.lilicould.enums.CodeEnum;
-import cn.lilicould.exception.BusinessException;
-import cn.lilicould.result.Result;
+import cn.lilicould.liliblog.enums.CodeEnum;
+import cn.lilicould.liliblog.exception.BusinessException;
+import cn.lilicould.liliblog.result.Result;
 import cn.lilicould.liliblog.util.PageUtil;
-import cn.lilicould.query.TagQuery;
-import cn.lilicould.response.PageInfo;
-import cn.lilicould.response.TagVO;
-import cn.lilicould.entity.Tag;
+import cn.lilicould.liliblog.query.TagQuery;
+import cn.lilicould.liliblog.response.PageInfo;
+import cn.lilicould.liliblog.response.TagVO;
+import cn.lilicould.liliblog.entity.Tag;
 import cn.lilicould.liliblog.service.TagService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

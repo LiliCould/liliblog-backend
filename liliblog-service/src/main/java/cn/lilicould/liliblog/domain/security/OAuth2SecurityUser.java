@@ -1,6 +1,6 @@
 package cn.lilicould.liliblog.domain.security;
 
-import cn.lilicould.entity.User;
+import cn.lilicould.liliblog.entity.User;
 import org.jspecify.annotations.NullUnmarked;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 

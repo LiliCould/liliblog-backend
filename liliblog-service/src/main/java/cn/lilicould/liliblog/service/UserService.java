@@ -1,11 +1,11 @@
 package cn.lilicould.liliblog.service;
 
-import cn.lilicould.query.UserQuery;
-import cn.lilicould.request.AdminUserUpdateRequest;
-import cn.lilicould.request.UserCreateRequest;
-import cn.lilicould.response.PageInfo;
-import cn.lilicould.response.UserInfo;
-import cn.lilicould.entity.User;
+import cn.lilicould.liliblog.query.UserQuery;
+import cn.lilicould.liliblog.request.AdminUserUpdateRequest;
+import cn.lilicould.liliblog.request.UserCreateRequest;
+import cn.lilicould.liliblog.response.PageInfo;
+import cn.lilicould.liliblog.response.UserInfo;
+import cn.lilicould.liliblog.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.security.core.userdetails.UserDetailsService;
 

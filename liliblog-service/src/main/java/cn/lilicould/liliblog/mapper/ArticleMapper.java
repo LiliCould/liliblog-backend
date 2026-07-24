@@ -1,7 +1,7 @@
 package cn.lilicould.liliblog.mapper;
 
-import cn.lilicould.response.ArticleDetailsVO;
-import cn.lilicould.entity.Article;
+import cn.lilicould.liliblog.response.ArticleDetailsVO;
+import cn.lilicould.liliblog.entity.Article;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

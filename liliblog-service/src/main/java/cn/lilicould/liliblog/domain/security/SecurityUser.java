@@ -1,8 +1,8 @@
 package cn.lilicould.liliblog.domain.security;
 
-import cn.lilicould.constant.StatusConstant;
-import cn.lilicould.enums.RoleType;
-import cn.lilicould.entity.User;
+import cn.lilicould.liliblog.constant.StatusConstant;
+import cn.lilicould.liliblog.enums.RoleType;
+import cn.lilicould.liliblog.entity.User;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Getter;
 import org.jspecify.annotations.NullUnmarked;

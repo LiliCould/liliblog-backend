@@ -1,7 +1,7 @@
 package cn.lilicould.liliblog.strategy;
 
-import cn.lilicould.request.LoginRequest;
-import cn.lilicould.response.LoginVO;
+import cn.lilicould.liliblog.request.LoginRequest;
+import cn.lilicould.liliblog.response.LoginVO;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
