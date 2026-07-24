@@ -1,0 +1,392 @@
+package cn.lilicould.liliblog.service.impl;
+
+import cn.lilicould.constant.OrderConstant;
+import cn.lilicould.constant.StatusConstant;
+import cn.lilicould.liliblog.context.BaseContext;
+import cn.lilicould.enums.CodeEnum;
+import cn.lilicould.enums.TargetType;
+import cn.lilicould.exception.BusinessException;
+import cn.lilicould.liliblog.util.Ip2RegionUtil;
+import cn.lilicould.liliblog.util.IpUtil;
+import cn.lilicould.liliblog.mapper.CommentMapper;
+import cn.lilicould.liliblog.mapper.LikeRecordMapper;
+import cn.lilicould.liliblog.mapper.UserMapper;
+import cn.lilicould.query.CommentQuery;
+import cn.lilicould.request.CommentCreateRequest;
+import cn.lilicould.response.CommentVO;
+import cn.lilicould.response.PageInfo;
+import cn.lilicould.response.UserInfo;
+import cn.lilicould.entity.Article;
+import cn.lilicould.entity.Comment;
+import cn.lilicould.entity.LikeRecord;
+import cn.lilicould.entity.User;
+import cn.lilicould.liliblog.service.ArticleService;
+import cn.lilicould.liliblog.service.CommentService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Objects;
+
+/**
+* @author Lili_Could
+* @description 针对表【comment(评论表)】的数据库操作Service实现
+* @createDate 2026-05-08 16:58:41
+*/
+@Service
+public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
+    implements CommentService{
+
+
+    private final LikeRecordMapper likeRecordMapper;
+    private final UserMapper userMapper;
+    private final CommentMapper commentMapper;
+    private final ArticleService articleService;
+    private final IpUtil ipUtil;
+
+    public CommentServiceImpl(LikeRecordMapper likeRecordMapper, UserMapper userMapper, CommentMapper commentMapper, ArticleService articleService, IpUtil ipUtil) {
+        this.likeRecordMapper = likeRecordMapper;
+        this.userMapper = userMapper;
+        this.commentMapper = commentMapper;
+        this.articleService = articleService;
+        this.ipUtil = ipUtil;
+    }
+
+    /**
+     * 获取评论列表
+     * @param commentQuery 查询参数
+     * @return 评论列表
+     */
+    @Override
+    public PageInfo<CommentVO> getCommentList(CommentQuery commentQuery) {
+        // 初始化分页参数
+        Page<Comment> page = new Page<>(commentQuery.getCurrent(), commentQuery.getSize());
+        page.setOrders(List.of(
+                OrderItem.asc(OrderConstant.ID),
+                OrderItem.desc(OrderConstant.CREATE_TIME)
+        ));
+
+        // 构造查询条件
+        LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper
+                .eq(Comment::getArticleId, commentQuery.getId())
+                .eq(Comment::getParentId, 0);
+        if (!BaseContext.isAdmin()) {
+            // 非管理员只能查询已发布的评论或自己的评论
+            queryWrapper.and(wrapper -> wrapper
+                    .eq(Comment::getStatus, StatusConstant.ENABLED)
+                    .or()
+                    .eq(BaseContext.getCurrentUserId() != null,Comment::getCreateBy, BaseContext.getCurrentUserId())
+            );
+        }
+        // 查询
+        Page<Comment> commentPage = this.page(page, queryWrapper);
+
+        // 构建返回结果
+        List<CommentVO> records = commentPage.getRecords().stream().map(comment -> CommentVO.builder()
+                .id(comment.getId())
+                .rootId(comment.getRootId())
+                .content(comment.getContent())
+                .articleId(comment.getArticleId())
+                .status(comment.getStatus())
+                .childCount(getChildCount(comment.getId())) // 获取子评论数
+                .creator(buildUserInfo(comment.getCreateBy())) // 构建发布者信息
+                .likeCount(getLikeCount(comment.getId()))
+                .parentId(comment.getParentId())
+                .ipAddress(comment.getIpAddress())
+                .ipAddressLocation(Ip2RegionUtil.getFormattedLocation(comment.getIpAddress()))
+                .createTime(comment.getCreateTime())
+                .build()
+        ).toList();
+
+        // 空结果
+        if (records.isEmpty()) {
+            return PageInfo.empty(commentQuery.getCurrent(), commentQuery.getSize());
+        }
+
+        // 封装返回
+        Page<CommentVO> voPage = Page.of(commentQuery.getCurrent(), commentQuery.getSize(), commentPage.getTotal());
+        voPage.setRecords(records);
+        return PageInfo.of(voPage);
+    }
+
+    /**
+     * 获取二级评论列表
+     * @param commentQuery 评论查询参数
+     * @return 二级评论列表
+     */
+    @Override
+    public PageInfo<CommentVO> getChildCommentList(CommentQuery commentQuery) {
+
+        // 根评论ID
+        Long rootId = commentQuery.getId();
+
+        // 初始化分页参数
+        Page<Comment> page = new Page<>(commentQuery.getCurrent(), commentQuery.getSize());
+        page.setOrders(List.of(
+                OrderItem.asc(OrderConstant.ID),
+                OrderItem.desc(OrderConstant.CREATE_TIME)
+        ));
+
+        // 构造查询条件
+        LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
+        // rootId且排除根评论
+        queryWrapper.eq(Comment::getRootId, commentQuery.getId())
+                .ne(Comment::getId, rootId);
+
+        if (!BaseContext.isAdmin()) {
+            // 非管理员只能查询已发布的评论或自己的评论
+            queryWrapper.and(wrapper -> wrapper
+                    .eq(Comment::getStatus, StatusConstant.ENABLED)
+                    .or()
+                    .eq(BaseContext.getCurrentUserId() != null,Comment::getCreateBy, BaseContext.getCurrentUserId())
+            );
+        }
+        // 查询
+        Page<Comment> commentPage = this.page(page, queryWrapper);
+
+        // 构建返回结果
+        List<CommentVO> records = commentPage.getRecords().stream().map(comment -> CommentVO.builder()
+                .id(comment.getId())
+                .content(comment.getContent())
+                .articleId(comment.getArticleId())
+                .status(comment.getStatus())
+                .childCount(0) // 获取子评论数(二级评论虽然会有回复,但是因为系统只做二级评论，所以子评论数量为0)
+                .creator(buildUserInfo(comment.getCreateBy())) // 构建发布者信息
+                .likeCount(getLikeCount(comment.getId()))
+                .parentId(comment.getParentId())
+                .rootId(rootId)
+                .ipAddress(comment.getIpAddress())
+                .ipAddressLocation(Ip2RegionUtil.getFormattedLocation(comment.getIpAddress()))
+                .createTime(comment.getCreateTime())
+                .build()
+        ).toList();
+
+        // 封装返回
+        Page<CommentVO> voPage = Page.of(commentQuery.getCurrent(), commentQuery.getSize(), commentPage.getTotal());
+
+        // 空结果
+        if (records.isEmpty()) {
+            return PageInfo.empty(commentQuery.getCurrent(), commentQuery.getSize());
+        }
+
+        voPage.setRecords(records);
+        return PageInfo.of(voPage);
+    }
+
+    /**
+     * 删除评论及其子评论
+     * @param id 评论id
+     */
+    @Override
+    public void deleteAll(Long id) {
+
+        Comment comment = this.getById(id);
+
+        // 评论不存在
+        if (comment == null) {
+            throw new BusinessException(CodeEnum.COMMENT_NOT_FOUND);
+        }
+
+        // 校验权限
+        if (!BaseContext.isAdmin()) {
+            // 不是管理员，必须是发布者
+            if (!Objects.equals(comment.getCreateBy(), BaseContext.getCurrentUserId())) {
+                throw new BusinessException(CodeEnum.NO_PERMISSION);
+            }
+        }
+
+        // 删除
+        commentMapper.delete(new LambdaQueryWrapper<Comment>()
+                .eq(Comment::getId, id)
+                .or()
+                .eq(Comment::getRootId, id)
+        );
+    }
+
+    /**
+     * 创建评论
+     * @param commentCreateRequest 创建参数
+     * @param request 请求
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
+    public void createComment(CommentCreateRequest commentCreateRequest, HttpServletRequest request) {
+        Comment comment = new Comment();
+        BeanUtils.copyProperties(commentCreateRequest, comment);
+
+        // 判断文章是否存在
+        if (!articleService.exists(new LambdaQueryWrapper<Article>()
+                .eq(Article::getId, comment.getArticleId())
+                .eq(Article::getStatus, StatusConstant.ARTICLE_PUBLISHED)
+        )) {
+            throw new BusinessException(CodeEnum.ARTICLE_NOT_FOUND);
+        }
+
+        // 设置默认值
+        comment.setStatus(StatusConstant.COMMENT_PENDING);
+        if (comment.getParentId() == null) {
+            comment.setParentId(0L); // 如果父评论ID为空，则设置为0，表示是一级评论
+        }
+
+        if (comment.getParentId() != null && comment.getRootId() != null) {
+            // 如果父评论和根评论都指定了，应该判断是不是非法评论
+            // 比如父评论的根评论ID和当前评论的根评论ID不一致
+            if (comment.getParentId() != 0) { // parentId为0的话，代表一级评论，后续会设置根评论为插入后的 ID
+                Long parentRootId = commentMapper.selectOne(new LambdaQueryWrapper<Comment>()
+                        .select(Comment::getRootId)
+                        .eq(Comment::getId, comment.getParentId())
+                ).getRootId();
+
+                if (!Objects.equals(parentRootId, comment.getRootId())) {
+                    throw new BusinessException(CodeEnum.COMMON_PARAM_ERROR);
+                }
+            }
+        }
+
+        // 获取ip和代理
+        comment.setIpAddress(ipUtil.getIpAddress(request));
+        comment.setUserAgent(ipUtil.getUserAgent(request));
+
+        // 创建评论
+        this.save(comment);
+
+        // 如果是一级评论，则设置根评论ID为自身ID
+        if (comment.getParentId() == 0) {
+            comment.setRootId(comment.getId());
+            this.updateById(comment);
+        }
+    }
+
+    /**
+     * 获取所有评论列表
+     * @param commentQuery 评论查询参数
+     * @return 所有评论列表
+     */
+    @Override
+    public PageInfo<CommentVO> getAllCommentList(CommentQuery commentQuery) {
+        // 初始化分页信息
+        Page<Comment> page = new Page<>(commentQuery.getCurrent(), commentQuery.getSize());
+        // 添加排序
+        page.setOrders(List.of(
+                OrderItem.desc(OrderConstant.CREATE_TIME),
+                OrderItem.asc(OrderConstant.ID)
+        ));
+
+        // 创建查询条件
+        LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper
+                .eq(commentQuery.getId() != null, Comment::getId, commentQuery.getId())
+                .eq(commentQuery.getArticleId() != null, Comment::getArticleId, commentQuery.getArticleId())
+                .eq(commentQuery.getParentId() != null, Comment::getParentId, commentQuery.getParentId())
+                .eq(commentQuery.getRootId() != null, Comment::getRootId, commentQuery.getRootId())
+                .eq(commentQuery.getStatus() != null, Comment::getStatus, commentQuery.getStatus())
+                .like(commentQuery.getContent() != null, Comment::getContent, commentQuery.getContent())
+                .ge(commentQuery.getStartTime() != null, Comment::getCreateTime, commentQuery.getStartTime())
+                .le(commentQuery.getEndTime() != null, Comment::getCreateTime, commentQuery.getEndTime());
+
+        // 查询
+        Page<Comment> commentPage = this.page(page, queryWrapper);
+        // 构建返回结果
+        List<CommentVO> records = commentPage.getRecords().stream().map(comment -> CommentVO.builder()
+                .id(comment.getId())
+                .articleId(comment.getArticleId())
+                .content(comment.getContent())
+                .status(comment.getStatus())
+                .childCount(getChildCount(comment.getId()))
+                .creator(buildUserInfo(comment.getCreateBy())) // 构建发布者信息
+                .likeCount(getLikeCount(comment.getId()))
+                .parentId(comment.getParentId())
+                .ipAddress(comment.getIpAddress())
+                .ipAddressLocation(Ip2RegionUtil.getFormattedLocation(comment.getIpAddress()))
+                .createTime(comment.getCreateTime())
+                .build()
+        ).toList();
+        Page<CommentVO> voPage = Page.of(commentQuery.getCurrent(), commentQuery.getSize(), commentPage.getTotal());
+        voPage.setRecords(records);
+
+        return PageInfo.of(voPage);
+    }
+
+    /**
+     * 审核评论
+     * @param id 评论ID
+     * @param status 审核状态
+     */
+    @Override
+    public void auditComment(Long id, Integer status) {
+        Comment comment = this.getById(id);
+        if (comment == null) {
+            throw new BusinessException(CodeEnum.COMMENT_NOT_FOUND);
+        }
+
+        // 如果是审核通过
+        if (StatusConstant.COMMENT_PUBLISHED.equals(status)) {
+            comment.setStatus(StatusConstant.COMMENT_PUBLISHED);
+            this.updateById(comment);
+            return;
+        }
+
+        // 未审核的评论理论上不会存在子评论，但是为了避免数据不一致，这里删除所有子评论
+        this.deleteAll(id);
+    }
+
+
+    /**
+     * 计算点赞数
+     * @param commentId 评论列表
+     * @return 计算后的评论列表
+     */
+    private int getLikeCount(Long commentId) {
+        LambdaQueryWrapper<LikeRecord> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(LikeRecord::getTargetId, commentId)
+                .eq(LikeRecord::getTargetType, TargetType.COMMENT.getCode());
+        return likeRecordMapper.selectCount(queryWrapper).intValue();
+    }
+
+    /**
+     * 构建发布者信息
+     * @param userId 发布者ID
+     * @return 发布者信息
+     */
+    private UserInfo buildUserInfo(Long userId) {
+        if (userId == null) {
+            return null;
+        }
+        User user = userMapper.selectById(userId);
+        return user != null ? UserInfo.from(user) : null;
+    }
+
+    /**
+     * 获取子评论数
+     * @param commentId 评论ID
+     * @return 子评论数
+     */
+    private int getChildCount(Long commentId) {
+        LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper
+                .eq(Comment::getRootId, commentId)
+                // 排除自身
+                .ne(Comment::getId, commentId);
+        if (!BaseContext.isAdmin()) { // 非管理员，排除未审核的评论
+            queryWrapper
+                    .and(wrapper -> wrapper
+                    .eq(Comment::getStatus, StatusConstant.ENABLED)
+                    .or()
+                    .eq(BaseContext.getCurrentUserId() != null,Comment::getCreateBy, BaseContext.getCurrentUserId())
+            );
+        }
+        return commentMapper.selectCount(queryWrapper).intValue();
+    }
+}
+
+
+
+

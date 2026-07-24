@@ -11,6 +11,7 @@
 	<groupId>cn.lilicould</groupId>
 	<artifactId>liliblog</artifactId>
 	<version>2.0.2</version>
+	<packaging>pom</packaging>
 	<name>LiliBlog Server</name>
 	<description>A personal blog system built with Spring Boot, supporting article publishing, comment management and user authentication.</description>
 	<url>https:lilicould.cn</url>
@@ -30,6 +31,11 @@
 			<timezone>+8</timezone>
 		</developer>
 	</developers>
+	<modules>
+		<module>liliblog-service</module>
+		<module>liliblog-common</module>
+		<module>liliblog-pojo</module>
+	</modules>
 	<scm>
 		<connection/>
 		<developerConnection/>
