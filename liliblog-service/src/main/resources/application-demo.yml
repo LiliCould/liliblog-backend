@@ -32,6 +32,23 @@ liliblog:
     access-key: "your-key"
     secret-key: "your-key"
     bucket: your-bucket
+    # 允许上传的 MIME 类型白名单（图片、视频、音频、文档）
+    allowed-media-types:
+      - image/jpeg
+      - image/png
+      - image/gif
+      - image/svg+xml          # svg 有 XSS 风险，个人需要才加
+      - video/mp4
+      - video/x-msvideo        # avi
+      - video/x-ms-wmv         # wmv
+      - audio/mpeg             # mp3
+      - application/pdf
+      - application/msword     # doc
+      - application/vnd.openxmlformats-officedocument.wordprocessingml.document   # docx
+      - application/vnd.ms-excel                                             # xls
+      - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet      # xlsx
+      - application/vnd.ms-powerpoint                                          # ppt
+      - application/vnd.openxmlformats-officedocument.presentationml.presentation # pptx
   github:
     client-id: "your-client-id"
     client-secret: "your-client-secret"

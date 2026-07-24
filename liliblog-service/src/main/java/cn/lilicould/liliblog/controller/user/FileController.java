@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-
 @RestController
 @RequestMapping("/file")
 @Tag(name = "文件接口")
@@ -30,8 +28,9 @@ public class FileController {
     @ApiResponse(responseCode = "200",description = "响应成功，登录成功与否看响应状态码")
     public Result<?> uploadFile(
             @RequestParam("file") MultipartFile file,
-            @Parameter(description = "上传类型,目前支持：cover,avatar,image,file四个值") @RequestParam(value = "type",required = false) String type
-    ) throws IOException {
+            @Parameter(description = "上传类型,目前支持：cover,avatar,image,file四个值")
+            @RequestParam(value = "type",required = false) String type
+    ) throws java.io.IOException {
         if (type == null) {
             type = "file";
         }
