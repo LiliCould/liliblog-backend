@@ -81,7 +81,7 @@ public class OssUtil {
                 return uploadManager.put(inputStream, ossKey, upToken, null, null);
             } catch (QiniuException e) {
                 log.error("OSS 上传失败: {}", e.getMessage(), e);
-                throw new CompletionException(e);
+                throw new BusinessException(CodeEnum.FILE_UPLOAD_FAIL.getCode(), "文件上传失败: " + e.getMessage());
             }
         }, uploadExecutor);
 
@@ -90,20 +90,25 @@ public class OssUtil {
             Response response = future.get(30, TimeUnit.SECONDS);
             if (!response.isOK()) {
                 log.error("OSS 上传响应异常，状态码: {}", response.statusCode);
-                throw new BusinessException(CodeEnum.SYSTEM_ERROR);
+                throw new BusinessException(CodeEnum.FILE_UPLOAD_FAIL.getCode(), "文件上传失败，服务响应异常");
             }
             return ossProperties.getOssUrl() + "/" + ossKey;
         } catch (TimeoutException e) {
             future.cancel(true);
             log.error("OSS 上传超时，ossKey={}", ossKey);
-            throw new BusinessException(CodeEnum.SYSTEM_ERROR);
+            throw new BusinessException(CodeEnum.FILE_UPLOAD_FAIL.getCode(), "文件上传超时，请稍后重试");
         } catch (ExecutionException e) {
-            log.error("OSS 上传执行异常: {}", e.getCause().getMessage(), e);
-            throw new BusinessException(CodeEnum.SYSTEM_ERROR);
+            // 内部已包装为 BusinessException，直接提取并抛出
+            Throwable cause = e.getCause();
+            if (cause instanceof BusinessException be) {
+                throw be;
+            }
+            log.error("OSS 上传执行异常: {}", cause != null ? cause.getMessage() : e.getMessage(), e);
+            throw new BusinessException(CodeEnum.FILE_UPLOAD_FAIL.getCode(), "文件上传失败，请稍后重试");
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             log.error("OSS 上传被中断，ossKey={}", ossKey);
-            throw new BusinessException(CodeEnum.SYSTEM_ERROR);
+            throw new BusinessException(CodeEnum.FILE_UPLOAD_FAIL.getCode(), "文件上传被中断");
         }
     }
 
