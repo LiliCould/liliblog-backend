@@ -12,12 +12,13 @@ import com.qiniu.util.Auth;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
-import org.springframework.http.MediaTypeFactory;
+import org.apache.tika.Tika;
 import org.springframework.stereotype.Component;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.*;
 
@@ -28,6 +29,16 @@ public class OssUtil {
     private final OssProperties ossProperties;
 
     private UploadManager uploadManager;
+
+    private final Tika tika = new Tika();
+
+    /** 魔数无法精确识别时的回退类型 */
+    private static final String OCTET_STREAM = "application/octet-stream";
+
+    /** 文本类 application 子类型（无固定魔数，魔数检测可能返回 text/plain 或自身） */
+    private static final Set<String> TEXT_APPLICATION_TYPES = Set.of(
+            "application/json", "application/xml", "application/javascript"
+    );
 
     /** 专用上传线程池，避免占用 Tomcat 工作线程 */
     private final ExecutorService uploadExecutor = new ThreadPoolExecutor(
@@ -67,9 +78,17 @@ public class OssUtil {
      * @return 文件访问 URL
      */
     public String uploadFile(InputStream inputStream, String fileName, String type) {
-        if (!isValidFileName(fileName)) {
-            throw new BusinessException(CodeEnum.NOT_SUPPORTED_FILE_TYPE);
+        // 将流缓存到内存，以便 Tika 魔数检测后仍可重复读取
+        byte[] fileBytes;
+        try {
+            fileBytes = inputStream.readAllBytes();
+        } catch (IOException e) {
+            log.error("读取上传文件失败: {}", e.getMessage(), e);
+            throw new BusinessException(CodeEnum.FILE_UPLOAD_FAIL.getCode(), "读取上传文件失败");
         }
+
+        // 三重校验：扩展名解析 → 白名单比对 → 魔数验证
+        validateFileType(new ByteArrayInputStream(fileBytes), fileName);
 
         String upToken = getAuthToken();
         // 生成新的文件名：type/UUID_原文件名
@@ -78,7 +97,7 @@ public class OssUtil {
         // 将上传任务提交到专用线程池
         CompletableFuture<Response> future = CompletableFuture.supplyAsync(() -> {
             try {
-                return uploadManager.put(inputStream, ossKey, upToken, null, null);
+                return uploadManager.put(new ByteArrayInputStream(fileBytes), ossKey, upToken, null, null);
             } catch (QiniuException e) {
                 log.error("OSS 上传失败: {}", e.getMessage(), e);
                 throw new BusinessException(CodeEnum.FILE_UPLOAD_FAIL.getCode(), "文件上传失败: " + e.getMessage());
@@ -112,16 +131,58 @@ public class OssUtil {
         }
     }
 
-    private boolean isValidFileName(String fileName) {
-        // 通过 MediaTypeFactory 根据文件名解析 MIME 类型
-        Optional<MediaType> mediaTypeOpt = MediaTypeFactory.getMediaType(fileName);
-        log.info("OSS 上传文件类型: {}", mediaTypeOpt.orElse(null));
-        if (mediaTypeOpt.isEmpty()) {
-            return false;
+    /**
+     * 三重文件类型校验：扩展名解析 → 白名单比对 → 魔数验证
+     */
+    private void validateFileType(InputStream bufferedStream, String fileName) {
+        // 第1层：基于扩展名解析 MIME 类型（Tika 内置覆盖上千种类型，无需手动维护映射表）
+        String claimedType;
+        try {
+            claimedType = tika.detect(fileName);
+        } catch (Exception e) {
+            log.warn("文件扩展名解析失败, fileName={}: {}", fileName, e.getMessage());
+            throw new BusinessException(CodeEnum.NOT_SUPPORTED_FILE_TYPE);
         }
-        String mimeType = mediaTypeOpt.get().toString();
-        // 与配置的白名单比对
-        return ossProperties.getAllowedMediaTypes().stream()
-                .anyMatch(allowed -> allowed.equalsIgnoreCase(mimeType));
+        log.info("OSS 上传文件声称类型: {}", claimedType);
+
+        // 第2层：白名单比对
+        boolean inWhitelist = ossProperties.getAllowedMediaTypes().stream()
+                .anyMatch(allowed -> allowed.equalsIgnoreCase(claimedType));
+        if (!inWhitelist) {
+            throw new BusinessException(CodeEnum.NOT_SUPPORTED_FILE_TYPE);
+        }
+
+        // 第3层：Magic Bytes 魔数校验
+        try {
+            String detectedType = tika.detect(bufferedStream);
+            log.info("OSS 上传文件魔数检测类型: {}", detectedType);
+
+            if (isTextBasedMime(claimedType)) {
+                // 声称是文本类：魔数结果必须是 text/* 或文本类 application，否则是二进制伪装
+                if (!detectedType.startsWith("text/") && !TEXT_APPLICATION_TYPES.contains(detectedType)) {
+                    log.warn("文件内容非文本，疑似伪装: 声称类型={}, 魔数检测类型={}, fileName={}", claimedType, detectedType, fileName);
+                    throw new BusinessException(CodeEnum.NOT_SUPPORTED_FILE_TYPE);
+                }
+                log.info("文件类型 {} 为文本类，魔数验证通过（检测为 {}）", claimedType, detectedType);
+            } else {
+                // 非文本类：魔数结果必须与声称类型一致
+                if (!claimedType.equals(detectedType) && !OCTET_STREAM.equals(detectedType)) {
+                    log.warn("文件类型伪造检测: 声称类型={}, 魔数检测类型={}, fileName={}", claimedType, detectedType, fileName);
+                    throw new BusinessException(CodeEnum.NOT_SUPPORTED_FILE_TYPE);
+                }
+            }
+        } catch (IOException e) {
+            log.error("魔数检测读取失败: {}", e.getMessage(), e);
+            throw new BusinessException(CodeEnum.NOT_SUPPORTED_FILE_TYPE);
+        }
+    }
+
+    /**
+     * 判断声称的 MIME 类型是否为文本类（无固定魔数）
+     */
+    private boolean isTextBasedMime(String mimeType) {
+        if (mimeType == null) return false;
+        String lower = mimeType.toLowerCase();
+        return lower.startsWith("text/") || TEXT_APPLICATION_TYPES.contains(lower);
     }
 }

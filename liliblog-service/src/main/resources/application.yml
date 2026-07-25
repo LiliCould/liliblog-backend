@@ -117,6 +117,7 @@ oss:
     - image/png
     - image/gif
 #    - image/svg+xml          # svg 有 XSS 风险，个人需要才加
+    - image/webp
     - video/mp4
     - video/x-msvideo        # avi
     - video/x-ms-wmv         # wmv
@@ -128,3 +129,5 @@ oss:
     - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet      # xlsx
     - application/vnd.ms-powerpoint                                          # ppt
     - application/vnd.openxmlformats-officedocument.presentationml.presentation # pptx
+    - text/markdown                # md
+    - text/x-web-markdown
