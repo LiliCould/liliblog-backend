@@ -31,4 +31,58 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!-- 排除不需要的依赖 -->
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                        <!-- 排除 nextdoc4j UI 及 openapi UI 前端（生产不需要） -->
+                        <exclude>
+                            <groupId>top.nextdoc4j</groupId>
+                            <artifactId>nextdoc4j-ui</artifactId>
+                        </exclude>
+                        <exclude>
+                            <groupId>top.nextdoc4j</groupId>
+                            <artifactId>nextdoc4j-springboot4-starter</artifactId>
+                        </exclude>
+                        <exclude>
+                            <groupId>top.nextdoc4j</groupId>
+                            <artifactId>nextdoc4j-common-springboot4</artifactId>
+                        </exclude>
+                        <exclude>
+                            <groupId>top.nextdoc4j</groupId>
+                            <artifactId>nextdoc4j-core</artifactId>
+                        </exclude>
+                        <!-- swagger-ui 前端页面，生产不需要 -->
+                        <exclude>
+                            <groupId>org.webjars</groupId>
+                            <artifactId>swagger-ui</artifactId>
+                        </exclude>
+                        <exclude>
+                            <groupId>org.webjars</groupId>
+                            <artifactId>webjars-locator-lite</artifactId>
+                        </exclude>
+                        <!-- springdoc webmvc-ui 入口，生产不需要 -->
+                        <exclude>
+                            <groupId>org.springdoc</groupId>
+                            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                        </exclude>
+                        <!-- 排除 hutool-core (nextdoc4j 传递依赖，未直接使用) -->
+                        <exclude>
+                            <groupId>cn.hutool</groupId>
+                            <artifactId>hutool-core</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

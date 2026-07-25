@@ -115,6 +115,7 @@ public class OssUtil {
     private boolean isValidFileName(String fileName) {
         // 通过 MediaTypeFactory 根据文件名解析 MIME 类型
         Optional<MediaType> mediaTypeOpt = MediaTypeFactory.getMediaType(fileName);
+        log.info("OSS 上传文件类型: {}", mediaTypeOpt.orElse(null));
         if (mediaTypeOpt.isEmpty()) {
             return false;
         }
