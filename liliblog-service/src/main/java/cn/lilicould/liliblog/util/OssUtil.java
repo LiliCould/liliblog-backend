@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
 import org.springframework.stereotype.Component;
 
-import java.io.ByteArrayInputStream;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Set;
@@ -46,7 +46,7 @@ public class OssUtil {
             5,                      // 最大线程数
             60L, TimeUnit.SECONDS,  // 空闲线程存活时间
             new LinkedBlockingQueue<>(50),               // 任务队列
-            new ThreadPoolExecutor.CallerRunsPolicy()    // 队列满时由调用线程执行，起到背压效果
+            new ThreadPoolExecutor.AbortPolicy()         // 队列满时拒绝，而非反噬 Tomcat 线程
     );
 
     @PostConstruct
@@ -68,9 +68,11 @@ public class OssUtil {
     }
 
     /**
-     * 上传文件到 OSS
-     * <p>上传任务在专用线程池中执行，Controller 线程通过 CompletableFuture.get(timeout) 等待，
-     * 超过 30 秒未返回则主动取消，防止线程无限期阻塞。</p>
+     * 上传文件到 OSS（流式处理，不再将文件全量读入内存）
+     * <p>用 BufferedInputStream 的 mark/reset 机制，Tika 魔数检测只读取文件头部（最多 64KB），
+     * 之后 reset 回退流，直接传给 UploadManager 流式上传，全程内存占用为常量级。</p>
+     * <p>上传任务在专用线程池中执行（AbortPolicy 拒绝策略，队列满时返回友好错误），
+     * Controller 线程通过 CompletableFuture.get(timeout) 等待，超时直接返回错误。</p>
      *
      * @param inputStream 文件输入流
      * @param fileName    原始文件名
@@ -78,31 +80,45 @@ public class OssUtil {
      * @return 文件访问 URL
      */
     public String uploadFile(InputStream inputStream, String fileName, String type) {
-        // 将流缓存到内存，以便 Tika 魔数检测后仍可重复读取
-        byte[] fileBytes;
-        try {
-            fileBytes = inputStream.readAllBytes();
-        } catch (IOException e) {
-            log.error("读取上传文件失败: {}", e.getMessage(), e);
-            throw new BusinessException(CodeEnum.FILE_UPLOAD_FAIL.getCode(), "读取上传文件失败");
-        }
+        // 包装为 BufferedInputStream，支持 mark/reset，杜绝全量缓存
+        BufferedInputStream bufferedStream = new BufferedInputStream(inputStream, 65536);
 
-        // 三重校验：扩展名解析 → 白名单比对 → 魔数验证
-        validateFileType(new ByteArrayInputStream(fileBytes), fileName);
+        // ── 校验阶段：流仅由调用线程持有，异常时需手动关闭 ──
+        try {
+            bufferedStream.mark(65536);
+            validateFileType(bufferedStream, fileName);
+            bufferedStream.reset();
+        } catch (Exception e) {
+            // 校验失败或流 reset 失败 → 关闭流，避免文件描述符泄漏
+            closeQuietly(bufferedStream);
+            if (e instanceof BusinessException be) {
+                throw be;
+            }
+            log.error("文件流重置失败: {}", e.getMessage(), e);
+            throw new BusinessException(CodeEnum.FILE_UPLOAD_FAIL.getCode(), "文件读取异常，请稍后重试");
+        }
+        // 校验通过，流已回退到起始位置，后续所有权转移给线程池
 
         String upToken = getAuthToken();
-        // 生成新的文件名：type/UUID_原文件名
         final String ossKey = type + "/" + UUID.randomUUID() + "_" + fileName;
 
-        // 将上传任务提交到专用线程池
-        CompletableFuture<Response> future = CompletableFuture.supplyAsync(() -> {
-            try {
-                return uploadManager.put(new ByteArrayInputStream(fileBytes), ossKey, upToken, null, null);
-            } catch (QiniuException e) {
-                log.error("OSS 上传失败: {}", e.getMessage(), e);
-                throw new BusinessException(CodeEnum.FILE_UPLOAD_FAIL.getCode(), "文件上传失败: " + e.getMessage());
-            }
-        }, uploadExecutor);
+        // 将流式上传任务提交到专用线程池（AbortPolicy：队列满时直接拒绝，不反噬 Tomcat 线程）
+        CompletableFuture<Response> future;
+        try {
+            future = CompletableFuture.supplyAsync(() -> {
+                try {
+                    return uploadManager.put(bufferedStream, ossKey, upToken, null, null);
+                } catch (QiniuException e) {
+                    log.error("OSS 上传失败: {}", e.getMessage(), e);
+                    throw new BusinessException(CodeEnum.FILE_UPLOAD_FAIL.getCode(), "文件上传失败: " + e.getMessage());
+                }
+            }, uploadExecutor);
+        } catch (RejectedExecutionException e) {
+            // 线程池拒绝 → 任务未执行，需手动关闭流
+            closeQuietly(bufferedStream);
+            log.error("上传线程池已满，拒绝新任务: {}", e.getMessage());
+            throw new BusinessException(CodeEnum.FILE_UPLOAD_FAIL.getCode(), "服务器繁忙，请稍后重试");
+        }
 
         try {
             // 最多等待 30 秒，防止无限阻塞
@@ -113,11 +129,11 @@ public class OssUtil {
             }
             return ossProperties.getOssUrl() + "/" + ossKey;
         } catch (TimeoutException e) {
-            future.cancel(true);
+            // 不调用 cancel(true)——上传线程不响应中断，cancel 只是虚假安慰。
+            // 30s 后仅向客户端返回超时，后台线程继续完成或自然结束。
             log.error("OSS 上传超时，ossKey={}", ossKey);
             throw new BusinessException(CodeEnum.FILE_UPLOAD_FAIL.getCode(), "文件上传超时，请稍后重试");
         } catch (ExecutionException e) {
-            // 内部已包装为 BusinessException，直接提取并抛出
             Throwable cause = e.getCause();
             if (cause instanceof BusinessException be) {
                 throw be;
@@ -128,6 +144,15 @@ public class OssUtil {
             Thread.currentThread().interrupt();
             log.error("OSS 上传被中断，ossKey={}", ossKey);
             throw new BusinessException(CodeEnum.FILE_UPLOAD_FAIL.getCode(), "文件上传被中断");
+        }
+    }
+
+    /** 安静关闭流，忽略异常 */
+    private static void closeQuietly(InputStream stream) {
+        try {
+            stream.close();
+        } catch (IOException ignored) {
+            // 流可能已被框架或 SDK 关闭，忽略二次关闭异常
         }
     }
 
