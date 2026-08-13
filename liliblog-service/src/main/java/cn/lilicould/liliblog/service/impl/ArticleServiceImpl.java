@@ -412,10 +412,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         }
 
         // 检查标签列表是否存在
-        for (Long tagId : articleCreateRequest.getTags()) {
-            Tag tag = tagMapper.selectById(tagId);
-            if (tag == null) {
-                throw new BusinessException(CodeEnum.TAG_NOT_FOUND);
+        if (articleCreateRequest.getTags() != null) {
+            for (Long tagId : articleCreateRequest.getTags()) {
+                Tag tag = tagMapper.selectById(tagId);
+                if (tag == null) {
+                    throw new BusinessException(CodeEnum.TAG_NOT_FOUND);
+                }
             }
         }
         // 存文章

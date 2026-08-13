@@ -26,7 +26,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         log.info("OAuth2 回调处理开始...");
 
-        OAuth2User oauth2User = super.loadUser(userRequest);
+        OAuth2User oauth2User;
+        try {
+            oauth2User = super.loadUser(userRequest);
+        } catch (IllegalArgumentException e) {
+            // DefaultOAuth2User 要求 name attribute 非空，GitHub 用户信息缺少id时直接抛出
+            log.warn("GitHub 用户信息缺少id: {}", e.getMessage());
+            throw new OAuth2AuthenticationException(new org.springframework.security.oauth2.core.OAuth2Error("获取githubId失败"), "获取githubId失败");
+        }
 
         log.info("GitHub 用户信息: {}",oauth2User.getAttributes());
 
@@ -38,7 +45,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String avatarUrl = oauth2User.getAttribute("avatar_url");
 
         if (githubId == null) {
-            throw new OAuth2AuthenticationException("获取githubId失败");
+            throw new OAuth2AuthenticationException(new org.springframework.security.oauth2.core.OAuth2Error("获取githubId失败"), "获取githubId失败");
         }
 
         // 查找或创建用户

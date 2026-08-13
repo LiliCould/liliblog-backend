@@ -51,7 +51,7 @@
 		<qiniu.version>7.19.0</qiniu.version>
 		<ip2region.version>3.3.7</ip2region.version>
 		<tika.version>3.1.0</tika.version>
-		<skipTests>true</skipTests>
+		<skipTests>false</skipTests>
 	</properties>
 	<dependencies>
 		<!-- web依赖 -->
@@ -235,6 +235,36 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<version>3.6.1</version>
+			</plugin>
+
+			<!-- JaCoCo 代码覆盖率 -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.12</version>
+				<configuration>
+					<!-- 排除纯POJO（Lombok生成，无业务逻辑） -->
+					<excludes>
+						<exclude>**/entity/**</exclude>
+						<exclude>**/request/**</exclude>
+						<exclude>**/response/**</exclude>
+						<exclude>**/query/**</exclude>
+					</excludes>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
