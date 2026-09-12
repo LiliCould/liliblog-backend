@@ -24,7 +24,7 @@ jobs:
         run: mvn clean package -pl liliblog-service -am -DskipTests
 
       - name: Deploy jar to server
-        uses: easingthemes/ssh-deploy@v5
+        uses: easingthemes/ssh-deploy@v6
         with:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
