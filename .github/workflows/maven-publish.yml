@@ -31,7 +31,6 @@ jobs:
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           SOURCE: "liliblog-service/target/liliblog-service-2.0.2.jar"
           TARGET: "/opt/liliblog/"
-          ARGS: "-o StrictHostKeyChecking=no"
 
       - name: Restart service
         uses: appleboy/ssh-action@v1
