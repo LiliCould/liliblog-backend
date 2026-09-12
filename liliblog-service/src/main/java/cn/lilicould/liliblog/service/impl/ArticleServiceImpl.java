@@ -1,7 +1,9 @@
 package cn.lilicould.liliblog.service.impl;
 
 import cn.lilicould.liliblog.annotation.Audit;
+import cn.lilicould.liliblog.cache.RedisHelper;
 import cn.lilicould.liliblog.constant.OrderConstant;
+import cn.lilicould.liliblog.constant.RedisPrefixConstant;
 import cn.lilicould.liliblog.constant.StatusConstant;
 import cn.lilicould.liliblog.context.BaseContext;
 import cn.lilicould.liliblog.entity.*;
@@ -54,6 +56,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     private final UserService userService;
     private final EmailTemplateService emailTemplateService;
     private final InfoProperties infoProperties;
+    private final RedisHelper redisHelper;
 
     /**
      * 根据id获取文章详情
@@ -160,6 +163,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         // 删除文章
         this.removeById(id);
 
+        // 同步随机文章缓存池：从池中移除（幂等，不存在不报错）
+        removeFromArticleRandomPool(id);
+
         // 删除点赞记录
         LambdaQueryWrapper<LikeRecord> likeQueryWrapper = new LambdaQueryWrapper<>();
         likeQueryWrapper.eq(LikeRecord::getTargetId, id)
@@ -207,6 +213,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
             throw new BusinessException(CodeEnum.NO_PERMISSION);
         }
 
+        // 获取更新前的状态
+        Integer oldStatus = this.getById(id).getStatus();
+
         // 拷贝数据
         Article article = new Article();
         BeanUtils.copyProperties(articleUpdateRequest, article);
@@ -249,6 +258,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
         // 更新文章
         articleMapper.updateById(article);
+
+        // 同步随机文章缓存池
+        syncArticleRandomPool(id, oldStatus, article.getStatus());
 
         // 如果是待审核,发送邮件通知管理员审核
         if (StatusConstant.ARTICLE_PENDING.equals(article.getStatus())) {
@@ -300,6 +312,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
             throw new BusinessException(CodeEnum.ARTICLE_NOT_FOUND);
         }
 
+        // 获取审核前的状态
+        Integer oldStatus = article.getStatus();
+
         // 查询文章的作者
         Long authorId = article.getCreateBy();
         if (authorId ==  null) {
@@ -323,6 +338,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         // 更新文章状态
         article.setStatus(status);
         this.updateById(article);
+
+        // 同步随机文章缓存池
+        syncArticleRandomPool(id, oldStatus, status);
     }
 
     /**
@@ -339,6 +357,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     )
     public void removeBatch(List<Long> ids) {
         this.removeByIds(ids);
+
+        // 同步随机文章缓存池：批量移除
+        if (ids != null && !ids.isEmpty()) {
+            Object[] idArray = ids.toArray();
+            redisHelper.sRemove(RedisPrefixConstant.ARTICLE_RANDOM_POOL, idArray);
+        }
     }
 
     /**
@@ -369,6 +393,113 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
         // 转换为返回
         return convertToVO(articlePage, searchQuery.getCurrent(), searchQuery.getSize());
+    }
+
+    /**
+     * 查询指定数量的随机文章
+     * @param num 查询文章数量
+     *
+     * @return 查询结果
+     */
+    @Override
+    public List<ArticleVO> randomArticle(int num) {
+        if (num < 1 || num > 10) {
+            throw new BusinessException(CodeEnum.COMMON_PARAM_ERROR);
+        }
+
+        List<Long> randomIds = getRandomArticleIds(num);
+
+        if (randomIds.isEmpty()) {
+            return List.of();
+        }
+
+        // 批量查询文章
+        List<Article> articles = this.listByIds(randomIds);
+
+        // 转换为VO返回（复用已有的填充逻辑）
+        return articles.stream().map(article -> {
+            ArticleVO articleVO = new ArticleVO();
+            BeanUtils.copyProperties(article, articleVO);
+            articleVO.setCreator(buildUserInfo(article.getCreateBy()));
+            articleVO.setUpdater(buildUserInfo(article.getUpdateBy()));
+            articleVO.setLikeCount(getLikeCount(article.getId()));
+            articleVO.setCommentCount(getCommentCount(article.getId()));
+            articleVO.setCategory(buildCategoryVO(article.getCategoryId()));
+            articleVO.setTags(buildTagVOList(article.getId()));
+            return articleVO;
+        }).toList();
+    }
+
+    /**
+     * 从 Redis 缓存池中随机获取文章ID，若缓存不存在则从DB加载
+     */
+    private List<Long> getRandomArticleIds(int num) {
+        String poolKey = RedisPrefixConstant.ARTICLE_RANDOM_POOL;
+
+        // 缓存不存在则从DB加载
+        if (!Boolean.TRUE.equals(redisHelper.exists(poolKey))) {
+            refreshArticleRandomPool();
+        }
+
+        // 从缓存中随机获取
+        List<Object> randomMembers = redisHelper.sRandMember(poolKey, num);
+        if (randomMembers == null || randomMembers.isEmpty()) {
+            return List.of();
+        }
+
+        return randomMembers.stream()
+                .map(obj -> Long.valueOf(obj.toString()))
+                .toList();
+    }
+
+    /**
+     * 从数据库加载所有已发布文章ID到 Redis 缓存池
+     */
+    private void refreshArticleRandomPool() {
+        String poolKey = RedisPrefixConstant.ARTICLE_RANDOM_POOL;
+
+        List<Long> publishedArticleIds = articleMapper.selectList(
+                new LambdaQueryWrapper<Article>()
+                        .eq(Article::getStatus, StatusConstant.ARTICLE_PUBLISHED)
+                        .eq(Article::getDeleted, StatusConstant.NOT_DELETED)
+                        .select(Article::getId)
+        ).stream().map(Article::getId).toList();
+
+        if (!publishedArticleIds.isEmpty()) {
+            Object[] ids = publishedArticleIds.toArray();
+            redisHelper.sAdd(poolKey, ids);
+        }
+    }
+
+    /**
+     * 将文章ID加入 Redis 缓存池
+     */
+    private void addToArticleRandomPool(Long articleId) {
+        redisHelper.sAdd(RedisPrefixConstant.ARTICLE_RANDOM_POOL, articleId);
+    }
+
+    /**
+     * 从 Redis 缓存池中移除文章ID
+     */
+    private void removeFromArticleRandomPool(Long articleId) {
+        redisHelper.sRemove(RedisPrefixConstant.ARTICLE_RANDOM_POOL, articleId);
+    }
+
+    /**
+     * 同步文章状态变更后的随机文章缓存池
+     * @param articleId 文章ID
+     * @param oldStatus 更新前状态
+     * @param newStatus 更新后状态
+     */
+    private void syncArticleRandomPool(Long articleId, Integer oldStatus, Integer newStatus) {
+        boolean wasPublished = StatusConstant.ARTICLE_PUBLISHED.equals(oldStatus);
+        boolean isPublished = StatusConstant.ARTICLE_PUBLISHED.equals(newStatus);
+
+        if (!wasPublished && isPublished) {
+            addToArticleRandomPool(articleId);
+        } else if (wasPublished && !isPublished) {
+            removeFromArticleRandomPool(articleId);
+        }
     }
 
     /**
@@ -422,6 +553,11 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         }
         // 存文章
         articleMapper.insert(article);
+
+        // 同步随机文章缓存池：如果文章最终状态为已发布，加入缓存池
+        if (StatusConstant.ARTICLE_PUBLISHED.equals(article.getStatus())) {
+            addToArticleRandomPool(article.getId());
+        }
 
         // 如果提交状态为待审核,发送邮件通知站长审核
         if (StatusConstant.ARTICLE_PENDING.equals(articleCreateRequest.getStatus())) {

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -200,6 +201,20 @@ public class RedisHelper {
      */
     public Boolean sIsMember(String key, Object value) {
         return redisTemplate.opsForSet().isMember(buildKey(key), value);
+    }
+
+    /**
+     * 从 Set 中随机获取 count 个成员
+     */
+    public List<Object> sRandMember(String key, long count) {
+        return redisTemplate.opsForSet().randomMembers(buildKey(key), count);
+    }
+
+    /**
+     * 从 Set 中移除指定成员
+     */
+    public Long sRemove(String key, Object... values) {
+        return redisTemplate.opsForSet().remove(buildKey(key), values);
     }
 
 }

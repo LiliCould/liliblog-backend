@@ -80,4 +80,12 @@ public interface ArticleService extends IService<Article> {
      * @return 搜索结果
      */
     PageInfo<ArticleVO> search(ArticleSearchQuery searchQuery);
+
+    /**
+     * 随机查询指定数量文章
+     * @param num 查询文章数量
+     *
+     * @return 查询结果
+     */
+    List<ArticleVO> randomArticle(int num);
 }

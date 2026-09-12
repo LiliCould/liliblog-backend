@@ -2,11 +2,11 @@ package cn.lilicould.liliblog.controller.user;
 
 import cn.lilicould.liliblog.constant.StatusConstant;
 import cn.lilicould.liliblog.context.BaseContext;
+import cn.lilicould.liliblog.entity.Article;
+import cn.lilicould.liliblog.entity.LikeRecord;
 import cn.lilicould.liliblog.enums.CodeEnum;
 import cn.lilicould.liliblog.enums.TargetType;
 import cn.lilicould.liliblog.exception.BusinessException;
-import cn.lilicould.liliblog.result.Result;
-import cn.lilicould.liliblog.util.PageUtil;
 import cn.lilicould.liliblog.query.ArticleQuery;
 import cn.lilicould.liliblog.query.ArticleSearchQuery;
 import cn.lilicould.liliblog.request.ArticleCreateRequest;
@@ -14,10 +14,10 @@ import cn.lilicould.liliblog.request.ArticleUpdateRequest;
 import cn.lilicould.liliblog.response.ArticleDetailsVO;
 import cn.lilicould.liliblog.response.ArticleVO;
 import cn.lilicould.liliblog.response.PageInfo;
-import cn.lilicould.liliblog.entity.Article;
-import cn.lilicould.liliblog.entity.LikeRecord;
+import cn.lilicould.liliblog.result.Result;
 import cn.lilicould.liliblog.service.ArticleService;
 import cn.lilicould.liliblog.service.LikeRecordService;
+import cn.lilicould.liliblog.util.PageUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,6 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -170,6 +172,15 @@ public class ArticleController {
         PageInfo<ArticleVO> pageInfo = articleService.search(searchQuery);
 
         return Result.success(pageInfo);
+    }
+
+    @GetMapping("/random")
+    @Operation(summary = "获取随机文章")
+    public Result<List<ArticleVO>> random(@RequestParam @Parameter(description = "随机文章数量") int num) {
+
+        List<ArticleVO> articles = articleService.randomArticle(num);
+
+        return Result.success(articles);
     }
 
 }

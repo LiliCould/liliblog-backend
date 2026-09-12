@@ -12,4 +12,7 @@ public class RedisPrefixConstant {
     // ipList相关
     public static final String IP_LIST_BANNER = "ipList:banner:";
     public static final String IP_LIST_COUNT = "ipList:count:";
+
+    // article相关
+    public static final String ARTICLE_RANDOM_POOL = "article:randomPool";
 }
