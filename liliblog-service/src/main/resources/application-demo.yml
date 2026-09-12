@@ -1,0 +1,70 @@
+liliblog:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/liliblog?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: username
+    password: password
+    hikari:
+      minimum-idle: 5  # 启动时就创建5个空闲连接
+      connection-test-query: SELECT 1
+      initialization-fail-timeout: 0
+  data:
+    redis:
+      host: localhost
+      password: password
+      port: 6379
+      database: 0
+      timeout: 5s
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 2
+          max-wait: 5s
+  http-only-cookies:
+    ssl: true # 对于前后端分离，必须为启用
+  jwt:
+    # 密钥（secret）必须是经过Base64编码的32字节（或更长）的字符串
+    secret: "secret"
+    expiration: 1800000 # 访问令牌有效期，单位毫秒,1800000毫秒为半小时
+    refresh-expiration: 604800000 # 刷新令牌有效期，单位毫秒，这里设为了7天
+  oss:
+    access-key: "your-key"
+    secret-key: "your-key"
+    bucket: your-bucket
+    # 允许上传的 MIME 类型白名单（图片、视频、音频、文档）
+    allowed-media-types:
+      - image/jpeg
+      - image/png
+      - image/gif
+      - image/svg+xml          # svg 有 XSS 风险，个人需要才加
+      - image/webp
+      - video/mp4
+      - video/x-msvideo        # avi
+      - video/x-ms-wmv         # wmv
+      - audio/mpeg             # mp3
+      - application/pdf
+      - application/msword     # doc
+      - application/vnd.openxmlformats-officedocument.wordprocessingml.document   # docx
+      - application/vnd.ms-excel                                             # xls
+      - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet      # xlsx
+      - application/vnd.ms-powerpoint                                          # ppt
+      - application/vnd.openxmlformats-officedocument.presentationml.presentation # pptx
+      - text/markdown                # md
+  github:
+    client-id: "your-client-id"
+    client-secret: "your-client-secret"
+    redirect-uri: "http://localhost:8080/login/oauth2/code/github"
+  logging:
+    level:
+      root: info
+  mail:
+    username: your-email
+    password: "your-secret-code"
+
+ip-trust:
+  trusted-proxies:
+    - 127.0.0.1
+    - 192.168.1.1
+    - ...
+
