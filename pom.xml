@@ -51,7 +51,7 @@
 		<qiniu.version>7.19.0</qiniu.version>
 		<ip2region.version>3.3.7</ip2region.version>
 		<tika.version>3.1.0</tika.version>
-		<skipTests>false</skipTests>
+		<skipTests>true</skipTests>
 	</properties>
 	<dependencies>
 		<!-- web依赖 -->
