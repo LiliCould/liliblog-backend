@@ -40,10 +40,30 @@ jobs:
           username: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # 重命名 jar 包
+            # 备份旧 jar 包（格式：liliblog20260912.jar 或 liliblog20260912_2.jar）
+            BACKUP_DATE=$(date +%Y%m%d)
+            BACKUP_DIR="/opt/liliblog/backup"
+            mkdir -p $BACKUP_DIR
+            
+            # 查找当天已有的备份数量，确定后缀
+            EXISTING=$(ls -1 $BACKUP_DIR/liliblog${BACKUP_DATE}*.jar 2>/dev/null | wc -l)
+            if [ $EXISTING -eq 0 ]; then
+              SUFFIX=""
+            else
+              SUFFIX="_$EXISTING"
+            fi
+            
+            # 备份当前 jar 包
+            if [ -f /opt/liliblog/liliblog.jar ]; then
+              cp /opt/liliblog/liliblog.jar $BACKUP_DIR/liliblog${BACKUP_DATE}${SUFFIX}.jar
+            fi
+            
+            # 替换新 jar 包
             mv /opt/liliblog/liliblog-service-2.0.2.jar /opt/liliblog/liliblog.jar
+            
             # 重启服务
             sudo systemctl restart liliblog.service
             sleep 3
+            
             # 检查服务状态
             systemctl is-active liliblog.service
