@@ -4,10 +4,7 @@ target/
 !**/src/test/**/target/
 
 ### IntelliJ IDEA ###
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/libraries/
+.idea/
 *.iws
 *.iml
 *.ipr
@@ -39,15 +36,11 @@ build/
 
 ### log files ###
 /logs/
-./logs/
-./logs/*
 *.log
 
 ### uploads ###
-./uploads/
-./uploads/*
-/uploads/*
+/uploads/
 
 ### 隐私配置 ###
-src/main/resources/application-prod.yml
-src/main/resources/application-dev.yml
+**/src/main/resources/application-prod.yml
+**/src/main/resources/application-dev.yml
