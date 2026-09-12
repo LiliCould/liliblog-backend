@@ -1,5 +1,6 @@
 package cn.lilicould.liliblog.service.impl;
 
+import cn.lilicould.liliblog.cache.RedisHelper;
 import cn.lilicould.liliblog.config.properties.InfoProperties;
 import cn.lilicould.liliblog.constant.StatusConstant;
 import cn.lilicould.liliblog.context.BaseContext;
@@ -71,6 +72,8 @@ class ArticleServiceImplTest {
     private UserService userService;
     @Mock
     private EmailTemplateService emailTemplateService;
+    @Mock
+    private RedisHelper redisHelper;
 
     private final InfoProperties infoProperties = new InfoProperties();
 
@@ -94,7 +97,7 @@ class ArticleServiceImplTest {
         ArticleServiceImpl service = new ArticleServiceImpl(
                 articleMapper, userMapper, likeRecordMapper, commentMapper,
                 categoryMapper, tagMapper, articleTagMapper, userService,
-                emailTemplateService, infoProperties);
+                emailTemplateService, infoProperties, redisHelper);
         ReflectionTestUtils.setField(service, "baseMapper", articleMapper);
         return service;
     }
