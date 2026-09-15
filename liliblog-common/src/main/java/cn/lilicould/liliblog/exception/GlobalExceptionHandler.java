@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.sql.SQLException;
@@ -96,6 +97,13 @@ public class GlobalExceptionHandler {
         log.error("数据库操作异常 -> {}",e.getMessage());
 
         return Result.error(CodeEnum.DB_ERROR);
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public Result<?> handleMaxSizeFileException (MaxUploadSizeExceededException e) {
+        log.error("上传文件超过限制大小 -> {}",e.getMessage());
+
+        return Result.error(CodeEnum.FILE_UPLOAD_OVER_SIZE);
     }
 
     /**

@@ -10,7 +10,7 @@ public enum CodeEnum {
     SUCCESS(0, "成功"),
 
     // 通用错误 1xxx
-    COMMON_PARAM_ERROR(1000,"参数异常"),
+    COMMON_PARAM_ERROR(1000, "参数异常"),
     PARAM_MISSING(1001, "缺少必要参数"),
     PARAM_FORMAT_ERROR(1002, "参数格式错误"),
     REQUEST_METHOD_NOT_SUPPORTED(1003, "请求方法不支持"),
@@ -22,7 +22,7 @@ public enum CodeEnum {
     USER_NOT_FOUND(2003, "用户不存在"),
     NO_PERMISSION(2004, "无权限执行此操作"),
     TOKEN_EXPIRED(2005, "登录已过期，请重新登录"),
-    ACCOUNT_DISABLED(2006,"账号被禁用，请联系管理员"),
+    ACCOUNT_DISABLED(2006, "账号被禁用，请联系管理员"),
     LOGIN_TOO_FREQUENT(2007, "登录过于频繁，请稍后重试"),
     PASSWORD_MISMATCH(2008, "两次密码不一致"),
     USERNAME_ALREADY_EXISTS(2009, "用户名已存在"),
@@ -44,14 +44,16 @@ public enum CodeEnum {
     TAG_NOT_FOUND(3006, "标签不存在"),
     SLUG_ALREADY_EXISTS(3007, "别名已存在"),
     SLUG_NOT_FOUND(3008, "别名不存在"),
-    REPEAT_OPERATION(3009,"请勿重复操作"),
+    REPEAT_OPERATION(3009, "请勿重复操作"),
     COMMENT_NOT_FOUND(3010, "评论不存在"),
     NOT_SUPPORTED_FILE_TYPE(3011, "不支持的文件类型"),
 
     // 系统错误 5xxx
     SYSTEM_ERROR(5000, "系统异常，请稍后重试"),
     DB_ERROR(5001, "数据库错误"),
-    FILE_UPLOAD_FAIL(5002, "文件上传失败");
+    FILE_UPLOAD_FAIL(5002, "文件上传失败"),
+    FILE_UPLOAD_OVER_SIZE(5003, "上传文件超过大小限制(10Mb)"),
+    ;
 
     private final Integer code;
     private final String message;
