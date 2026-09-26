@@ -28,8 +28,13 @@ spring:
   servlet:
     multipart:
       enabled: true
-      max-file-size: 10MB
-      max-request-size: 10MB
+      max-file-size: 40MB
+      # 必须大于 max-file-size：multipart 边界头、文件名、type 表单字段都要占额度，
+      # 与 max-file-size 设成相同值会导致接近上限的正常文件被误判为超限
+      max-request-size: 45MB
+      # 注意：location / file-size-threshold / resolve-lazily 对默认的
+      # StandardServletMultipartResolver 无效，临时目录只能通过 -Djava.io.tmpdir 指定
+      # 参见 DEPLOY.md 中 systemd 的 JAVA_OPTS
   security:
     oauth2:
       client:
@@ -61,6 +66,13 @@ spring:
           starttls: # 开启TLS
             enable: true # 开启SSL
             required: true # 强制要求使用TLS
+
+server:
+  tomcat:
+    # 必须 >= max-request-size。Tomcat 默认仅 2MB，上传被中断时会直接 reset 连接
+    max-swallow-size: 45MB
+    connection-timeout: 60s
+
 logging:
   level:
     root: ${liliblog.logging.level.root}
@@ -112,6 +124,27 @@ oss:
   secret-key: ${liliblog.oss.secret-key}
   bucket: ${liliblog.oss.bucket}
   oss-url: "https://oss.lilicould.cn"
+  # 七牛区域 ID：z0=华东 z1=华北 z2=华南 na0=北美。bucket 所在区域填错会导致每次上传都跨区
+  region: z0
+  # SDK 连接超时（秒）
+  connect-timeout: 10
+  # SDK 单次 socket 写超时（秒），传 0 表示不限制（SDK 默认值）
+  write-timeout: 60
+  # 分片上传的分片大小，七牛要求 1MB~1GB。SDK 每次只驻留一个分片，
+  # 所以「单个在途上传占多少堆内存」就等于这个值
+  block-size: 1MB
+  # 同时进行的上传数上限。堆峰值 ≈ 该值 × block-size。
+  # 上传改为同步执行后，线程池不再限流，这里是唯一的并发闸门，调高会线性放大内存峰值
+  max-concurrent-uploads: 5
+  # 等待上传许可的最长秒数，应显著大于单次上传耗时，否则慢上行链路下会误报繁忙。
+  # 注意：40MB 文件在 1Mbps 上行约需 320s，若并发已满，后续请求会在此超时
+  queue-wait-seconds: 60
+  # 各业务类型的大小上限，超限在读取文件前即被拒绝，不浪费上行带宽
+  size-limits:
+    avatar: 5MB
+    cover: 10MB
+    image: 40MB
+    file: 40MB
   allowed-media-types:
     - image/jpeg
     - image/png

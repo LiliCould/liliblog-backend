@@ -52,7 +52,8 @@ public enum CodeEnum {
     SYSTEM_ERROR(5000, "系统异常，请稍后重试"),
     DB_ERROR(5001, "数据库错误"),
     FILE_UPLOAD_FAIL(5002, "文件上传失败"),
-    FILE_UPLOAD_OVER_SIZE(5003, "上传文件超过大小限制(10Mb)"),
+    // 具体上限由 oss.size-limits 配置，实际提示语由 OssUtil 动态生成
+    FILE_UPLOAD_OVER_SIZE(5003, "上传文件超过大小限制"),
     ;
 
     private final Integer code;
