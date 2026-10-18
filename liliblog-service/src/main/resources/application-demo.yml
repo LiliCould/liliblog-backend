@@ -5,9 +5,15 @@ liliblog:
     username: username
     password: password
     hikari:
-      minimum-idle: 5  # 启动时就创建5个空闲连接
-      connection-test-query: SELECT 1
+      minimum-idle: 5                # 常驻空闲连接数
+      maximum-pool-size: 10          # 连接池上限（多实例部署时需乘以实例数，总连接数要小于 max_connections）
+      connection-timeout: 10000      # 从池中获取连接的最长等待时间
+      validation-timeout: 3000
+      idle-timeout: 300000           # 超出 minimum-idle 的空闲连接回收时间
+      max-lifetime: 1200000          # 连接最大存活时间，需小于 MySQL wait_timeout
       initialization-fail-timeout: 0
+      # 不配置 connection-test-query：Connector/J 8 使用 JDBC4 isValid()，
+      # 避免额外执行 SELECT 1 消耗数据库请求额度
   data:
     redis:
       host: localhost

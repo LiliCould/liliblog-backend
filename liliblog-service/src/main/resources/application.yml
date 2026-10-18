@@ -9,9 +9,16 @@ spring:
     username: ${liliblog.datasource.username}
     password: ${liliblog.datasource.password}
     hikari:
-      minimum-idle: ${liliblog.datasource.hikari.minimum-idle}  # 启动时就创建5个空闲连接
-      connection-test-query: ${liliblog.datasource.hikari.connection-test-query}
+      minimum-idle: ${liliblog.datasource.hikari.minimum-idle}  # 常驻空闲连接数
+      # 新增配置项都带默认值：旧环境的外部配置尚未同步时也能正常启动
+      maximum-pool-size: ${liliblog.datasource.hikari.maximum-pool-size:10}
+      connection-timeout: ${liliblog.datasource.hikari.connection-timeout:10000}
+      validation-timeout: ${liliblog.datasource.hikari.validation-timeout:3000}
+      idle-timeout: ${liliblog.datasource.hikari.idle-timeout:300000}
+      max-lifetime: ${liliblog.datasource.hikari.max-lifetime:1200000}
       initialization-fail-timeout: ${liliblog.datasource.hikari.initialization-fail-timeout}
+      # 不配置 connection-test-query：Connector/J 8 支持 JDBC4 isValid()，
+      # 避免每次校验多执行一条 SELECT 1，节省数据库请求额度
   data:
     redis:
       host: ${liliblog.data.redis.host}
