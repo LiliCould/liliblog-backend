@@ -21,6 +21,7 @@ import cn.lilicould.liliblog.request.ArticleUpdateRequest;
 import cn.lilicould.liliblog.service.ArticleService;
 import cn.lilicould.liliblog.service.UserService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -32,8 +33,15 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
 * @author Lili_Could
@@ -59,6 +67,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     private final RedisHelper redisHelper;
 
     /**
+     * ngram 全文索引的最小分词长度（与 ngram_token_size 保持一致）。
+     * 小于该长度的关键词无法形成 ngram token，需要回退 LIKE。
+     */
+    private static final int MIN_FULLTEXT_KEYWORD_LENGTH = 2;
+
+    /**
      * 根据id获取文章详情
      * @param id 文章ID
      * @return 文章详情
@@ -75,28 +89,26 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
             throw new BusinessException(CodeEnum.NO_PERMISSION);
         }
 
+        ArticleDetailsVO articleDetailsVO = buildArticleDetails(article);
+
+        log.info("获取到文章id：{}",articleDetailsVO.getId());
+        return articleDetailsVO;
+    }
+
+    /**
+     * 用已查询出的文章构建详情VO，并原子递增阅读量。
+     * 关联数据（作者、更新者、分类、标签、点赞数、评论数）一次性批量加载，避免 N+1。
+     */
+    private ArticleDetailsVO buildArticleDetails(Article article) {
         ArticleDetailsVO articleDetailsVO = new ArticleDetailsVO();
         BeanUtils.copyProperties(article, articleDetailsVO);
 
-        // 设置作者和更新者信息
-        articleDetailsVO.setCreator(buildUserInfo(article.getCreateBy()));
-        articleDetailsVO.setUpdater(buildUserInfo(article.getUpdateBy()));
+        ArticleExtras extras = loadArticleExtras(List.of(article));
+        fillArticleDetailsVO(articleDetailsVO, article, extras);
 
-        // 设置点赞数和评论数
-        articleDetailsVO.setLikeCount(getLikeCount(id));
-        articleDetailsVO.setCommentCount(getCommentCount(id));
+        // 阅读量 +1：只更新一列，不回写 longtext，也不刷新 update_time
+        articleMapper.incrementViewCount(article.getId());
 
-        // 设置分类信息
-        articleDetailsVO.setCategory(buildCategoryVO(article.getCategoryId()));
-
-        // 设置标签列表
-        articleDetailsVO.setTags(buildTagVOList(id));
-
-        // 阅读量加1
-        article.setViewCount(article.getViewCount() + 1);
-        this.updateById(article);
-
-        log.info("获取到文章id：{}",articleDetailsVO.getId());
         return articleDetailsVO;
     }
 
@@ -114,9 +126,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
         // 查询条件
         LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
-        // 基础条件：标题模糊查询
-        queryWrapper.like(articleQuery.getTitle() != null, Article::getTitle, articleQuery.getTitle())
-                .eq(articleQuery.getCreateBy() != null, Article::getCreateBy, articleQuery.getCreateBy())
+        // 基础条件：标题筛选（>= 2 字符走 ngram 全文索引，单字回退 LIKE）
+        applyTitleFilter(queryWrapper, articleQuery.getTitle());
+        queryWrapper.eq(articleQuery.getCreateBy() != null, Article::getCreateBy, articleQuery.getCreateBy())
                 .eq(articleQuery.getCategoryId() != null, Article::getCategoryId, articleQuery.getCategoryId())
                 .between(
                         articleQuery.getStartTime() != null && articleQuery.getEndTime() != null,
@@ -150,13 +162,16 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
             target = "#id"
     )
     public void remove(Long id) {
-        // 校验文章是否存在
-        if (!this.exists(id)) {
+        // 一次查询同时拿到存在性和作者，避免同一行被查 2 次
+        Article existing = articleMapper.selectOne(new LambdaQueryWrapper<Article>()
+                .eq(Article::getId, id)
+                .select(Article::getId, Article::getCreateBy));
+        if (existing == null) {
             throw new BusinessException(CodeEnum.ARTICLE_NOT_FOUND);
         }
 
         // 校验权限
-        if (!hasWriteAuthority(id)) {
+        if (!hasWriteAuthority(existing)) {
             throw new BusinessException(CodeEnum.NO_PERMISSION);
         }
 
@@ -203,18 +218,21 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
             throw new BusinessException(CodeEnum.PARAM_MISSING);
         }
 
-        // 校验文章是否存在
-        if (!this.exists(id)) {
+        // 一次查询同时拿到存在性、作者和更新前状态，避免同一行被查 3 次
+        Article existing = articleMapper.selectOne(new LambdaQueryWrapper<Article>()
+                .eq(Article::getId, id)
+                .select(Article::getId, Article::getCreateBy, Article::getStatus));
+        if (existing == null) {
             throw new BusinessException(CodeEnum.ARTICLE_NOT_FOUND);
         }
 
         // 校验权限
-        if (!hasWriteAuthority(id)) {
+        if (!hasWriteAuthority(existing)) {
             throw new BusinessException(CodeEnum.NO_PERMISSION);
         }
 
         // 获取更新前的状态
-        Integer oldStatus = this.getById(id).getStatus();
+        Integer oldStatus = existing.getStatus();
 
         // 拷贝数据
         Article article = new Article();
@@ -243,13 +261,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
             throw new BusinessException(CodeEnum.CATEGORY_NOT_FOUND);
         }
 
-        // 检查标签列表是否存在
-        for (Long tagId : articleUpdateRequest.getTags()) {
-            Tag tag = tagMapper.selectById(tagId);
-            if (tag == null) {
-                throw new BusinessException(CodeEnum.TAG_NOT_FOUND);
-            }
-        }
+        // 检查标签列表是否存在（批量查询，避免逐个 selectById）
+        validateTags(articleUpdateRequest.getTags());
 
         // 删除原来标签
         LambdaQueryWrapper<ArticleTag> articleTagQueryWrapper = new LambdaQueryWrapper<>();
@@ -279,14 +292,18 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
      */
     @Override
     public ArticleDetailsVO getArticleBySlug(String slug) {
-        // 查询文章基础信息
+        // 查询文章基础信息（slug 上有唯一索引）
         LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Article::getSlug, slug);
         Article article = articleMapper.selectOne(queryWrapper);
         if (article == null) {
             return null;
         }
-        return getArticle( article.getId());
+        if (!hasReadAuthority(article)) {
+            throw new BusinessException(CodeEnum.NO_PERMISSION);
+        }
+        // 直接复用已查出的文章，避免按 id 再查一次
+        return buildArticleDetails(article);
     }
 
     /**
@@ -377,16 +394,21 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         // 排序
         page.addOrder(OrderItem.descs(OrderConstant.ID, OrderConstant.CREATE_TIME, OrderConstant.UPDATE_TIME));
 
-        // 构造查询条件
-        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.and(wrapper -> wrapper
-                        .like(Article::getTitle, keyword)
-                        .or()
-                        .like(Article::getSummary, keyword)
-                        .or()
-                        .like(Article::getContent, keyword))
-                .eq(Article::getStatus, StatusConstant.ARTICLE_PUBLISHED);
+        // 构造查询条件：使用 ngram 全文索引 ft_article_search(title, summary, content)，
+        // 不再使用会导致全表扫描的 LIKE '%keyword%'。
+        // 关键词用双引号包成短语，保证与原先“连续子串”语义一致。
+        String fullTextQuery = buildFullTextQuery(keyword);
+        if (fullTextQuery == null) {
+            return PageInfo.empty(searchQuery.getCurrent(), searchQuery.getSize());
+        }
 
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.apply("MATCH(title, summary, content) AGAINST ({0} IN BOOLEAN MODE)", fullTextQuery)
+                .eq(Article::getStatus, StatusConstant.ARTICLE_PUBLISHED)
+                // 列表VO不需要 content/content_html，避免把 longtext 读出来
+                .select(Article::getId, Article::getTitle, Article::getSlug, Article::getStatus, Article::getSummary,
+                        Article::getCoverImage, Article::getViewCount, Article::getCategoryId,
+                        Article::getCreateBy, Article::getUpdateBy, Article::getCreateTime, Article::getUpdateTime);
 
         // 查询
         Page<Article> articlePage = this.page(page, queryWrapper);
@@ -415,19 +437,13 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
         // 批量查询文章
         List<Article> articles = this.listByIds(randomIds);
+        if (articles.isEmpty()) {
+            return List.of();
+        }
 
-        // 转换为VO返回（复用已有的填充逻辑）
-        return articles.stream().map(article -> {
-            ArticleVO articleVO = new ArticleVO();
-            BeanUtils.copyProperties(article, articleVO);
-            articleVO.setCreator(buildUserInfo(article.getCreateBy()));
-            articleVO.setUpdater(buildUserInfo(article.getUpdateBy()));
-            articleVO.setLikeCount(getLikeCount(article.getId()));
-            articleVO.setCommentCount(getCommentCount(article.getId()));
-            articleVO.setCategory(buildCategoryVO(article.getCategoryId()));
-            articleVO.setTags(buildTagVOList(article.getId()));
-            return articleVO;
-        }).toList();
+        // 关联数据一次性批量加载，避免每篇文章再查 6 次
+        ArticleExtras extras = loadArticleExtras(articles);
+        return articles.stream().map(article -> toArticleVO(article, extras)).toList();
     }
 
     /**
@@ -542,15 +558,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
             throw new BusinessException(CodeEnum.CATEGORY_NOT_FOUND);
         }
 
-        // 检查标签列表是否存在
-        if (articleCreateRequest.getTags() != null) {
-            for (Long tagId : articleCreateRequest.getTags()) {
-                Tag tag = tagMapper.selectById(tagId);
-                if (tag == null) {
-                    throw new BusinessException(CodeEnum.TAG_NOT_FOUND);
-                }
-            }
-        }
+        // 检查标签列表是否存在（批量查询，避免逐个 selectById）
+        validateTags(articleCreateRequest.getTags());
         // 存文章
         articleMapper.insert(article);
 
@@ -572,24 +581,250 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         if (articlePage.getTotal() == 0)
             return PageInfo.empty(current, size);
 
-        // 填充信息并返回
-        // todo 有N+1问题，需要优化
-        List<ArticleVO> records = articlePage.getRecords().stream().map(article -> {
-            ArticleVO articleVO = new ArticleVO();
-            BeanUtils.copyProperties(article, articleVO);
-            articleVO.setCreator(buildUserInfo(article.getCreateBy())); // 设置作者信息
-            articleVO.setUpdater(buildUserInfo(article.getUpdateBy())); // 设置新者信息
-            articleVO.setLikeCount(getLikeCount(article.getId())); // 填充点赞数和评论数
-            articleVO.setCommentCount(getCommentCount(article.getId())); // 填充点赞数和评论数
-            articleVO.setCategory(buildCategoryVO(article.getCategoryId())); // 填充分类信息
-            articleVO.setTags(buildTagVOList(article.getId())); // 填充标签列表
-            return articleVO;
-        }).toList();
+        List<Article> articles = articlePage.getRecords();
+        if (articles.isEmpty()) {
+            return PageInfo.empty(current, size);
+        }
+
+        // 关联数据一次性批量加载，避免 N+1
+        ArticleExtras extras = loadArticleExtras(articles);
+        List<ArticleVO> records = articles.stream()
+                .map(article -> toArticleVO(article, extras))
+                .toList();
 
         Page<ArticleVO> voPage = new Page<>(articlePage.getCurrent(), articlePage.getSize(), articlePage.getTotal()); // 会自动计算其他信息
         voPage.setRecords(records);
 
         return PageInfo.of(voPage);
+    }
+
+    /**
+     * 批量加载文章列表/详情所需的所有关联数据。
+     * 无论多少篇文章，固定只需要 6 条 SQL：用户、分类、文章标签关联、标签、点赞数、评论数。
+     */
+    private ArticleExtras loadArticleExtras(Collection<Article> articles) {
+        if (articles == null || articles.isEmpty()) {
+            return ArticleExtras.empty();
+        }
+
+        Set<Long> articleIds = articles.stream().map(Article::getId).collect(Collectors.toSet());
+        Set<Long> userIds = articles.stream()
+                .flatMap(article -> java.util.stream.Stream.of(article.getCreateBy(), article.getUpdateBy()))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        Set<Long> categoryIds = articles.stream()
+                .map(Article::getCategoryId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        ArticleExtras extras = new ArticleExtras();
+        extras.users = loadUserInfoMap(userIds);
+        extras.categories = loadCategoryVOMap(categoryIds);
+        extras.tagMap = loadTagVOMap(articleIds);
+        extras.likeCounts = loadLikeCountMap(articleIds, TargetType.ARTICLE.getCode());
+        extras.commentCounts = loadCommentCountMap(articleIds);
+        return extras;
+    }
+
+    private ArticleVO toArticleVO(Article article, ArticleExtras extras) {
+        ArticleVO articleVO = new ArticleVO();
+        BeanUtils.copyProperties(article, articleVO);
+        fillArticleVO(articleVO, article, extras);
+        return articleVO;
+    }
+
+    /**
+     * 把批量加载好的关联数据填充到列表VO
+     */
+    private void fillArticleVO(ArticleVO articleVO, Article article, ArticleExtras extras) {
+        articleVO.setCreator(article.getCreateBy() == null ? null : extras.users.get(article.getCreateBy()));
+        articleVO.setUpdater(article.getUpdateBy() == null ? null : extras.users.get(article.getUpdateBy()));
+        articleVO.setLikeCount(extras.likeCounts.getOrDefault(article.getId(), 0));
+        articleVO.setCommentCount(extras.commentCounts.getOrDefault(article.getId(), 0));
+        articleVO.setCategory(article.getCategoryId() == null ? null : extras.categories.get(article.getCategoryId()));
+        articleVO.setTags(extras.tagMap.getOrDefault(article.getId(), List.of()));
+    }
+
+    /**
+     * 把批量加载好的关联数据填充到详情VO
+     */
+    private void fillArticleDetailsVO(ArticleDetailsVO articleDetailsVO, Article article, ArticleExtras extras) {
+        articleDetailsVO.setCreator(article.getCreateBy() == null ? null : extras.users.get(article.getCreateBy()));
+        articleDetailsVO.setUpdater(article.getUpdateBy() == null ? null : extras.users.get(article.getUpdateBy()));
+        articleDetailsVO.setLikeCount(extras.likeCounts.getOrDefault(article.getId(), 0));
+        articleDetailsVO.setCommentCount(extras.commentCounts.getOrDefault(article.getId(), 0));
+        articleDetailsVO.setCategory(article.getCategoryId() == null ? null : extras.categories.get(article.getCategoryId()));
+        articleDetailsVO.setTags(extras.tagMap.getOrDefault(article.getId(), List.of()));
+    }
+
+    private Map<Long, UserInfo> loadUserInfoMap(Collection<Long> userIds) {
+        if (userIds.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        return userMapper.selectBatchIds(userIds).stream()
+                .collect(Collectors.toMap(User::getId, UserInfo::from));
+    }
+
+    private Map<Long, CategoryVO> loadCategoryVOMap(Collection<Long> categoryIds) {
+        if (categoryIds.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        return categoryMapper.selectBatchIds(categoryIds).stream()
+                // 与原先 buildCategoryVO 一致：禁用的分类不返回
+                .filter(category -> !StatusConstant.DISABLED.equals(category.getStatus()))
+                .collect(Collectors.toMap(Category::getId, category -> {
+                    CategoryVO categoryVO = new CategoryVO();
+                    BeanUtils.copyProperties(category, categoryVO);
+                    return categoryVO;
+                }));
+    }
+
+    /**
+     * 一次查出所有文章-标签关联，再按标签ID批量查标签，固定 2 条 SQL。
+     * article_tag 走 uk_article_tag(article_id, tag_id) 覆盖索引，tag 走主键。
+     */
+    private Map<Long, List<TagVO>> loadTagVOMap(Collection<Long> articleIds) {
+        if (articleIds.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        List<ArticleTag> relations = articleTagMapper.selectList(new LambdaQueryWrapper<ArticleTag>()
+                .in(ArticleTag::getArticleId, articleIds)
+                .select(ArticleTag::getArticleId, ArticleTag::getTagId)
+                .orderByAsc(ArticleTag::getId));
+        if (relations.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
+        Set<Long> tagIds = relations.stream().map(ArticleTag::getTagId).collect(Collectors.toSet());
+        Map<Long, TagVO> tagVOMap = tagMapper.selectBatchIds(tagIds).stream()
+                .collect(Collectors.toMap(Tag::getId, tag -> {
+                    TagVO tagVO = new TagVO();
+                    BeanUtils.copyProperties(tag, tagVO);
+                    return tagVO;
+                }));
+
+        Map<Long, List<TagVO>> result = new HashMap<>();
+        for (ArticleTag relation : relations) {
+            TagVO tagVO = tagVOMap.get(relation.getTagId());
+            if (tagVO != null) {
+                result.computeIfAbsent(relation.getArticleId(), key -> new ArrayList<>()).add(tagVO);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 批量统计点赞数。like_record 走 idx_target(target_id, target_type)。
+     */
+    private Map<Long, Integer> loadLikeCountMap(Collection<Long> targetIds, Integer targetType) {
+        if (targetIds.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        QueryWrapper<LikeRecord> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("target_id AS target_id", "COUNT(*) AS cnt")
+                .eq("target_type", targetType)
+                .in("target_id", targetIds)
+                .groupBy("target_id");
+        return toCountMap(likeRecordMapper.selectMaps(queryWrapper));
+    }
+
+    /**
+     * 批量统计评论数。comment 走 idx_comment_article_status(article_id, status, deleted)。
+     */
+    private Map<Long, Integer> loadCommentCountMap(Collection<Long> articleIds) {
+        if (articleIds.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        QueryWrapper<Comment> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("article_id AS target_id", "COUNT(*) AS cnt")
+                .eq("status", StatusConstant.COMMENT_PUBLISHED)
+                .in("article_id", articleIds)
+                .groupBy("article_id");
+        return toCountMap(commentMapper.selectMaps(queryWrapper));
+    }
+
+    private Map<Long, Integer> toCountMap(List<Map<String, Object>> rows) {
+        if (rows == null || rows.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        Map<Long, Integer> result = new HashMap<>(rows.size());
+        for (Map<String, Object> row : rows) {
+            Object targetId = row.get("target_id");
+            Object count = row.get("cnt");
+            if (targetId instanceof Number id && count instanceof Number value) {
+                result.put(id.longValue(), value.intValue());
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 标题筛选：长度 >= ngram_token_size 时走 ft_article_title 全文索引；
+     * 单字无法形成 ngram token，回退 LIKE 保持原有行为。
+     */
+    private void applyTitleFilter(LambdaQueryWrapper<Article> queryWrapper, String title) {
+        if (title == null || title.isBlank()) {
+            return;
+        }
+
+        String trimmed = title.trim();
+        int length = trimmed.codePointCount(0, trimmed.length());
+        if (length >= MIN_FULLTEXT_KEYWORD_LENGTH) {
+            String fullTextQuery = buildFullTextQuery(trimmed);
+            if (fullTextQuery != null) {
+                queryWrapper.apply("MATCH(title) AGAINST ({0} IN BOOLEAN MODE)", fullTextQuery);
+                return;
+            }
+        }
+
+        queryWrapper.like(Article::getTitle, title);
+    }
+
+    /**
+     * 把用户输入包装成布尔模式短语，避免 + - * 等操作符改变查询语义。
+     */
+    private String buildFullTextQuery(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            return null;
+        }
+        String escaped = keyword.trim()
+                .replace("\\", "\\\\")
+                .replace("\"", "\\\"");
+        return "\"" + escaped + "\"";
+    }
+
+    /**
+     * 批量校验标签是否存在。一条 SQL 代替逐个 selectById。
+     */
+    private void validateTags(List<Long> tagIds) {
+        if (tagIds == null || tagIds.isEmpty()) {
+            return;
+        }
+        Set<Long> distinctTagIds = tagIds.stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        if (distinctTagIds.isEmpty()) {
+            return;
+        }
+        if (tagMapper.selectBatchIds(distinctTagIds).size() != distinctTagIds.size()) {
+            throw new BusinessException(CodeEnum.TAG_NOT_FOUND);
+        }
+    }
+
+    /**
+     * 批量加载文章关联数据的一次性快照
+     */
+    private static final class ArticleExtras {
+        private Map<Long, UserInfo> users = Collections.emptyMap();
+        private Map<Long, CategoryVO> categories = Collections.emptyMap();
+        private Map<Long, List<TagVO>> tagMap = Collections.emptyMap();
+        private Map<Long, Integer> likeCounts = Collections.emptyMap();
+        private Map<Long, Integer> commentCounts = Collections.emptyMap();
+
+        private static ArticleExtras empty() {
+            return new ArticleExtras();
+        }
     }
 
     /**
@@ -613,16 +848,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
      * @param articleId 文章ID
      * @return 是否有权限
      */
-    private boolean hasWriteAuthority(Long articleId) {
+    private boolean hasWriteAuthority(Article article) {
         if (BaseContext.isAdmin()) {
             return true;  // 管理员
         }
 
-        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Article::getId, articleId)
-                .select(Article::getCreateBy);
-        Long createBy = articleMapper.selectOne(queryWrapper).getCreateBy(); // 获取作者ID
-
+        Long createBy = article.getCreateBy();
         if (createBy == null) {
             return false; // 作者不存在,则只允许管理员修改
         }
@@ -630,82 +861,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         return Objects.equals(BaseContext.getCurrentUserId(), createBy); // 当前用户是否为作者本人
     }
 
-    /**
-     * 判断文章是否存在
-     */
-    private boolean exists(Long articleId) {
-        if (articleId == null) {
-            return false;
-        }
-        return articleMapper.exists(new LambdaQueryWrapper<Article>().eq(Article::getId, articleId));
-    }
-    /**
-     * 构建用户信息
-     */
-    private UserInfo buildUserInfo(Long userId) {
-        if (userId == null) {
-            return null;
-        }
-        User user = userMapper.selectById(userId);
-        return user != null ? UserInfo.from(user) : null;
-    }
-
-    /**
-     * 获取文章点赞数
-     */
-    private int getLikeCount(Long articleId) {
-        LambdaQueryWrapper<LikeRecord> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(LikeRecord::getTargetId, articleId)
-                .eq(LikeRecord::getTargetType, TargetType.ARTICLE.getCode());
-        return likeRecordMapper.selectCount(queryWrapper).intValue();
-    }
-
-    /**
-     * 获取文章评论数
-     */
-    private int getCommentCount(Long articleId) {
-        LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Comment::getArticleId, articleId)
-                .eq(Comment::getStatus, StatusConstant.COMMENT_PUBLISHED);
-        return commentMapper.selectCount(queryWrapper).intValue();
-    }
-
-    /**
-     * 构建分类信息
-     */
-    private CategoryVO buildCategoryVO(Long categoryId) {
-        if (categoryId == null) {
-            return null;
-        }
-        Category category = categoryMapper.selectById(categoryId);
-        if (category == null) {
-            return null;
-        }
-        if (StatusConstant.DISABLED.equals(category.getStatus())) { // 如果分类被禁用，则不返回
-            return null;
-        }
-        CategoryVO categoryVO = new CategoryVO();
-        BeanUtils.copyProperties(category, categoryVO);
-        return categoryVO;
-    }
-
-    /**
-     * 构建标签列表
-     */
-    private List<TagVO> buildTagVOList(Long articleId) {
-        List<Tag> tags = tagMapper.selectTagsByArticleId(articleId);
-        log.debug("标签列表：{}", tags);
-        if (tags == null || tags.isEmpty()) {
-            return List.of();
-        }
-        return tags.stream()
-                .map(tag -> {
-                    TagVO tagVO = new TagVO();
-                    BeanUtils.copyProperties(tag, tagVO);
-                    return tagVO;
-                })
-                .toList();
-    }
 
     /**
      * 计算目标状态
@@ -786,6 +941,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         }
 
         List<ArticleTag> articleTags = tagIds.stream()
+                .filter(Objects::nonNull)
+                .distinct()
                 .map(tagId -> {
                     ArticleTag articleTag = new ArticleTag();
                     articleTag.setArticleId(articleId);

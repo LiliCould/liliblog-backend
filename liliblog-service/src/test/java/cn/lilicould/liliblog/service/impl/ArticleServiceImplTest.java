@@ -36,10 +36,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -138,21 +141,34 @@ class ArticleServiceImplTest {
         return User.builder().id(id).username(username).nickname("昵称" + id).email(username + "@test.com").role(1).status(1).build();
     }
 
+    private Map<String, Object> countRow(Long id, long count) {
+        Map<String, Object> row = new HashMap<>();
+        row.put("target_id", id);
+        row.put("cnt", count);
+        return row;
+    }
+
     private void stubSuccessDependencies(Article article) {
-        when(userMapper.selectById(1L)).thenReturn(buildUser(1L, "zhangsan"));
-        when(userMapper.selectById(2L)).thenReturn(buildUser(2L, "lisi"));
-        when(likeRecordMapper.selectCount(any(Wrapper.class))).thenReturn(5L);
-        when(commentMapper.selectCount(any(Wrapper.class))).thenReturn(3L);
+        when(userMapper.selectBatchIds(anyCollection()))
+                .thenReturn(List.of(buildUser(1L, "zhangsan"), buildUser(2L, "lisi")));
+        when(likeRecordMapper.selectMaps(any(Wrapper.class)))
+                .thenReturn(List.of(countRow(article.getId(), 5)));
+        when(commentMapper.selectMaps(any(Wrapper.class)))
+                .thenReturn(List.of(countRow(article.getId(), 3)));
         Category category = new Category();
         category.setId(2L);
         category.setName("Java");
         category.setSlug("java");
         category.setStatus(StatusConstant.ENABLED);
-        when(categoryMapper.selectById(2L)).thenReturn(category);
+        when(categoryMapper.selectBatchIds(anyCollection())).thenReturn(List.of(category));
         Tag tag = new Tag();
         tag.setId(9L);
         tag.setName("随笔");
-        when(tagMapper.selectTagsByArticleId(article.getId())).thenReturn(List.of(tag));
+        when(tagMapper.selectBatchIds(anyCollection())).thenReturn(List.of(tag));
+        cn.lilicould.liliblog.entity.ArticleTag relation = new cn.lilicould.liliblog.entity.ArticleTag();
+        relation.setArticleId(article.getId());
+        relation.setTagId(9L);
+        when(articleTagMapper.selectList(any(Wrapper.class))).thenReturn(List.of(relation));
     }
 
     @Test
@@ -194,8 +210,7 @@ class ArticleServiceImplTest {
         assertNotNull(vo.getCategory());
         assertEquals("Java", vo.getCategory().getName());
         assertEquals(1, vo.getTags().size());
-        assertEquals(11, article.getViewCount());
-        verify(articleMapper).updateById(article);
+        verify(articleMapper).incrementViewCount(1L);
     }
 
     @Test
@@ -255,6 +270,44 @@ class ArticleServiceImplTest {
     }
 
     @Test
+    void getArticleListWithMultiCharTitleUsesFullTextIndex() {
+        articleService = buildService();
+        loginAsAdmin();
+        ArticleQuery query = new ArticleQuery();
+        query.setCurrent(1L);
+        query.setSize(10L);
+        query.setTitle("面试");
+        when(articleMapper.selectPage(any(Page.class), any(Wrapper.class)))
+                .thenReturn(new Page<>(1, 10, 0));
+
+        articleService.getArticleList(query);
+
+        ArgumentCaptor<Wrapper> captor = ArgumentCaptor.forClass(Wrapper.class);
+        verify(articleMapper).selectPage(any(Page.class), captor.capture());
+        assertTrue(captor.getValue().getSqlSegment().contains("MATCH(title)"));
+    }
+
+    @Test
+    void getArticleListWithSingleCharTitleFallsBackToLike() {
+        articleService = buildService();
+        loginAsAdmin();
+        ArticleQuery query = new ArticleQuery();
+        query.setCurrent(1L);
+        query.setSize(10L);
+        query.setTitle("面");
+        when(articleMapper.selectPage(any(Page.class), any(Wrapper.class)))
+                .thenReturn(new Page<>(1, 10, 0));
+
+        articleService.getArticleList(query);
+
+        ArgumentCaptor<Wrapper> captor = ArgumentCaptor.forClass(Wrapper.class);
+        verify(articleMapper).selectPage(any(Page.class), captor.capture());
+        String sqlSegment = captor.getValue().getSqlSegment();
+        assertTrue(sqlSegment.contains("LIKE"));
+        assertFalse(sqlSegment.contains("MATCH(title)"));
+    }
+
+    @Test
     void getArticleListForAnonymousOnlyPublished() {
         articleService = buildService();
         ArticleQuery query = new ArticleQuery();
@@ -296,7 +349,7 @@ class ArticleServiceImplTest {
     void removeSuccessDeletesRelatedRecords() {
         articleService = buildService();
         loginAsAdmin();
-        when(articleMapper.exists(any(Wrapper.class))).thenReturn(true);
+        when(articleMapper.selectOne(any(Wrapper.class))).thenReturn(buildPublishedArticle());
         when(articleMapper.deleteById(1L)).thenReturn(1);
 
         articleService.remove(1L);
@@ -352,7 +405,8 @@ class ArticleServiceImplTest {
         request.setStatus(StatusConstant.ARTICLE_PUBLISHED);
         request.setContent("内容");
         request.setTags(List.of());
-        when(articleMapper.exists(any(Wrapper.class))).thenReturn(true, false);
+        when(articleMapper.selectOne(any(Wrapper.class))).thenReturn(buildPublishedArticle());
+        when(articleMapper.exists(any(Wrapper.class))).thenReturn(false);
         when(categoryMapper.exists(any(Wrapper.class))).thenReturn(false);
 
         BusinessException ex = assertThrows(BusinessException.class, () -> articleService.update(1L, request));
@@ -371,7 +425,7 @@ class ArticleServiceImplTest {
         Article owner = buildPublishedArticle();
         owner.setCreateBy(1L);
         when(articleMapper.selectOne(any(Wrapper.class))).thenReturn(owner);
-        when(tagMapper.selectById(99L)).thenReturn(null);
+        when(tagMapper.selectBatchIds(anyCollection())).thenReturn(List.of());
 
         BusinessException ex = assertThrows(BusinessException.class, () -> articleService.update(1L, request));
         assertEquals(CodeEnum.TAG_NOT_FOUND.getCode(), ex.getCode());
@@ -388,10 +442,14 @@ class ArticleServiceImplTest {
         request.setStatus(StatusConstant.ARTICLE_PUBLISHED);
         request.setCategoryId(2L);
         request.setTags(List.of(1L, 2L));
-        when(articleMapper.exists(any(Wrapper.class))).thenReturn(true, false);
+        when(articleMapper.selectOne(any(Wrapper.class))).thenReturn(buildPublishedArticle());
+        when(articleMapper.exists(any(Wrapper.class))).thenReturn(false);
         when(categoryMapper.exists(any(Wrapper.class))).thenReturn(true);
-        when(tagMapper.selectById(1L)).thenReturn(new Tag());
-        when(tagMapper.selectById(2L)).thenReturn(new Tag());
+        Tag tag1 = new Tag();
+        tag1.setId(1L);
+        Tag tag2 = new Tag();
+        tag2.setId(2L);
+        when(tagMapper.selectBatchIds(anyCollection())).thenReturn(List.of(tag1, tag2));
 
         articleService.update(1L, request);
 
@@ -585,7 +643,7 @@ class ArticleServiceImplTest {
         request.setTags(List.of(99L));
         when(articleMapper.exists(any(Wrapper.class))).thenReturn(false);
         when(categoryMapper.exists(any(Wrapper.class))).thenReturn(true);
-        when(tagMapper.selectById(99L)).thenReturn(null);
+        when(tagMapper.selectBatchIds(anyCollection())).thenReturn(List.of());
 
         BusinessException ex = assertThrows(BusinessException.class, () -> articleService.save(request));
         assertEquals(CodeEnum.TAG_NOT_FOUND.getCode(), ex.getCode());
@@ -605,7 +663,9 @@ class ArticleServiceImplTest {
         request.setTags(List.of(1L));
         when(articleMapper.exists(any(Wrapper.class))).thenReturn(false);
         when(categoryMapper.exists(any(Wrapper.class))).thenReturn(true);
-        when(tagMapper.selectById(1L)).thenReturn(new Tag());
+        Tag tag = new Tag();
+        tag.setId(1L);
+        when(tagMapper.selectBatchIds(anyCollection())).thenReturn(List.of(tag));
         when(articleMapper.insert(any(Article.class))).thenAnswer(inv -> {
             Article a = inv.getArgument(0);
             a.setId(888L);

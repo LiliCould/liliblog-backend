@@ -23,6 +23,7 @@ import cn.lilicould.liliblog.entity.User;
 import cn.lilicould.liliblog.service.ArticleService;
 import cn.lilicould.liliblog.service.CommentService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -32,8 +33,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
 * @author Lili_Could
@@ -89,22 +95,15 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
         // 查询
         Page<Comment> commentPage = this.page(page, queryWrapper);
 
-        // 构建返回结果
-        List<CommentVO> records = commentPage.getRecords().stream().map(comment -> CommentVO.builder()
-                .id(comment.getId())
-                .rootId(comment.getRootId())
-                .content(comment.getContent())
-                .articleId(comment.getArticleId())
-                .status(comment.getStatus())
-                .childCount(getChildCount(comment.getId())) // 获取子评论数
-                .creator(buildUserInfo(comment.getCreateBy())) // 构建发布者信息
-                .likeCount(getLikeCount(comment.getId()))
-                .parentId(comment.getParentId())
-                .ipAddress(comment.getIpAddress())
-                .ipAddressLocation(Ip2RegionUtil.getFormattedLocation(comment.getIpAddress()))
-                .createTime(comment.getCreateTime())
-                .build()
-        ).toList();
+        // 构建返回结果：用户、点赞数、子评论数全部批量加载，避免 N+1
+        List<Comment> comments = commentPage.getRecords();
+        Map<Long, UserInfo> userMap = loadUserInfoMap(comments);
+        Map<Long, Integer> likeCountMap = loadLikeCountMap(ids(comments));
+        Map<Long, Integer> childCountMap = loadChildCountMap(ids(comments));
+        List<CommentVO> records = comments.stream()
+                .map(comment -> toCommentVO(comment, userMap, likeCountMap,
+                        childCountMap.getOrDefault(comment.getId(), 0), comment.getRootId()))
+                .toList();
 
         // 空结果
         if (records.isEmpty()) {
@@ -152,22 +151,14 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
         // 查询
         Page<Comment> commentPage = this.page(page, queryWrapper);
 
-        // 构建返回结果
-        List<CommentVO> records = commentPage.getRecords().stream().map(comment -> CommentVO.builder()
-                .id(comment.getId())
-                .content(comment.getContent())
-                .articleId(comment.getArticleId())
-                .status(comment.getStatus())
-                .childCount(0) // 获取子评论数(二级评论虽然会有回复,但是因为系统只做二级评论，所以子评论数量为0)
-                .creator(buildUserInfo(comment.getCreateBy())) // 构建发布者信息
-                .likeCount(getLikeCount(comment.getId()))
-                .parentId(comment.getParentId())
-                .rootId(rootId)
-                .ipAddress(comment.getIpAddress())
-                .ipAddressLocation(Ip2RegionUtil.getFormattedLocation(comment.getIpAddress()))
-                .createTime(comment.getCreateTime())
-                .build()
-        ).toList();
+        // 构建返回结果：用户、点赞数批量加载，避免 N+1
+        List<Comment> comments = commentPage.getRecords();
+        Map<Long, UserInfo> userMap = loadUserInfoMap(comments);
+        Map<Long, Integer> likeCountMap = loadLikeCountMap(ids(comments));
+        List<CommentVO> records = comments.stream()
+                // 二级评论虽然会有回复,但是因为系统只做二级评论，所以子评论数量为0
+                .map(comment -> toCommentVO(comment, userMap, likeCountMap, 0, rootId))
+                .toList();
 
         // 封装返回
         Page<CommentVO> voPage = Page.of(commentQuery.getCurrent(), commentQuery.getSize(), commentPage.getTotal());
@@ -294,21 +285,15 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
 
         // 查询
         Page<Comment> commentPage = this.page(page, queryWrapper);
-        // 构建返回结果
-        List<CommentVO> records = commentPage.getRecords().stream().map(comment -> CommentVO.builder()
-                .id(comment.getId())
-                .articleId(comment.getArticleId())
-                .content(comment.getContent())
-                .status(comment.getStatus())
-                .childCount(getChildCount(comment.getId()))
-                .creator(buildUserInfo(comment.getCreateBy())) // 构建发布者信息
-                .likeCount(getLikeCount(comment.getId()))
-                .parentId(comment.getParentId())
-                .ipAddress(comment.getIpAddress())
-                .ipAddressLocation(Ip2RegionUtil.getFormattedLocation(comment.getIpAddress()))
-                .createTime(comment.getCreateTime())
-                .build()
-        ).toList();
+        // 构建返回结果：用户、点赞数、子评论数全部批量加载，避免 N+1
+        List<Comment> comments = commentPage.getRecords();
+        Map<Long, UserInfo> userMap = loadUserInfoMap(comments);
+        Map<Long, Integer> likeCountMap = loadLikeCountMap(ids(comments));
+        Map<Long, Integer> childCountMap = loadChildCountMap(ids(comments));
+        List<CommentVO> records = comments.stream()
+                .map(comment -> toCommentVO(comment, userMap, likeCountMap,
+                        childCountMap.getOrDefault(comment.getId(), 0), null))
+                .toList();
         Page<CommentVO> voPage = Page.of(commentQuery.getCurrent(), commentQuery.getSize(), commentPage.getTotal());
         voPage.setRecords(records);
 
@@ -339,51 +324,100 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
     }
 
 
-    /**
-     * 计算点赞数
-     * @param commentId 评论列表
-     * @return 计算后的评论列表
-     */
-    private int getLikeCount(Long commentId) {
-        LambdaQueryWrapper<LikeRecord> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(LikeRecord::getTargetId, commentId)
-                .eq(LikeRecord::getTargetType, TargetType.COMMENT.getCode());
-        return likeRecordMapper.selectCount(queryWrapper).intValue();
+    private Set<Long> ids(List<Comment> comments) {
+        return comments.stream().map(Comment::getId).collect(Collectors.toSet());
     }
 
     /**
-     * 构建发布者信息
-     * @param userId 发布者ID
-     * @return 发布者信息
+     * 把评论实体转换为VO，关联信息由调用方批量加载后传入
      */
-    private UserInfo buildUserInfo(Long userId) {
-        if (userId == null) {
-            return null;
+    private CommentVO toCommentVO(Comment comment, Map<Long, UserInfo> userMap,
+                                  Map<Long, Integer> likeCountMap, int childCount, Long rootId) {
+        return CommentVO.builder()
+                .id(comment.getId())
+                .content(comment.getContent())
+                .articleId(comment.getArticleId())
+                .status(comment.getStatus())
+                .childCount(childCount)
+                .creator(comment.getCreateBy() == null ? null : userMap.get(comment.getCreateBy()))
+                .likeCount(likeCountMap.getOrDefault(comment.getId(), 0))
+                .parentId(comment.getParentId())
+                .rootId(rootId)
+                .ipAddress(comment.getIpAddress())
+                .ipAddressLocation(Ip2RegionUtil.getFormattedLocation(comment.getIpAddress()))
+                .createTime(comment.getCreateTime())
+                .build();
+    }
+
+    /**
+     * 批量加载评论发布者，一条 SQL 代替每条评论一次 selectById
+     */
+    private Map<Long, UserInfo> loadUserInfoMap(List<Comment> comments) {
+        Set<Long> userIds = comments.stream()
+                .map(Comment::getCreateBy)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+        if (userIds.isEmpty()) {
+            return Collections.emptyMap();
         }
-        User user = userMapper.selectById(userId);
-        return user != null ? UserInfo.from(user) : null;
+        return userMapper.selectBatchIds(userIds).stream()
+                .collect(Collectors.toMap(User::getId, UserInfo::from));
     }
 
     /**
-     * 获取子评论数
-     * @param commentId 评论ID
-     * @return 子评论数
+     * 批量统计点赞数。like_record 走 idx_target(target_id, target_type)。
      */
-    private int getChildCount(Long commentId) {
-        LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper
-                .eq(Comment::getRootId, commentId)
-                // 排除自身
-                .ne(Comment::getId, commentId);
+    private Map<Long, Integer> loadLikeCountMap(Set<Long> commentIds) {
+        if (commentIds.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        QueryWrapper<LikeRecord> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("target_id AS target_id", "COUNT(*) AS cnt")
+                .eq("target_type", TargetType.COMMENT.getCode())
+                .in("target_id", commentIds)
+                .groupBy("target_id");
+        return toCountMap(likeRecordMapper.selectMaps(queryWrapper));
+    }
+
+    /**
+     * 批量统计子评论数。comment 走 idx_comment_root(root_id, deleted, id)。
+     */
+    private Map<Long, Integer> loadChildCountMap(Set<Long> rootIds) {
+        if (rootIds.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        QueryWrapper<Comment> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("root_id AS target_id", "COUNT(*) AS cnt")
+                .in("root_id", rootIds)
+                // 排除根评论自身
+                .apply("id <> root_id")
+                .groupBy("root_id");
+
         if (!BaseContext.isAdmin()) { // 非管理员，排除未审核的评论
-            queryWrapper
-                    .and(wrapper -> wrapper
-                    .eq(Comment::getStatus, StatusConstant.ENABLED)
-                    .or()
-                    .eq(BaseContext.getCurrentUserId() != null,Comment::getCreateBy, BaseContext.getCurrentUserId())
-            );
+            Long currentUserId = BaseContext.getCurrentUserId();
+            queryWrapper.and(wrapper -> {
+                wrapper.eq("status", StatusConstant.COMMENT_PUBLISHED);
+                if (currentUserId != null) {
+                    wrapper.or().eq("create_by", currentUserId);
+                }
+            });
         }
-        return commentMapper.selectCount(queryWrapper).intValue();
+        return toCountMap(commentMapper.selectMaps(queryWrapper));
+    }
+
+    private Map<Long, Integer> toCountMap(List<Map<String, Object>> rows) {
+        if (rows == null || rows.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        Map<Long, Integer> result = new HashMap<>(rows.size());
+        for (Map<String, Object> row : rows) {
+            Object targetId = row.get("target_id");
+            Object count = row.get("cnt");
+            if (targetId instanceof Number id && count instanceof Number value) {
+                result.put(id.longValue(), value.intValue());
+            }
+        }
+        return result;
     }
 }
 

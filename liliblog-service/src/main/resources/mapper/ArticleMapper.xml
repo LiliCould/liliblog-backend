@@ -84,7 +84,4 @@
         update_time,create_by,update_by,deleted
     </sql>
 
-    <select id="selectArticleVOById" resultType="cn.lilicould.liliblog.response.ArticleDetailsVO">
-
-    </select>
 </mapper>

@@ -36,10 +36,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -117,11 +120,20 @@ class CommentServiceImplTest {
         return query;
     }
 
+    private Map<String, Object> countRow(Long id, long count) {
+        Map<String, Object> row = new HashMap<>();
+        row.put("target_id", id);
+        row.put("cnt", count);
+        return row;
+    }
+
     private void stubListDependencies() {
-        when(commentMapper.selectCount(any(Wrapper.class))).thenReturn(2L);
-        when(likeRecordMapper.selectCount(any(Wrapper.class))).thenReturn(3L);
-        when(userMapper.selectById(1L)).thenReturn(buildUser(1L));
-        when(userMapper.selectById(2L)).thenReturn(buildUser(2L));
+        when(commentMapper.selectMaps(any(Wrapper.class))).thenReturn(List.of(
+                countRow(1L, 2), countRow(2L, 2)));
+        when(likeRecordMapper.selectMaps(any(Wrapper.class))).thenReturn(List.of(
+                countRow(1L, 3), countRow(2L, 3), countRow(5L, 3)));
+        when(userMapper.selectBatchIds(anyCollection()))
+                .thenReturn(List.of(buildUser(1L), buildUser(2L)));
     }
 
     private User buildUser(Long id) {

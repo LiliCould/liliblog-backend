@@ -42,7 +42,8 @@ CREATE TABLE `article`  (
   INDEX `idx_title`(`title` ASC) USING BTREE,
   INDEX `idx_status`(`status` ASC) USING BTREE,
   INDEX `idx_category`(`category_id` ASC) USING BTREE,
-  FULLTEXT INDEX `ft_title_content`(`title`, `content`)
+  FULLTEXT INDEX `ft_article_search`(`title`, `summary`, `content`) WITH PARSER ngram,
+  FULLTEXT INDEX `ft_article_title`(`title`) WITH PARSER ngram
 ) ENGINE = InnoDB AUTO_INCREMENT = 85 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '文章表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------

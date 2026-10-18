@@ -21,7 +21,7 @@
     </sql>
 
     <select id="selectTagsByArticleId" resultType="cn.lilicould.liliblog.entity.Tag">
-        SELECT * FROM tag WHERE id IN (
+        SELECT * FROM tag WHERE deleted = 0 AND id IN (
             SELECT tag_id FROM article_tag WHERE article_id = #{articleId}
         )
     </select>
