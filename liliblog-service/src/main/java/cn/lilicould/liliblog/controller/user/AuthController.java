@@ -109,7 +109,7 @@ public class AuthController {
     @PostMapping("/refresh")
     @Operation(summary = "刷新接口", description = "使用刷新令牌获取新的token")
     public Result<LoginVO> refresh(@CookieValue(name = "refresh_token",required = false) String refreshToken) {
-        log.info("刷新令牌,refreshToken: {}", refreshToken);
+        log.debug("收到刷新令牌请求");
         // 刷新令牌不存在
         if (refreshToken == null) {
             return Result.error(CodeEnum.NO_REFRESH_TOKEN);
