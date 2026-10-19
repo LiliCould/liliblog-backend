@@ -66,6 +66,25 @@ public class OssUtil {
             "application/json", "application/xml", "application/javascript"
     );
 
+    /** Office 文档：OOXML 是 ZIP 容器，老格式是 OLE 复合文档 */
+    private static final Set<String> OFFICE_DOCUMENT_TYPES = Set.of(
+            "application/msword",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "application/vnd.ms-excel",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "application/vnd.ms-powerpoint",
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    );
+
+    /** Tika 对 Office 容器可能返回的通用类型 */
+    private static final Set<String> OFFICE_CONTAINER_TYPES = Set.of(
+            "application/zip",
+            "application/x-tika-ooxml",
+            "application/x-tika-msoffice",
+            "application/vnd.ms-office",
+            "application/x-ole-storage"
+    );
+
     /** 文件长度未知时的哨兵值，跳过业务级大小校验，由容器层 max-file-size 兜底 */
     private static final long UNKNOWN_FILE_SIZE = -1L;
 
@@ -299,6 +318,13 @@ public class OssUtil {
         }
         if (isTextBasedMime(claimedType)) {
             return detectedType.startsWith("text/") || TEXT_APPLICATION_TYPES.contains(detectedType);
+        }
+        // Office 文件是 ZIP/OLE 容器，Tika 可能只识别出容器类型，不能要求精确相等
+        if (OFFICE_DOCUMENT_TYPES.contains(claimedType.toLowerCase(Locale.ROOT))) {
+            String detected = detectedType.toLowerCase(Locale.ROOT);
+            return claimedType.equalsIgnoreCase(detected)
+                    || OFFICE_CONTAINER_TYPES.contains(detected)
+                    || OCTET_STREAM.equals(detected);
         }
         return claimedType.equalsIgnoreCase(detectedType) || OCTET_STREAM.equals(detectedType);
     }

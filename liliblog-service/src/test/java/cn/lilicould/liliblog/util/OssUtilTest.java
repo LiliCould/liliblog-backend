@@ -367,4 +367,20 @@ class OssUtilTest {
         assertEquals("", ossUtil.extensionOf("bad.中文"));
         assertEquals("", ossUtil.extensionOf("bad.verylongextension"));
     }
+
+    @Test
+    void officeContainerMimeIsAccepted() {
+        String pptx = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+        String docx = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+        String doc = "application/msword";
+
+        // OOXML 是 ZIP 容器，Tika 可能只返回 zip / x-tika-ooxml
+        assertTrue(ossUtil.isMimeConsistent(pptx, "application/zip"));
+        assertTrue(ossUtil.isMimeConsistent(pptx, "application/x-tika-ooxml"));
+        assertTrue(ossUtil.isMimeConsistent(docx, "application/zip"));
+        // 老 Office 是 OLE 复合文档
+        assertTrue(ossUtil.isMimeConsistent(doc, "application/x-tika-msoffice"));
+        // 可执行文件仍然必须被拒绝
+        assertFalse(ossUtil.isMimeConsistent(pptx, "application/x-msdownload"));
+    }
 }
