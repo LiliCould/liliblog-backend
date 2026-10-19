@@ -10,6 +10,7 @@ import com.qiniu.storage.Configuration;
 import com.qiniu.storage.Region;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.storage.model.FileInfo;
+import com.qiniu.storage.model.FileListing;
 import com.qiniu.util.Auth;
 import com.qiniu.util.StringMap;
 import jakarta.annotation.PostConstruct;
@@ -29,6 +30,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -191,6 +193,47 @@ public class OssUtil {
      */
     public void delete(String key) throws QiniuException {
         bucketManager.delete(ossProperties.getBucket(), key);
+    }
+
+    /**
+     * 分页列举桶内对象，用于历史文件回填。
+     *
+     * @param prefix   对象 key 前缀，空串表示全桶
+     * @param maxCount 最大返回数量，避免一次性拉取过多
+     * @return 对象元信息列表
+     */
+    public List<FileInfo> listObjects(String prefix, int maxCount) {
+        int limit = Math.max(1, Math.min(maxCount, 20000));
+        List<FileInfo> result = new ArrayList<>();
+        String marker = null;
+        try {
+            do {
+                int pageSize = Math.min(1000, limit - result.size());
+                if (pageSize <= 0) {
+                    break;
+                }
+                FileListing listing = bucketManager.listFiles(
+                        ossProperties.getBucket(),
+                        prefix == null ? "" : prefix,
+                        marker,
+                        pageSize,
+                        null);
+                if (listing.items != null) {
+                    for (FileInfo item : listing.items) {
+                        result.add(item);
+                        if (result.size() >= limit) {
+                            break;
+                        }
+                    }
+                }
+                marker = listing.marker;
+            } while (StringUtils.hasText(marker) && result.size() < limit);
+        } catch (QiniuException e) {
+            log.error("列举OSS对象失败, prefix={}: {}", prefix, e.getMessage(), e);
+            throw new BusinessException(CodeEnum.FILE_BACKFILL_FAILED.getCode(),
+                    "列举存储对象失败: " + e.getMessage());
+        }
+        return result;
     }
 
     /**

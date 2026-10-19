@@ -1,6 +1,7 @@
 package cn.lilicould.liliblog.controller.admin;
 
 import cn.lilicould.liliblog.query.FileQuery;
+import cn.lilicould.liliblog.response.BackfillResultVO;
 import cn.lilicould.liliblog.response.FileRecordVO;
 import cn.lilicould.liliblog.response.PageInfo;
 import cn.lilicould.liliblog.result.Result;
@@ -16,7 +17,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -42,5 +45,19 @@ public class AdminFileController {
             @Parameter(description = "文件记录ID", example = "1") @PathVariable Long id) {
         fileService.deleteFile(id);
         return Result.success();
+    }
+
+    @PostMapping("/backfill-legacy")
+    @Operation(summary = "回填历史文件",
+            description = "列举桶内历史对象并补齐 file_record，同时创建 LEGACY_KEEP 保护引用；"
+                    + "dryRun=true 时只统计不写入")
+    public Result<BackfillResultVO> backfillLegacy(
+            @Parameter(description = "对象 key 前缀，空串表示全桶")
+            @RequestParam(defaultValue = "") String prefix,
+            @Parameter(description = "只统计不写入")
+            @RequestParam(defaultValue = "false") boolean dryRun,
+            @Parameter(description = "本次最多处理的对象数")
+            @RequestParam(defaultValue = "20000") int maxObjects) {
+        return Result.success(fileService.backfillLegacyFiles(prefix, dryRun, maxObjects));
     }
 }

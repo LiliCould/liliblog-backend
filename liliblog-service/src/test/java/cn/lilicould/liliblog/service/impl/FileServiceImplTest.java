@@ -8,11 +8,14 @@ import cn.lilicould.liliblog.entity.FileRecord;
 import cn.lilicould.liliblog.entity.User;
 import cn.lilicould.liliblog.enums.CodeEnum;
 import cn.lilicould.liliblog.exception.BusinessException;
+import cn.lilicould.liliblog.mapper.ArticleMapper;
 import cn.lilicould.liliblog.mapper.FileRecordMapper;
+import cn.lilicould.liliblog.mapper.UserMapper;
 import cn.lilicould.liliblog.request.UploadConfirmRequest;
 import cn.lilicould.liliblog.request.UploadTokenRequest;
 import cn.lilicould.liliblog.response.FileRecordVO;
 import cn.lilicould.liliblog.response.UploadTokenVO;
+import cn.lilicould.liliblog.service.FileRefService;
 import cn.lilicould.liliblog.util.OssUtil;
 import com.qiniu.storage.model.FileInfo;
 import org.junit.jupiter.api.AfterEach;
@@ -51,6 +54,12 @@ class FileServiceImplTest {
     private OssUtil ossUtil;
     @Mock
     private RedisHelper redisHelper;
+    @Mock
+    private FileRefService fileRefService;
+    @Mock
+    private ArticleMapper articleMapper;
+    @Mock
+    private UserMapper userMapper;
 
     private OssProperties properties;
     private FileServiceImpl fileService;
@@ -72,7 +81,8 @@ class FileServiceImplTest {
         properties.setDailyBytesLimit(DataSize.ofGigabytes(2));
         properties.setMagicCheckOnConfirm(false);
 
-        fileService = new FileServiceImpl(properties, ossUtil, redisHelper);
+        fileService = new FileServiceImpl(properties, ossUtil, redisHelper,
+                fileRefService, articleMapper, userMapper);
         ReflectionTestUtils.setField(fileService, "baseMapper", fileRecordMapper);
         loginAs(7L);
     }

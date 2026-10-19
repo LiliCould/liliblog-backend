@@ -5,17 +5,24 @@ import cn.lilicould.liliblog.config.properties.OssProperties;
 import cn.lilicould.liliblog.constant.RedisPrefixConstant;
 import cn.lilicould.liliblog.constant.StatusConstant;
 import cn.lilicould.liliblog.context.BaseContext;
+import cn.lilicould.liliblog.entity.Article;
 import cn.lilicould.liliblog.entity.FileRecord;
+import cn.lilicould.liliblog.entity.FileRef;
+import cn.lilicould.liliblog.entity.User;
 import cn.lilicould.liliblog.enums.CodeEnum;
 import cn.lilicould.liliblog.exception.BusinessException;
+import cn.lilicould.liliblog.mapper.ArticleMapper;
 import cn.lilicould.liliblog.mapper.FileRecordMapper;
+import cn.lilicould.liliblog.mapper.UserMapper;
 import cn.lilicould.liliblog.query.FileQuery;
 import cn.lilicould.liliblog.request.UploadAbandonRequest;
 import cn.lilicould.liliblog.request.UploadConfirmRequest;
 import cn.lilicould.liliblog.request.UploadTokenRequest;
+import cn.lilicould.liliblog.response.BackfillResultVO;
 import cn.lilicould.liliblog.response.FileRecordVO;
 import cn.lilicould.liliblog.response.PageInfo;
 import cn.lilicould.liliblog.response.UploadTokenVO;
+import cn.lilicould.liliblog.service.FileRefService;
 import cn.lilicould.liliblog.service.FileService;
 import cn.lilicould.liliblog.util.OssUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -26,6 +33,7 @@ import com.qiniu.storage.model.FileInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.util.unit.DataSize;
@@ -34,6 +42,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -58,6 +67,9 @@ public class FileServiceImpl extends ServiceImpl<FileRecordMapper, FileRecord> i
     private final OssProperties ossProperties;
     private final OssUtil ossUtil;
     private final RedisHelper redisHelper;
+    private final FileRefService fileRefService;
+    private final ArticleMapper articleMapper;
+    private final UserMapper userMapper;
 
     private final Tika tika = new Tika();
 
@@ -266,6 +278,159 @@ public class FileServiceImpl extends ServiceImpl<FileRecordMapper, FileRecord> i
                 .deleted(StatusConstant.NOT_DELETED)
                 .build();
         save(record);
+    }
+
+    @Override
+    public BackfillResultVO backfillLegacyFiles(String prefix, boolean dryRun, int maxObjects) {
+        int limit = Math.max(1, Math.min(maxObjects, 20000));
+        List<FileInfo> objects = ossUtil.listObjects(prefix, Math.min(20000, limit + 1));
+        boolean hasMore = objects.size() > limit;
+        if (hasMore) {
+            objects = new ArrayList<>(objects.subList(0, limit));
+        }
+
+        int insertedRecords = 0;
+        int existingRecords = 0;
+        int protectedRefs = 0;
+
+        for (FileInfo info : objects) {
+            if (!StringUtils.hasText(info.key)) {
+                continue;
+            }
+            FileRecord record = getOne(new LambdaQueryWrapper<FileRecord>()
+                    .eq(FileRecord::getFileKey, info.key)
+                    .last("LIMIT 1"));
+
+            if (record == null) {
+                insertedRecords++;
+                if (!dryRun) {
+                    FileRecord created = FileRecord.builder()
+                            .fileKey(info.key)
+                            .url(buildUrl(info.key))
+                            .originalName(deriveOriginalName(info.key))
+                            .mimeType(info.mimeType)
+                            .fileSize(info.fsize)
+                            .hash(info.hash)
+                            .bizType(deriveBizType(info.key))
+                            .uploadSource(StatusConstant.FILE_SOURCE_LEGACY)
+                            .status(StatusConstant.FILE_SUCCESS)
+                            .deleted(StatusConstant.NOT_DELETED)
+                            .build();
+                    try {
+                        save(created);
+                        record = created;
+                    } catch (DuplicateKeyException e) {
+                        // 并发或历史软删除记录占用 key 时，不阻断整体回填
+                        record = getOne(new LambdaQueryWrapper<FileRecord>()
+                                .eq(FileRecord::getFileKey, info.key)
+                                .last("LIMIT 1"));
+                        insertedRecords--;
+                        existingRecords++;
+                    }
+                }
+            } else {
+                existingRecords++;
+            }
+
+            if (!dryRun && record != null && record.getId() != null
+                    && ensureLegacyKeepRef(record.getId())) {
+                protectedRefs++;
+            }
+        }
+
+        int scannedArticles = 0;
+        int articleRefs = 0;
+        int scannedUsers = 0;
+        int avatarRefs = 0;
+        int missing = 0;
+
+        if (!dryRun) {
+            List<Article> articles = articleMapper.selectList(
+                    new LambdaQueryWrapper<Article>()
+                            .select(Article::getId, Article::getCreateBy,
+                                    Article::getCoverImage, Article::getContent));
+            scannedArticles = articles.size();
+            for (Article article : articles) {
+                FileRefService.BackfillRefResult result = fileRefService.backfillArticleRefs(
+                        article.getId(), article.getCreateBy(),
+                        article.getCoverImage(), article.getContent());
+                articleRefs += result.created();
+                missing += result.missing();
+            }
+
+            List<User> users = userMapper.selectList(
+                    new LambdaQueryWrapper<User>().select(User::getId, User::getAvatar));
+            scannedUsers = users.size();
+            for (User user : users) {
+                if (!StringUtils.hasText(user.getAvatar())) {
+                    continue;
+                }
+                FileRefService.BackfillRefResult result = fileRefService.backfillUserAvatar(
+                        user.getId(), user.getAvatar());
+                avatarRefs += result.created();
+                missing += result.missing();
+            }
+        }
+
+        log.info("历史文件回填完成: dryRun={}, objects={}, inserted={}, existing={}, keepRefs={}, "
+                        + "articles={}, articleRefs={}, users={}, avatarRefs={}, missing={}, hasMore={}",
+                dryRun, objects.size(), insertedRecords, existingRecords, protectedRefs,
+                scannedArticles, articleRefs, scannedUsers, avatarRefs, missing, hasMore);
+
+        return BackfillResultVO.builder()
+                .dryRun(dryRun)
+                .totalObjects(objects.size())
+                .insertedRecords(insertedRecords)
+                .existingRecords(existingRecords)
+                .protectedRefs(protectedRefs)
+                .scannedArticles(scannedArticles)
+                .articleRefs(articleRefs)
+                .scannedUsers(scannedUsers)
+                .avatarRefs(avatarRefs)
+                .missingReferences(missing)
+                .hasMore(hasMore)
+                .build();
+    }
+
+    /**
+     * 为历史文件建立保护引用，返回是否新建。
+     */
+    private boolean ensureLegacyKeepRef(Long fileId) {
+        long exists = fileRefService.count(new LambdaQueryWrapper<FileRef>()
+                .eq(FileRef::getFileId, fileId)
+                .eq(FileRef::getTargetType, FileRefServiceImpl.LEGACY_KEEP)
+                .eq(FileRef::getTargetId, 0L));
+        if (exists > 0) {
+            return false;
+        }
+        try {
+            fileRefService.save(FileRef.builder()
+                    .fileId(fileId)
+                    .targetType(FileRefServiceImpl.LEGACY_KEEP)
+                    .targetId(0L)
+                    .build());
+            return true;
+        } catch (DuplicateKeyException ignored) {
+            return false;
+        }
+    }
+
+    /**
+     * 历史 key 形如 {type}/{uuid}_{原始文件名}，尽量还原可读文件名。
+     */
+    private String deriveOriginalName(String key) {
+        String name = key.substring(key.lastIndexOf('/') + 1);
+        int underscore = name.indexOf('_');
+        if (underscore == 36) {
+            name = name.substring(underscore + 1);
+        }
+        return name.isBlank() ? "unnamed" : name;
+    }
+
+    private String deriveBizType(String key) {
+        int slash = key.indexOf('/');
+        String type = slash > 0 ? key.substring(0, slash) : "file";
+        return ALLOWED_BIZ_TYPES.contains(type) ? type : "file";
     }
 
     private Long currentUserId() {

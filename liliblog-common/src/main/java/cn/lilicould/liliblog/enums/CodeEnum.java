@@ -59,6 +59,7 @@ public enum CodeEnum {
     FILE_VERIFY_FAILED(5005, "文件校验未通过"),
     FILE_STATUS_INVALID(5006, "文件状态不允许此操作"),
     FILE_NOT_UPLOADED(5007, "文件尚未上传成功"),
+    FILE_BACKFILL_FAILED(5008, "历史文件回填失败"),
     ;
 
     private final Integer code;

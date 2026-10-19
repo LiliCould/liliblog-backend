@@ -29,4 +29,5 @@ public class StatusConstant {
     // ========== 文件上传来源 ==========
     public static final Integer FILE_SOURCE_DIRECT = 1; // 前端直传
     public static final Integer FILE_SOURCE_PROXY = 2;  // 后端中转
+    public static final Integer FILE_SOURCE_LEGACY = 3; // 历史文件导入
 }

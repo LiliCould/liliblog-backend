@@ -5,6 +5,7 @@ import cn.lilicould.liliblog.query.FileQuery;
 import cn.lilicould.liliblog.request.UploadAbandonRequest;
 import cn.lilicould.liliblog.request.UploadConfirmRequest;
 import cn.lilicould.liliblog.request.UploadTokenRequest;
+import cn.lilicould.liliblog.response.BackfillResultVO;
 import cn.lilicould.liliblog.response.FileRecordVO;
 import cn.lilicould.liliblog.response.PageInfo;
 import cn.lilicould.liliblog.response.UploadTokenVO;
@@ -45,4 +46,18 @@ public interface FileService extends IService<FileRecord> {
      */
     void recordProxyUpload(String url, String key, String originalName,
                            String type, long fileSize, String mimeType);
+
+    /**
+     * 一次性回填历史文件：
+     * <ul>
+     *     <li>列举桶内对象并补齐 file_record</li>
+     *     <li>为每个历史对象建立 LEGACY_KEEP 保护引用</li>
+     *     <li>扫描文章/头像，按 URL 补建正常引用</li>
+     * </ul>
+     *
+     * @param prefix     对象 key 前缀，空串表示全桶
+     * @param dryRun     只统计不写入
+     * @param maxObjects 本次最多处理的对象数
+     */
+    BackfillResultVO backfillLegacyFiles(String prefix, boolean dryRun, int maxObjects);
 }

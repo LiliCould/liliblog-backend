@@ -84,7 +84,7 @@ public class FileRecord extends FullBaseEntity implements Serializable {
     private String bizType;
 
     /**
-     * 上传来源：1-前端直传，2-后端中转
+     * 上传来源：1-前端直传，2-后端中转，3-历史文件导入
      */
     @TableField(value = "upload_source")
     private Integer uploadSource;

@@ -50,7 +50,7 @@ public class FileRecordVO implements Serializable {
     @Schema(description = "业务类型：cover/avatar/image/file")
     private String bizType;
 
-    @Schema(description = "上传来源：1-前端直传，2-后端中转")
+    @Schema(description = "上传来源：1-前端直传，2-后端中转，3-历史文件导入")
     private Integer uploadSource;
 
     @Schema(description = "状态：0-待确认，1-成功，2-失败，3-过期，4-拒绝")

@@ -311,7 +311,7 @@ CREATE TABLE `file_record`  (
   `file_size` bigint NULL DEFAULT NULL COMMENT '真实字节数',
   `hash` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '七牛etag',
   `biz_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'file' COMMENT 'cover/avatar/image/file',
-  `upload_source` tinyint NOT NULL DEFAULT 1 COMMENT '1=前端直传 2=后端中转',
+  `upload_source` tinyint NOT NULL DEFAULT 1 COMMENT '1=前端直传 2=后端中转 3=历史导入',
   `status` tinyint NOT NULL DEFAULT 0 COMMENT '0待确认 1成功 2失败 3过期 4拒绝',
   `error_msg` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '失败原因',
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',

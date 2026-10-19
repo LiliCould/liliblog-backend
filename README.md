@@ -193,6 +193,7 @@ liliblog-backend
 | POST | `/file/abandon` | 放弃直传 | JWT |
 | GET | `/file/my` | 我的上传记录 | JWT |
 | POST | `/file/upload` | 旧接口：后端中转上传 | JWT |
+| POST | `/api/admin/file/backfill-legacy` | 回填历史文件并建立 `LEGACY_KEEP` 保护引用 | ADMIN |
 
 前端直传流程：
 
