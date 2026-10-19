@@ -47,6 +47,7 @@ public enum CodeEnum {
     REPEAT_OPERATION(3009, "请勿重复操作"),
     COMMENT_NOT_FOUND(3010, "评论不存在"),
     NOT_SUPPORTED_FILE_TYPE(3011, "不支持的文件类型"),
+    FILE_RECORD_NOT_FOUND(3012, "文件记录不存在"),
 
     // 系统错误 5xxx
     SYSTEM_ERROR(5000, "系统异常，请稍后重试"),
@@ -54,6 +55,10 @@ public enum CodeEnum {
     FILE_UPLOAD_FAIL(5002, "文件上传失败"),
     // 具体上限由 oss.size-limits 配置，实际提示语由 OssUtil 动态生成
     FILE_UPLOAD_OVER_SIZE(5003, "上传文件超过大小限制"),
+    FILE_UPLOAD_LIMIT_EXCEEDED(5004, "上传次数或流量超出限制"),
+    FILE_VERIFY_FAILED(5005, "文件校验未通过"),
+    FILE_STATUS_INVALID(5006, "文件状态不允许此操作"),
+    FILE_NOT_UPLOADED(5007, "文件尚未上传成功"),
     ;
 
     private final Integer code;

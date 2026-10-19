@@ -15,4 +15,8 @@ public class RedisPrefixConstant {
 
     // article相关
     public static final String ARTICLE_RANDOM_POOL = "article:randomPool";
+
+    // file相关
+    public static final String FILE_UPLOAD_DAILY_COUNT = "file:upload:count:";
+    public static final String FILE_UPLOAD_DAILY_BYTES = "file:upload:bytes:";
 }

@@ -70,4 +70,65 @@ public class OssProperties {
      * 允许上传的 MIME 类型白名单
      */
     private List<String> allowedMediaTypes = new ArrayList<>();
+
+    /**
+     * 是否开启前端直传（关闭后只保留后端中转上传）
+     */
+    private boolean directUploadEnabled = true;
+
+    /**
+     * 七牛上传域名。z0 区域为 https://upload-z0.qiniup.com，需与 region 匹配
+     */
+    private String uploadUrl = "https://upload-z0.qiniup.com";
+
+    /**
+     * 直传令牌有效期（秒）
+     */
+    private long tokenExpireSeconds = 600;
+
+    /**
+     * 待确认记录保留时长（小时），超过后由清理任务删除对象并标记过期
+     */
+    private long pendingExpireHours = 24;
+
+    /**
+     * 确认上传时是否拉取对象头部做魔数校验
+     */
+    private boolean magicCheckOnConfirm = true;
+
+    /**
+     * 魔数校验读取的最大字节数
+     */
+    private int magicCheckBytes = 64 * 1024;
+
+    /**
+     * 每个用户每天允许申请的上传令牌数
+     */
+    private int dailyCountLimit = 100;
+
+    /**
+     * 每个用户每天允许上传的总字节数
+     */
+    private DataSize dailyBytesLimit = DataSize.ofGigabytes(2);
+
+    /**
+     * 每个用户同时挂起的待确认记录上限
+     */
+    private int maxPendingPerUser = 20;
+
+    /**
+     * 魔数校验使用的下载基础地址，默认使用 ossUrl。
+     * 私有桶或开启防盗链时可配置为可访问的源站域名
+     */
+    private String checkBaseUrl;
+
+    /**
+     * 是否自动清理无引用的孤儿文件。默认关闭，建议先观察日志再开启
+     */
+    private boolean orphanCleanEnabled = false;
+
+    /**
+     * 孤儿文件保留天数：成功上传后超过该天数仍无任何引用才会被清理
+     */
+    private int orphanRetentionDays = 7;
 }

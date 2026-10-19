@@ -14,6 +14,7 @@ import cn.lilicould.liliblog.request.UserCreateRequest;
 import cn.lilicould.liliblog.response.PageInfo;
 import cn.lilicould.liliblog.response.UserInfo;
 import cn.lilicould.liliblog.entity.User;
+import cn.lilicould.liliblog.service.FileRefService;
 import cn.lilicould.liliblog.service.UserService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
@@ -44,6 +45,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     implements UserService {
 
     private final PasswordEncoder passwordEncoder;
+    private final FileRefService fileRefService;
 
     @Override
     @NullUnmarked
@@ -138,6 +140,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         user.setUsername(request.getUsername());
 
         this.updateById(user);
+
+        // 同步头像文件引用
+        fileRefService.syncUserAvatar(id, user.getAvatar());
     }
 
     /**
@@ -201,6 +206,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             throw new BusinessException(CodeEnum.USER_NOT_FOUND);
         }
         this.removeById(id);
+
+        // 释放头像文件引用
+        fileRefService.removeUserRefs(id);
     }
 
     /**

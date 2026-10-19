@@ -34,6 +34,11 @@ public class RedisHelper {
         return redisTemplate.opsForValue().increment(buildKey(key));
     }
 
+    // 原子操作增加指定值
+    public Long increment(String key, long delta) {
+        return redisTemplate.opsForValue().increment(buildKey(key), delta);
+    }
+
     public Boolean expire(String key, long timeout, TimeUnit unit) {
         return redisTemplate.expire(buildKey(key), timeout, unit);
     }

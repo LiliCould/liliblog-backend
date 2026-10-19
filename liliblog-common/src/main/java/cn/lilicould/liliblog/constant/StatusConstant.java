@@ -20,4 +20,13 @@ public class StatusConstant {
     // ========== 删除状态 ==========
     public static final Integer DELETED = 1;
     public static final Integer NOT_DELETED = 0;
+    // ========== 文件上传状态 ==========
+    public static final Integer FILE_PENDING = 0;   // 待确认
+    public static final Integer FILE_SUCCESS = 1;   // 成功
+    public static final Integer FILE_FAILED = 2;    // 失败
+    public static final Integer FILE_EXPIRED = 3;   // 过期
+    public static final Integer FILE_REJECTED = 4;  // 拒绝
+    // ========== 文件上传来源 ==========
+    public static final Integer FILE_SOURCE_DIRECT = 1; // 前端直传
+    public static final Integer FILE_SOURCE_PROXY = 2;  // 后端中转
 }

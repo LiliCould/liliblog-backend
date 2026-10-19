@@ -152,6 +152,28 @@ oss:
     cover: 10MB
     image: 40MB
     file: 40MB
+  # ===== 前端直传配置 =====
+  # 关闭后前端应使用 proxy 模式走 /file/upload 后端中转
+  direct-upload-enabled: true
+  # 需与 region 匹配：z0 -> upload-z0.qiniup.com
+  upload-url: https://upload-z0.qiniup.com
+  # 令牌有效期（秒）
+  token-expire-seconds: 600
+  # 待确认记录保留时长（小时）
+  pending-expire-hours: 24
+  # 确认上传时是否拉取对象头部做魔数校验
+  magic-check-on-confirm: true
+  magic-check-bytes: 65536
+  # 每人每天上传次数 / 总字节数上限
+  daily-count-limit: 100
+  daily-bytes-limit: 2GB
+  # 同时挂起的待确认记录上限
+  max-pending-per-user: 20
+  # 可选：魔数校验走独立下载域名，默认使用 oss-url
+  # check-base-url: https://oss.lilicould.cn
+  # 孤儿文件清理：默认关闭，先观察日志确认引用关系无误后再开启
+  orphan-clean-enabled: false
+  orphan-retention-days: 7
   allowed-media-types:
     - image/jpeg
     - image/png

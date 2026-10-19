@@ -38,6 +38,19 @@ liliblog:
     access-key: "your-key"
     secret-key: "your-key"
     bucket: your-bucket
+    # ===== 前端直传配置 =====
+    direct-upload-enabled: true
+    # 需与 region 匹配：z0 -> upload-z0.qiniup.com
+    upload-url: https://upload-z0.qiniup.com
+    token-expire-seconds: 600
+    pending-expire-hours: 24
+    magic-check-on-confirm: true
+    daily-count-limit: 100
+    daily-bytes-limit: 2GB
+    max-pending-per-user: 20
+    # 孤儿文件清理默认关闭
+    orphan-clean-enabled: false
+    orphan-retention-days: 7
     # 允许上传的 MIME 类型白名单（图片、视频、音频、文档）
     allowed-media-types:
       - image/jpeg

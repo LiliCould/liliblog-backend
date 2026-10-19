@@ -18,6 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
@@ -334,5 +335,36 @@ class OssUtilTest {
             // 归还预占的许可，避免影响其它用例
             permits.release(ossProperties.getMaxConcurrentUploads());
         }
+    }
+
+    @Test
+    void generateUploadTokenScopesToSingleKey() {
+        String key = "cover/1/202610/abc.png";
+
+        String token = ossUtil.generateUploadToken(key, 1024, "image/png", 600);
+
+        String[] parts = token.split(":");
+        assertEquals(3, parts.length, "上传令牌格式应为 accessKey:sign:policy");
+
+        String policyPart = parts[2];
+        int padding = (4 - policyPart.length() % 4) % 4;
+        policyPart = policyPart + "=".repeat(padding);
+        String policy = new String(
+                Base64.getUrlDecoder().decode(policyPart), StandardCharsets.UTF_8);
+
+        // 令牌必须精确绑定 key，且禁止覆盖、限制大小与类型
+        assertTrue(policy.contains("\"scope\":\"test-bucket:" + key + "\""), policy);
+        assertTrue(policy.contains("\"insertOnly\":1"), policy);
+        assertTrue(policy.contains("\"fsizeLimit\":1024"), policy);
+        assertTrue(policy.contains("\"mimeLimit\":\"image/png\""), policy);
+        assertTrue(policy.contains("\"deadline\":"), policy);
+    }
+
+    @Test
+    void extensionOfKeepsOnlySafeShortExtensions() {
+        assertEquals("png", ossUtil.extensionOf("photo.PNG"));
+        assertEquals("", ossUtil.extensionOf("no-extension"));
+        assertEquals("", ossUtil.extensionOf("bad.中文"));
+        assertEquals("", ossUtil.extensionOf("bad.verylongextension"));
     }
 }

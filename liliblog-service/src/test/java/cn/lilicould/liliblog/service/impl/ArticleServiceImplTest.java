@@ -16,6 +16,7 @@ import cn.lilicould.liliblog.request.ArticleUpdateRequest;
 import cn.lilicould.liliblog.response.ArticleDetailsVO;
 import cn.lilicould.liliblog.response.ArticleVO;
 import cn.lilicould.liliblog.response.PageInfo;
+import cn.lilicould.liliblog.service.FileRefService;
 import cn.lilicould.liliblog.service.UserService;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -77,6 +78,8 @@ class ArticleServiceImplTest {
     private EmailTemplateService emailTemplateService;
     @Mock
     private RedisHelper redisHelper;
+    @Mock
+    private FileRefService fileRefService;
 
     private final InfoProperties infoProperties = new InfoProperties();
 
@@ -100,7 +103,7 @@ class ArticleServiceImplTest {
         ArticleServiceImpl service = new ArticleServiceImpl(
                 articleMapper, userMapper, likeRecordMapper, commentMapper,
                 categoryMapper, tagMapper, articleTagMapper, userService,
-                emailTemplateService, infoProperties, redisHelper);
+                emailTemplateService, infoProperties, redisHelper, fileRefService);
         ReflectionTestUtils.setField(service, "baseMapper", articleMapper);
         return service;
     }

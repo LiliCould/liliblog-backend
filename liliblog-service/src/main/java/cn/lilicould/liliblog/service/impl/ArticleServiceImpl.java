@@ -19,6 +19,7 @@ import cn.lilicould.liliblog.query.ArticleSearchQuery;
 import cn.lilicould.liliblog.request.ArticleCreateRequest;
 import cn.lilicould.liliblog.request.ArticleUpdateRequest;
 import cn.lilicould.liliblog.service.ArticleService;
+import cn.lilicould.liliblog.service.FileRefService;
 import cn.lilicould.liliblog.service.UserService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -65,6 +66,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     private final EmailTemplateService emailTemplateService;
     private final InfoProperties infoProperties;
     private final RedisHelper redisHelper;
+    private final FileRefService fileRefService;
 
     /**
      * ngram 全文索引的最小分词长度（与 ngram_token_size 保持一致）。
@@ -196,6 +198,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         LambdaQueryWrapper<Comment> commentQueryWrapper = new LambdaQueryWrapper<>();
         commentQueryWrapper.eq(Comment::getArticleId, id);
         commentMapper.delete(commentQueryWrapper);
+
+        // 释放文章对文件的引用，无引用文件由清理任务回收
+        fileRefService.removeArticleRefs(id);
     }
 
 
@@ -283,6 +288,13 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         // 批量插入文章标签关联
         saveArticleTags(article.getId(), articleUpdateRequest.getTags());
 
+        // 以更新后的数据库内容为准同步文件引用（避免请求未传封面时误删引用）
+        Article updated = articleMapper.selectById(id);
+        if (updated != null) {
+            Long ownerId = existing.getCreateBy() != null
+                    ? existing.getCreateBy() : BaseContext.getCurrentUserId();
+            fileRefService.syncArticleRefs(id, ownerId, updated.getCoverImage(), updated.getContent());
+        }
     }
 
     /**
@@ -575,6 +587,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
         // 批量插入文章标签关联
         saveArticleTags(article.getId(), articleCreateRequest.getTags());
+
+        // 登记文章封面和正文中的文件引用
+        Long ownerId = article.getCreateBy() != null ? article.getCreateBy() : BaseContext.getCurrentUserId();
+        fileRefService.syncArticleRefs(article.getId(), ownerId, article.getCoverImage(), article.getContent());
     }
 
     private PageInfo<ArticleVO> convertToVO(Page<Article> articlePage, long current, long size) {

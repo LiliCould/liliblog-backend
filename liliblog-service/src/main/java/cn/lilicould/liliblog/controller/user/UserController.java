@@ -8,6 +8,7 @@ import cn.lilicould.liliblog.result.Result;
 import cn.lilicould.liliblog.request.UserUpdateRequest;
 import cn.lilicould.liliblog.response.UserInfo;
 import cn.lilicould.liliblog.entity.User;
+import cn.lilicould.liliblog.service.FileRefService;
 import cn.lilicould.liliblog.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -23,10 +24,13 @@ public class UserController {
 
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final FileRefService fileRefService;
 
-    public UserController(UserService userService, PasswordEncoder passwordEncoder) {
+    public UserController(UserService userService, PasswordEncoder passwordEncoder,
+                          FileRefService fileRefService) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
+        this.fileRefService = fileRefService;
     }
 
     @GetMapping("/{id}")
@@ -82,6 +86,9 @@ public class UserController {
         }
 
         userService.updateById(user);
+
+        // 同步头像文件引用
+        fileRefService.syncUserAvatar(user.getId(), user.getAvatar());
 
         return Result.success();
     }

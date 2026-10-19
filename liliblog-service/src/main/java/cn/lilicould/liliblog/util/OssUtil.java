@@ -5,21 +5,32 @@ import cn.lilicould.liliblog.exception.BusinessException;
 import cn.lilicould.liliblog.config.properties.OssProperties;
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
+import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.Configuration;
 import com.qiniu.storage.Region;
 import com.qiniu.storage.UploadManager;
+import com.qiniu.storage.model.FileInfo;
 import com.qiniu.util.Auth;
+import com.qiniu.util.StringMap;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.util.unit.DataSize;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Semaphore;
@@ -64,7 +75,15 @@ public class OssUtil {
 
     private final Tika tika = new Tika();
 
+    private final HttpClient httpClient = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(10))
+            .build();
+
     private UploadManager uploadManager;
+
+    private Auth auth;
+
+    private BucketManager bucketManager;
 
     /**
      * 并发上传闸门。
@@ -83,7 +102,9 @@ public class OssUtil {
         cfg.connectTimeout = ossProperties.getConnectTimeout();
         cfg.writeTimeout = ossProperties.getWriteTimeout();
         cfg.resumableUploadAPIV2BlockSize = resolveBlockSizeBytes();
+        this.auth = Auth.create(ossProperties.getAccessKey(), ossProperties.getSecretKey());
         this.uploadManager = new UploadManager(cfg);
+        this.bucketManager = new BucketManager(this.auth, cfg);
         this.uploadPermits = new Semaphore(Math.max(1, ossProperties.getMaxConcurrentUploads()));
         log.info("OSS 上传初始化完成: region={}, 分片大小={}MB, 并发上传上限={}",
                 ossProperties.getRegion(), cfg.resumableUploadAPIV2BlockSize >> 20,
@@ -123,12 +144,120 @@ public class OssUtil {
     }
 
     /**
-     * 生成上传凭证
+     * 生成整桶上传凭证。
+     * <p>仅供后端中转上传使用，不要把该凭证暴露给前端：它没有 key、大小、类型和时效限制。</p>
+     *
      * @return 上传凭证
+     * @deprecated 前端直传请使用 {@link #generateUploadToken(String, long, String, long)}
      */
+    @Deprecated
     public String getAuthToken() {
-        Auth auth = Auth.create(ossProperties.getAccessKey(), ossProperties.getSecretKey());
         return auth.uploadToken(ossProperties.getBucket());
+    }
+
+    /**
+     * 生成前端直传令牌：精确绑定单个 key，并限制覆盖、大小、类型和有效期。
+     *
+     * @param key           服务端生成的对象 key
+     * @param maxSize       允许的最大字节数
+     * @param mimeLimit     允许的 MIME 类型，分号分隔；为空则不限
+     * @param expireSeconds 有效期（秒）
+     * @return 上传令牌
+     */
+    public String generateUploadToken(String key, long maxSize, String mimeLimit, long expireSeconds) {
+        StringMap policy = new StringMap();
+        policy.put("scope", ossProperties.getBucket() + ":" + key);
+        policy.put("insertOnly", 1);
+        policy.put("fsizeLimit", maxSize);
+        policy.put("detectMime", 1);
+        if (StringUtils.hasText(mimeLimit)) {
+            policy.put("mimeLimit", mimeLimit);
+        }
+        // 让七牛把真实结果直接返回给前端，确认接口再用 stat 复核
+        policy.put("returnBody", "{\"key\":\"$(key)\",\"hash\":\"$(etag)\","
+                + "\"fsize\":\"$(fsize)\",\"mimeType\":\"$(mimeType)\"}");
+        return auth.uploadToken(ossProperties.getBucket(), key, expireSeconds, policy);
+    }
+
+    /**
+     * 查询对象元信息
+     */
+    public FileInfo stat(String key) throws QiniuException {
+        return bucketManager.stat(ossProperties.getBucket(), key);
+    }
+
+    /**
+     * 删除对象
+     */
+    public void delete(String key) throws QiniuException {
+        bucketManager.delete(ossProperties.getBucket(), key);
+    }
+
+    /**
+     * 删除对象并忽略异常，用于校验失败或清理任务的兜底
+     */
+    public void deleteQuietly(String key) {
+        if (!StringUtils.hasText(key)) {
+            return;
+        }
+        try {
+            bucketManager.delete(ossProperties.getBucket(), key);
+        } catch (QiniuException e) {
+            log.warn("删除OSS对象失败, key={}: {}", key, e.getMessage());
+        }
+    }
+
+    /**
+     * 拉取远程对象头部并做魔数检测。
+     * <p>只读取前 maxBytes 字节，用于直传完成后在服务端校验真实文件类型。</p>
+     *
+     * @param key      对象 key
+     * @param maxBytes 最大读取字节数
+     * @return Tika 检测出的 MIME
+     */
+    public String detectRemoteMime(String key, int maxBytes) {
+        String baseUrl = StringUtils.hasText(ossProperties.getCheckBaseUrl())
+                ? ossProperties.getCheckBaseUrl()
+                : ossProperties.getOssUrl();
+        if (!StringUtils.hasText(baseUrl)) {
+            throw new BusinessException(CodeEnum.FILE_VERIFY_FAILED.getCode(), "未配置文件校验地址");
+        }
+        String url = baseUrl.endsWith("/") ? baseUrl + key : baseUrl + "/" + key;
+        int readBytes = Math.max(1, maxBytes);
+        try {
+            HttpRequest request = HttpRequest.newBuilder(URI.create(url))
+                    .header("Range", "bytes=0-" + (readBytes - 1))
+                    // 避免 CDN 对文本类文件启用压缩，导致魔数检测拿到压缩后的字节
+                    .header("Accept-Encoding", "identity")
+                    .timeout(Duration.ofSeconds(15))
+                    .GET()
+                    .build();
+            HttpResponse<byte[]> response = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
+            if (response.statusCode() != 200 && response.statusCode() != 206) {
+                log.warn("远程魔数检测失败, key={}, statusCode={}", key, response.statusCode());
+                throw new BusinessException(CodeEnum.FILE_VERIFY_FAILED);
+            }
+            return tika.detect(new ByteArrayInputStream(response.body()));
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new BusinessException(CodeEnum.FILE_VERIFY_FAILED.getCode(), "文件校验被中断");
+        } catch (IOException | IllegalArgumentException e) {
+            log.error("远程魔数检测异常, key={}: {}", key, e.getMessage(), e);
+            throw new BusinessException(CodeEnum.FILE_VERIFY_FAILED.getCode(), "文件内容校验失败，请稍后重试");
+        }
+    }
+
+    /**
+     * 判断声称的 MIME 与魔数检测结果是否一致
+     */
+    public boolean isMimeConsistent(String claimedType, String detectedType) {
+        if (!StringUtils.hasText(claimedType) || !StringUtils.hasText(detectedType)) {
+            return false;
+        }
+        if (isTextBasedMime(claimedType)) {
+            return detectedType.startsWith("text/") || TEXT_APPLICATION_TYPES.contains(detectedType);
+        }
+        return claimedType.equalsIgnoreCase(detectedType) || OCTET_STREAM.equals(detectedType);
     }
 
     /**
@@ -145,7 +274,7 @@ public class OssUtil {
      * @return 文件访问 URL
      */
     public String uploadFile(InputStream inputStream, String fileName, String type) {
-        return uploadFile(inputStream, fileName, type, UNKNOWN_FILE_SIZE);
+        return uploadFileWithResult(inputStream, fileName, type, UNKNOWN_FILE_SIZE).url();
     }
 
     /**
@@ -158,6 +287,19 @@ public class OssUtil {
      * @return 文件访问 URL
      */
     public String uploadFile(InputStream inputStream, String fileName, String type, long fileSize) {
+        return uploadFileWithResult(inputStream, fileName, type, fileSize).url();
+    }
+
+    /**
+     * 上传文件并返回对象 key、URL 和最终 MIME，便于写入文件记录表。
+     *
+     * @param inputStream 文件输入流
+     * @param fileName    原始文件名
+     * @param type        目录类型（cover/avatar/image/file）
+     * @param fileSize    文件字节数，传入负数表示未知（跳过业务级大小校验）
+     * @return 上传结果
+     */
+    public OssUploadResult uploadFileWithResult(InputStream inputStream, String fileName, String type, long fileSize) {
         String safeFileName = sanitizeFileName(fileName);
         validateFileSize(fileSize, type);
 
@@ -191,7 +333,8 @@ public class OssUtil {
                 throw new BusinessException(CodeEnum.FILE_UPLOAD_FAIL.getCode(), "文件上传失败，服务响应异常");
             }
             log.debug("OSS 上传成功, ossKey={}, mimeType={}", ossKey, mimeType);
-            return ossProperties.getOssUrl() + "/" + ossKey;
+            String url = ossProperties.getOssUrl() + "/" + ossKey;
+            return new OssUploadResult(url, ossKey, mimeType);
         } catch (QiniuException e) {
             log.error("OSS 上传失败, ossKey={}: {}", ossKey, e.getMessage(), e);
             throw new BusinessException(CodeEnum.FILE_UPLOAD_FAIL.getCode(), "文件上传失败: " + e.getMessage());
@@ -199,6 +342,12 @@ public class OssUtil {
             uploadPermits.release();
             closeQuietly(bufferedStream);
         }
+    }
+
+    /**
+     * 后端中转上传结果
+     */
+    public record OssUploadResult(String url, String key, String mimeType) {
     }
 
     /**
@@ -215,7 +364,7 @@ public class OssUtil {
     /**
      * 清洗原始文件名：剥离客户端可能携带的路径成分，替换不安全字符，并限制长度
      */
-    private String sanitizeFileName(String fileName) {
+    public String sanitizeFileName(String fileName) {
         if (fileName == null || fileName.isBlank()) {
             return FALLBACK_FILENAME;
         }
@@ -230,6 +379,24 @@ public class OssUtil {
             return FALLBACK_FILENAME;
         }
         return truncateKeepingExtension(safe);
+    }
+
+    /**
+     * 提取安全扩展名：仅保留字母数字，长度不超过 12，统一小写；无法识别时返回空串。
+     */
+    public String extensionOf(String safeFileName) {
+        if (!StringUtils.hasText(safeFileName)) {
+            return "";
+        }
+        int dotIndex = safeFileName.lastIndexOf('.');
+        if (dotIndex < 0 || dotIndex == safeFileName.length() - 1) {
+            return "";
+        }
+        String extension = safeFileName.substring(dotIndex + 1).toLowerCase(Locale.ROOT);
+        if (extension.length() > MAX_EXTENSION_LENGTH || !extension.matches("[a-z0-9]+")) {
+            return "";
+        }
+        return extension;
     }
 
     /**
@@ -313,20 +480,11 @@ public class OssUtil {
         }
         log.debug("OSS 上传文件魔数检测类型: {}", detectedType);
 
-        if (isTextBasedMime(claimedType)) {
-            // 声称是文本类：魔数结果必须是 text/* 或文本类 application，否则是二进制伪装
-            if (!detectedType.startsWith("text/") && !TEXT_APPLICATION_TYPES.contains(detectedType)) {
-                log.warn("文件内容非文本，疑似伪装: 声称类型={}, 魔数检测类型={}, fileName={}", claimedType, detectedType, fileName);
-                throw new BusinessException(CodeEnum.NOT_SUPPORTED_FILE_TYPE);
-            }
-            log.debug("文件类型 {} 为文本类，魔数验证通过（检测为 {}）", claimedType, detectedType);
-        } else {
-            // 非文本类：魔数结果必须与声称类型一致
-            if (!claimedType.equals(detectedType) && !OCTET_STREAM.equals(detectedType)) {
-                log.warn("文件类型伪造检测: 声称类型={}, 魔数检测类型={}, fileName={}", claimedType, detectedType, fileName);
-                throw new BusinessException(CodeEnum.NOT_SUPPORTED_FILE_TYPE);
-            }
+        if (!isMimeConsistent(claimedType, detectedType)) {
+            log.warn("文件类型伪造检测: 声称类型={}, 魔数检测类型={}, fileName={}", claimedType, detectedType, fileName);
+            throw new BusinessException(CodeEnum.NOT_SUPPORTED_FILE_TYPE);
         }
+        log.debug("文件类型 {} 魔数验证通过（检测为 {}）", claimedType, detectedType);
     }
 
     /**

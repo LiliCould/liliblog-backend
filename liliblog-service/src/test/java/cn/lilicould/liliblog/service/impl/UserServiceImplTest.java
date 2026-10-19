@@ -11,6 +11,7 @@ import cn.lilicould.liliblog.request.AdminUserUpdateRequest;
 import cn.lilicould.liliblog.request.UserCreateRequest;
 import cn.lilicould.liliblog.response.PageInfo;
 import cn.lilicould.liliblog.response.UserInfo;
+import cn.lilicould.liliblog.service.FileRefService;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,12 +48,14 @@ class UserServiceImplTest {
     private UserMapper userMapper;
     @Mock
     private PasswordEncoder passwordEncoder;
+    @Mock
+    private FileRefService fileRefService;
 
     private UserServiceImpl userService;
 
     @BeforeEach
     void setUp() {
-        userService = new UserServiceImpl(passwordEncoder);
+        userService = new UserServiceImpl(passwordEncoder, fileRefService);
         ReflectionTestUtils.setField(userService, "baseMapper", userMapper);
     }
 

@@ -96,7 +96,11 @@ liliblog-backend
 ### 文件上传
 - ✅ 七牛云 OSS 对象存储
 - ✅ 按类型分类存储（封面/头像/图片/文件）
-- ✅ UUID 重命名防冲突
+- ✅ 前端直传：后端签发单 key、短时效、限大小/类型的上传令牌
+- ✅ 上传完成由服务端 `stat` 复核，并支持远程魔数校验
+- ✅ 文件记录表（上传者、大小、MIME、hash、状态）
+- ✅ 超时未确认记录自动清理，可选清理无引用孤儿文件
+- ✅ 旧的后端中转上传接口保留兼容
 
 ### 安全与防护
 - ✅ Spring Security 认证授权
@@ -184,7 +188,25 @@ liliblog-backend
 
 | 方法 | 路径 | 说明 | 权限 |
 |------|------|------|------|
-| POST | `/file/upload` | 上传文件（封面/头像/图片/文件） | JWT |
+| POST | `/file/token` | 申请前端直传令牌 | JWT |
+| POST | `/file/complete` | 确认直传完成（服务端复核对象） | JWT |
+| POST | `/file/abandon` | 放弃直传 | JWT |
+| GET | `/file/my` | 我的上传记录 | JWT |
+| POST | `/file/upload` | 旧接口：后端中转上传 | JWT |
+
+前端直传流程：
+
+1. `POST /file/token`，传入 `type`、`fileName`、`fileSize`，后端返回 `uploadUrl`、`token`、`key`、`fileId`；
+2. 浏览器向 `uploadUrl` 以 `multipart/form-data` 提交 `token`、`key`、`file`；
+3. 上传成功后调用 `POST /file/complete`，传入 `fileId` 和七牛返回的 `hash`，服务端通过 `stat` 复核后返回最终 URL。
+
+直传相关配置在 `application.yml` 的 `oss.direct-upload-enabled`、`oss.upload-url`、`oss.token-expire-seconds` 等项中。
+
+已有数据库升级时，执行 `liliblog-service/src/main/resources/sql/2026-10-19-file-record.sql`；
+全新安装使用 `init.sql` 即可。
+
+七牛控制台需要在 bucket 的跨域设置中允许前端域名（开发环境含 `http://localhost:3000`），
+允许方法 `POST/GET/HEAD/OPTIONS`，否则浏览器直传会被 CORS 拦截。
 
 ### 管理员接口（全部需要 ADMIN 角色）
 
