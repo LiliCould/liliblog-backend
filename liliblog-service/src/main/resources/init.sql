@@ -342,4 +342,86 @@ CREATE TABLE `file_ref`  (
   INDEX `idx_target`(`target_type` ASC, `target_id` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '文件引用关系表' ROW_FORMAT = DYNAMIC;
 
+-- ----------------------------
+-- Table structure for blog_config
+-- 站点配置表：一行一个分组，config_value 存该分组的 JSON，新增内容类型只需插一行
+-- ----------------------------
+DROP TABLE IF EXISTS `blog_config`;
+CREATE TABLE `blog_config`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `config_key` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '配置分组键：hero / author / site ...',
+  `config_value` json NOT NULL COMMENT '分组配置内容（JSON）',
+  `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT '是否启用：0-禁用，1-启用',
+  `remark` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_by` bigint NULL DEFAULT 0 COMMENT '创建者',
+  `update_by` bigint NULL DEFAULT NULL COMMENT '更新者',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uk_config_key`(`config_key` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '站点配置表' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of blog_config
+-- 使用 JSON_OBJECT / JSON_ARRAY 构造，避免手写 JSON 转义
+-- ----------------------------
+INSERT INTO `blog_config` (`config_key`, `config_value`, `enabled`, `remark`) VALUES
+('hero', JSON_OBJECT(
+  'typewriter', JSON_OBJECT(
+    'enabled', CAST('true' AS JSON),
+    'phrases', JSON_ARRAY(
+      '代码拯救世界!',
+      'never foget to say hello world!',
+      '计算机是一个大的世界，而编程语言是和这个世界交流的工具。',
+      '永远相信美好的事情即将发生。',
+      '让代码像诗一样优雅。',
+      '像奇迹排序一般，相信奇迹总会发生。',
+      '梦想遥不可及，追寻梦想的力量永不枯竭。',
+      '立里可在努力，立里可在迷茫，立里可在成长',
+      '世界是一台巨大的计算机，我们是组成它的元件。',
+      '互联网从不缺乏天才，缺乏的是敢于追求梦想的勇气。'
+    ),
+    'templates', JSON_ARRAY(
+      JSON_OBJECT('key', 'java',       'label', 'Java',       'prefix', 'System.out.println("', 'suffix', '");'),
+      JSON_OBJECT('key', 'javascript', 'label', 'JavaScript', 'prefix', 'console.log("',        'suffix', '");'),
+      JSON_OBJECT('key', 'typescript', 'label', 'TypeScript', 'prefix', 'console.log("',        'suffix', '");'),
+      JSON_OBJECT('key', 'python',     'label', 'Python',     'prefix', 'print("',              'suffix', '")'),
+      JSON_OBJECT('key', 'c',          'label', 'C',          'prefix', 'printf("',             'suffix', '\\n");'),
+      JSON_OBJECT('key', 'cpp',        'label', 'C++',        'prefix', 'std::cout << "',       'suffix', '" << std::endl;'),
+      JSON_OBJECT('key', 'csharp',     'label', 'C#',         'prefix', 'Console.WriteLine("',  'suffix', '");'),
+      JSON_OBJECT('key', 'go',         'label', 'Go',         'prefix', 'fmt.Println("',        'suffix', '")'),
+      JSON_OBJECT('key', 'rust',       'label', 'Rust',       'prefix', 'println!("',           'suffix', '");'),
+      JSON_OBJECT('key', 'kotlin',     'label', 'Kotlin',     'prefix', 'println("',            'suffix', '")'),
+      JSON_OBJECT('key', 'swift',      'label', 'Swift',      'prefix', 'print("',              'suffix', '")')
+    )
+  ),
+  'slides', JSON_ARRAY(
+    JSON_OBJECT('key', 'hero-1', 'src', 'https://oss.lilicould.cn/file/hero-1.png', 'alt', 'Hero 1', 'enabled', CAST('true' AS JSON)),
+    JSON_OBJECT('key', 'hero-2', 'src', 'https://oss.lilicould.cn/file/hero-2.png', 'alt', 'Hero 2', 'enabled', CAST('true' AS JSON)),
+    JSON_OBJECT('key', 'hero-3', 'src', 'https://oss.lilicould.cn/file/hero-3.png', 'alt', 'Hero 3', 'enabled', CAST('true' AS JSON)),
+    JSON_OBJECT('key', 'hero-4', 'src', 'https://oss.lilicould.cn/file/hero-4.jpg', 'alt', 'Hero 4', 'enabled', CAST('true' AS JSON))
+  )
+), 1, '首页 Hero 区：打字机文案 + 轮播图'),
+('author', JSON_OBJECT(
+  'profile', JSON_OBJECT(
+    'avatar', 'https://oss.lilicould.cn/file/avatar.webp',
+    'nickname', '立里可',
+    'handle', 'LiliCould',
+    'email', 'lilicould@qq.com',
+    'signature', '热爱技术，追求卓越',
+    'badge', '关于作者'
+  ),
+  'socialLinks', JSON_ARRAY(
+    JSON_OBJECT('key', 'github',   'name', 'GitHub',     'icon', 'github',   'url', 'https://github.com/liliCould', 'enabled', CAST('true' AS JSON)),
+    JSON_OBJECT('key', 'bilibili', 'name', 'Bilibili',   'icon', 'bilibili', 'url', 'https://space.bilibili.com/360583544', 'enabled', CAST('true' AS JSON)),
+    JSON_OBJECT('key', 'music',    'name', '网易云音乐', 'icon', 'music',    'url', 'https://music.163.com/#/user/home?id=1410136194', 'enabled', CAST('true' AS JSON)),
+    JSON_OBJECT('key', 'email',    'name', '邮箱',       'icon', 'mail',     'url', 'mailto:lilicould@qq.com', 'enabled', CAST('true' AS JSON))
+  ),
+  'infoGroups', JSON_ARRAY(
+    JSON_OBJECT('key', 'anime', 'text', '喜欢的动漫', 'emoji', '📺', 'items', JSON_ARRAY('海贼王', '鬼灭之刃', '凡人修仙传', '剑来', '间谍过家家', '龙与虎')),
+    JSON_OBJECT('key', 'food',  'text', '喜欢的美食', 'emoji', '🍦', 'items', JSON_ARRAY('菠萝', '炒粉', '酸菜鱼', '臭豆腐', '烤面筋')),
+    JSON_OBJECT('key', 'game',  'text', '喜欢的游戏', 'emoji', '🎮', 'items', JSON_ARRAY('Minecraft', '星露谷物语', '荒野大镖客2', '巫师3', 'GTA5'))
+  )
+), 1, '关于作者：资料 + 社交链接 + 兴趣分组');
+
 SET FOREIGN_KEY_CHECKS = 1;

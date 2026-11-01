@@ -48,6 +48,8 @@ public enum CodeEnum {
     COMMENT_NOT_FOUND(3010, "评论不存在"),
     NOT_SUPPORTED_FILE_TYPE(3011, "不支持的文件类型"),
     FILE_RECORD_NOT_FOUND(3012, "文件记录不存在"),
+    BLOG_CONFIG_NOT_FOUND(3013, "站点配置不存在"),
+    BLOG_CONFIG_INVALID(3014, "站点配置内容不合法"),
 
     // 系统错误 5xxx
     SYSTEM_ERROR(5000, "系统异常，请稍后重试"),

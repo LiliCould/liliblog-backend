@@ -98,6 +98,7 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.GET, "/api/tag/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/user/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/comment/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/blog-config/**").permitAll() // 放行站点配置的GET请求方法
 
                     // 其他所有请求都需要认证才能访问
                     .anyRequest().authenticated()
