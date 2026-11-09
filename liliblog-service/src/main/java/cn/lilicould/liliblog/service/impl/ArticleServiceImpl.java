@@ -12,6 +12,7 @@ import cn.lilicould.liliblog.enums.TargetType;
 import cn.lilicould.liliblog.exception.BusinessException;
 import cn.lilicould.liliblog.response.*;
 import cn.lilicould.liliblog.util.MarkdownUtil;
+import cn.lilicould.liliblog.config.cache.RedisConfig;
 import cn.lilicould.liliblog.config.properties.InfoProperties;
 import cn.lilicould.liliblog.mapper.*;
 import cn.lilicould.liliblog.query.ArticleQuery;
@@ -29,6 +30,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -155,6 +158,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
      * @param id 文章ID
      */
     @Override
+    @CacheEvict(cacheNames = RedisConfig.CACHE_RANDOM_ARTICLE, allEntries = true)
     @Transactional(rollbackFor = Exception.class,isolation = Isolation.READ_COMMITTED)
     @Audit(
             module = "article",
@@ -210,6 +214,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
      * @param articleUpdateRequest 文章参数
      */
     @Override
+    @CacheEvict(cacheNames = RedisConfig.CACHE_RANDOM_ARTICLE, allEntries = true)
     @Transactional(rollbackFor = Exception.class,isolation = Isolation.READ_COMMITTED)
     @Audit(
             module = "article",
@@ -326,6 +331,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
      * @param reason 原因
      */
     @Override
+    @CacheEvict(cacheNames = RedisConfig.CACHE_RANDOM_ARTICLE, allEntries = true)
     @Audit(
             module = "article",
             operation = "AUDIT",
@@ -377,6 +383,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
      * @param ids 文章ID列表
      */
     @Override
+    @CacheEvict(cacheNames = RedisConfig.CACHE_RANDOM_ARTICLE, allEntries = true)
     @Audit(
             module = "article",
             operation = "BATCH_DELETE",
@@ -436,6 +443,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
      * @return 查询结果
      */
     @Override
+    @Cacheable(cacheNames = RedisConfig.CACHE_RANDOM_ARTICLE, key = "#num", sync = true)
     public List<ArticleVO> randomArticle(int num) {
         if (num < 1 || num > 10) {
             throw new BusinessException(CodeEnum.COMMON_PARAM_ERROR);
@@ -444,18 +452,19 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         List<Long> randomIds = getRandomArticleIds(num);
 
         if (randomIds.isEmpty()) {
-            return List.of();
+            return new ArrayList<>();
         }
 
         // 批量查询文章
         List<Article> articles = this.listByIds(randomIds);
         if (articles.isEmpty()) {
-            return List.of();
+            return new ArrayList<>();
         }
 
         // 关联数据一次性批量加载，避免每篇文章再查 6 次
         ArticleExtras extras = loadArticleExtras(articles);
-        return articles.stream().map(article -> toArticleVO(article, extras)).toList();
+        // 用可变集合包装：缓存使用 Jackson 多态序列化，不可变集合反序列化会失败
+        return new ArrayList<>(articles.stream().map(article -> toArticleVO(article, extras)).toList());
     }
 
     /**
@@ -535,6 +544,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
      * @param articleCreateRequest 文章参数
      */
     @Override
+    @CacheEvict(cacheNames = RedisConfig.CACHE_RANDOM_ARTICLE, allEntries = true)
     @Transactional(rollbackFor = Exception.class,isolation = Isolation.READ_COMMITTED)
     @Audit(
             module = "article",

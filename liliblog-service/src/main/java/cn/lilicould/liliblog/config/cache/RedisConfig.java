@@ -23,6 +23,16 @@ import java.time.Duration;
 @EnableCaching
 public class RedisConfig {
 
+    /**
+     * 随机文章缓存名，单独配置 5 分钟过期
+     */
+    public static final String CACHE_RANDOM_ARTICLE = "randomArticle";
+
+    /**
+     * 随机文章缓存过期时间
+     */
+    private static final Duration RANDOM_ARTICLE_TTL = Duration.ofMinutes(5);
+
     // 全局 key 前缀
     @Value("${spring.application.name:liliblog}:")
     private String APP_PREFIX;
@@ -87,6 +97,8 @@ public class RedisConfig {
         return RedisCacheManager.builder(connectionFactory)
                 // 应用上面定义的默认配置
                 .cacheDefaults(config)
+                // 随机文章缓存单独使用 5 分钟过期
+                .withCacheConfiguration(CACHE_RANDOM_ARTICLE, config.entryTtl(RANDOM_ARTICLE_TTL))
                 /* 启用事务感知：如果当前有 Redis 事务，缓存操作将参与到事务中，
                 保证缓存操作与数据库操作的一致性（需配合 @Transactional 使用） */
                 .transactionAware()
